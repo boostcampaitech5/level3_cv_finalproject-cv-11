@@ -1,4 +1,6 @@
 # Getting Started with FastAPI
+# python version
+python 3.8
 
 ## install poetry
 in Linux terminal
