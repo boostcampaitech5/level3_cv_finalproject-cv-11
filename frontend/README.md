@@ -3,16 +3,16 @@
 `https://travel-log.tistory.com/33`
 
 ## 2. npm install
-`
-react-bootstrap bootstrap
-axios express mysql
-mysql2
-express
-express-session
-express-mysql-session
-body-parser
-bcrypt
-`
+
+`react-bootstrap bootstrap`
+`axios express mysql`
+`mysql2`
+`express`
+`express-session`
+`express-mysql-session`
+`body-parser`
+`bcrypt`
+
 
 ## 3. npm start
 
