@@ -6,7 +6,7 @@ import axios from 'axios';
 import { func } from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Login(props) {
   const [inputId, setInputId] = useState('')
   const [inputPw, setInputPw] = useState('')
   const handleInputId = (e) => {
@@ -21,21 +21,33 @@ function Login() {
 
   // login 버튼 클릭 이벤트
   const onClickLogin = () => {
-      console.log('click login')
-  }
+    const userData = {
+      username: inputId,
+      password: inputPw,
+    };
+    fetch("http://115.85.182.51:30008/login", { //auth 주소에서 받을 예정
+      method: "post", // method :통신방법
+      headers: {      // headers: API 응답에 대한 정보를 담음
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(userData), //userData라는 객체를 보냄
+    })
+      .then((res) => res.json())
+      .then((json) => {            
+        if(json.isLogin==="True"){
+          props.setMode("WELCOME");
+        }
+        else {
+          alert(json.isLogin)
+        }
+      });
+    }
+
+
   const handleRegisterClick = () => {
     navigate('/register');
   }
 
-  // 페이지 렌더링 후 가장 처음 호출되는 함수
-  // useEffect(() => {
-  //     axios.get('/user_inform/login')
-  //     .then(res => console.log(res))
-  //     .catch()
-  // },
-  // 페이지 호출 후 처음 한번만 호출될 수 있도록 [] 추가
-  // [])
-  
   return (
     <div>
       <Row>
@@ -63,13 +75,16 @@ function Login() {
                 <div className="pw">
                   <label htmlFor='user-pw' >Password</label>
                   <br></br>
+                  <form>
                   <input 
                       name='user-pw'
                       type='password'
+                      autoComplete="new-password"
                       value={inputPw} 
                       onChange={handleInputPw}
                       required
                   ></input>
+                  </form>
                 </div>
                 <div className='login-btns'>
                   <p>
