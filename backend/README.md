@@ -53,6 +53,8 @@ In the project directory, you can run:
 
 
 ## config mysql database, table  
+0. start mysql server
+`service mysql start`
 1. make root user & make user_db database  
 `mysqladmin -u root create user_db -p`
 2. connect mysql with root user  
@@ -67,7 +69,7 @@ In the project directory, you can run:
         );`
 5. insert test user info  
 `insert into users values ("temp_username", "temp_hashed_password", "temp_email@temp.com");`
-6. check user info  
+7. check user info  
 `select * from users;`
 
 user table info may change accoring to development  
