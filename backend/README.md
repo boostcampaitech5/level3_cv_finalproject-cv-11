@@ -29,7 +29,7 @@ in Linux terminal
 
     edit mode : esc + i
 
-    insert 'export PATH=$PATH:$HOME/.local/bin'
+    insert `export PATH=$PATH:$HOME/.local/bin`
 
     exit `:wq`
 3. `source ~/.bashrc`
@@ -43,7 +43,7 @@ In the project directory, you can run:
 'poetry shell`
 
 ## backend start
-`python3 main.py'
+`python3 main.py`
 
 ## install mysql
 1.install mysql  
