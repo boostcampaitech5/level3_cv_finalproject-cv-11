@@ -1,56 +1,40 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Dict
+import crud, model, schemas
 
-from fastapi import Depends, FastAPI, HTTPException, status, APIRouter, Form, Request, Response
-from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import Depends, FastAPI, HTTPException, status, APIRouter, Form, Request, Response, Header
+from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates          #for debug
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
 from jose import JWTError, jwt
-import uvicorn
-
 from passlib.context import CryptContext
-
 from pydantic import BaseModel
+from database import SessionLocal, engine
 
-from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
-templates = Jinja2Templates(directory='./')
+
+templates = Jinja2Templates(directory='./')             #for debug
+model.Base.metadata.create_all(bind=engine)
 
 
 # to get a string like this run:
 # openssl rand -hex 32
 SECRET_KEY = "88c2a56e0d8fc664a5d89fc7a9ade75b118beb5beacd317e54d4841b4926570e"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 users_router = APIRouter()
-# manager = LoginManager(
-#     # here we set the secret LoginManager uses to encrypt our Token
-#     # normally you would use Environment Variables or some kind of config
-#     # where you can store the secret
-#     secret="your-secret",
-#     # We also have to set the tokenUrl, which is used to register the URL
-#     # in the OpenAPI docs.
-#     # This should be the same URL the user uses to login to your Application
-#     tokenUrl="/auth/login"
-#    )
 
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",      #secret
-        "disabled": False,
-    }
-}
 
-origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8000",
-]
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 
@@ -98,16 +82,6 @@ def get_user(db, username: str):
 
 
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
-
-
-
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -142,52 +116,63 @@ async def get_current_user(request: Request):   #, token: str = Depends(oauth2_s
     return user
 
 
-async def get_current_active_user(current_user: User = Depends(get_current_user)):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
 
 @users_router.get("/")
 def get_login_form(request: Request):
-    return templates.TemplateResponse('login_form.html', context={'request': request})
+    print(request)
+    print(f"cookie: {request._cookies}")
 
-@users_router.get("/test")
-def get_login_form(request: Request):
-    token: str = request.cookies.get("access_token")
-    return templates.TemplateResponse('login_form.html', context={'request': request})
+    print(f"request: {request.cookies.get('username')}")
+    print(f"header: {request.headers}")
+    print(f"body: {request.body}")
+    print(f"json: {request.cookies}")
+    client = request.client.host
+    print(client)
+
+    response = JSONResponse({'1':"2"})
+    response.set_cookie(key="username", value="temp", httponly=False)
+
+    print(response)
+    return response
 
 
+@users_router.post("/login")#, response_model=Token
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = crud.get_user_for_login(db, username=form_data.username, password=form_data.password)
 
-@users_router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        # raise HTTPException(
+        #     status_code=status.HTTP_401_UNAUTHORIZED,
+        #     detail="Incorrect username or password",
+        #     headers={"WWW-Authenticate": "Bearer"},
+        # )
+        return {"islogin": False}
+    
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    response = RedirectResponse("/users/me", status_code=302)
-    response.set_cookie(key="access_token", value=access_token, httponly=True)
-    return response
+    response = JSONResponse({'access_token':access_token})
+    response.set_cookie(key="username", value=form_data.username, httponly=True, samesite="none")
+    response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="none")         #maybe save access token to user_db
+    # return response
+    return {"islogin": True}
 
 
-@users_router.get("/users/me/", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_active_user)):
-    return current_user
-
-@users_router.get("/protected")
-async def protected_endpoint(token: str = Depends(oauth2_scheme)):
-    return {"message": "This is a protected endpoint"}
-
-@users_router.get("/users/me/items/")
-async def read_own_items(current_user: User = Depends(get_current_active_user)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
-
-
-# if __name__ == '__main__':
-#     uvicorn.run(users_router, host="0.0.0.0", port=8000)
+@users_router.post("/signin")
+def create_user(signin_name: str = Form(...), username: str = Form(...),password: str=Form(...), db: Session = Depends(get_db)):          #Dict의 str, str은 key:str, value:str을 의미
+    user_dict = {
+        "username":username,
+        "password":password,
+        "signin_name":signin_name
+    }
+    print(user_dict)
+    user = schemas.UserCreate(**user_dict)
+    db_user = crud.get_user_by_username(db, username=user.username)
+    if db_user:
+        # raise HTTPException(status_code=400, detail="Username already registered")
+        return {"valid":False}
+    # return crud.create_user(db=db, user=user)
+    user = crud.create_user(db=db, user=user)
+    # print(user)
+    return {"valid":True}
