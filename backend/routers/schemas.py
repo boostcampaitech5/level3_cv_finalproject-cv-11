@@ -1,14 +1,19 @@
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
+
+class UserId(BaseModel):      #pydantic의 모델
+    id: int
 
 class UserBase(BaseModel):      #pydantic의 모델
-    email: str
+    signin_name: str
 
 
 class UserCreate(UserBase):
-    hashedpassword: str
+    username: str = Field(..., description="Username of the user")
+    signin_name: str = Field(..., description="Email address of the user")
+    password: str = Field(..., description="Password of the user")
 
 
 #전반적인 flow는 위부터 흐르는 거라 보면됨
@@ -19,8 +24,6 @@ class UserCreate(UserBase):
 
 class User(UserBase):           #sqlalchemy의 모델
     username: str
-    # is_active: bool
-    # items: List[Item] = []
 
     class Config:
         orm_mode = True
