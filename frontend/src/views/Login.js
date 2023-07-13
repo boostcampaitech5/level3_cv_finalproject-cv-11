@@ -1,41 +1,56 @@
-import { Row, Col, Card, CardBody, CardTitle, Button } from "reactstrap";
+import { Row, Col, Button } from "reactstrap";
 import Footer from "../layouts/Footer";
 import './Login.css'
 import React, { useState, useEffect } from 'react';
-import { func } from "prop-types";
 import { useNavigate } from "react-router-dom";
-import  Axios from 'axios';
-import {Cookies} from 'react-cookie';
-const cookies = new Cookies();
-
-export const setCookie = (name: string, value: string, options?: any) => {
-  return cookies.set(name, value, {...options}); 
-}
+// import  axios from 'axios';
+import fastapi from '../lib/api'
+// import { access_token, user_name, is_login } from "../lib/store"
 
 function Login() {
-  const [inputId, setInputId] = useState('')
-  const [inputPw, setInputPw] = useState('')
-
   const navigate = useNavigate();
+  const [error, setError] = useState({ detail: [] });
+  const [username, setInputId] = useState('')
+  const [password, setInputPw] = useState('')
 
-  // login 버튼 클릭 이벤트
-  const onClickLogin = () => {
-    Axios.post('http://115.85.182.51:30008/login', {
-        username: inputId,
-        password: inputPw,
-      })
-      .then(res => console.log(res.json)) 
-      .catch()
-      // .then((res) => res.json)
-      // .then((json) => {            
-      //   if(json.isLogin==="True"){
-      //     props.setMode("WELCOME");
-      //   }
-      //   else {
-      //     alert(json.isLogin)
-      //   }
-      // });
+  function login(event) {
+    event.preventDefault()
+        let url = "/login"
+        let params = {
+            username: username,
+            password: password,
+        }
+        fastapi('login', url, params, 
+            (json) => {
+                console.log(json)
+                //~를 받으면 ~~를 실행해라
+                navigate.push("/")
+            },
+            (json_error) => {
+                setError(json_error);
+            }
+        );
     }
+    
+      // if(username === '' && password === ''){
+      //     return
+      // }else{
+      //     console.log('axios')
+      //     axios.post('http://115.85.182.51:30008/login', {
+      //         username: username,
+      //         password: password
+      //     })
+      //     .then(function (response) {
+      //         if(response.data.token){
+                  
+      //             setToken(response.data.token)
+      //             navigate("/register");
+      //         }
+      //     })
+      //     .catch(function (error) {
+      //         console.log(error, 'error');
+      //     });
+      // }
 
 
   const handleRegisterClick = () => {
@@ -61,8 +76,8 @@ function Login() {
                     <label htmlFor='user-id'>Email</label>
                     <br></br>
                     <input name='user-id'
-                        type='text' 
-                        value={inputId} 
+                        type='text'
+                        value={username}
                         onChange={event => {setInputId(event.target.value);}}
                         required
                     ></input>
@@ -73,8 +88,8 @@ function Login() {
                   <input 
                       name='user-pw'
                       type='password'
+                      value={password}
                       autoComplete="new-password"
-                      value={inputPw} 
                       onChange={event => {setInputPw(event.target.value);}}
                       required
                   ></input>
@@ -86,7 +101,7 @@ function Login() {
                     회원가입
                   </span>
                   </p>
-                <Button className='btns' type='submit' color="primary" size="lg" onClick={onClickLogin}>
+                <Button className='btns' type='submit' color="primary" size="lg" onClick={login}>
                     로그인
                 </Button>
                 </div>
