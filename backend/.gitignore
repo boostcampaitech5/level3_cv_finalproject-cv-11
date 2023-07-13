@@ -1,2 +1,2 @@
-./routers/__pycache__
+routers/__pycache__*
 ./generation/*
