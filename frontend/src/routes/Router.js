@@ -8,8 +8,11 @@ const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 const Starter = lazy(() => import("../views/Starter.js"));
 const Login = lazy(() => import("../views/Login.js"));
 const Register = lazy(() => import("../views/Register.js"));
+const Deepfake = lazy(() => import("../views/ui/Deepfake.js"));
 const Generate = lazy(() => import("../views/ui/Generate.js"));
-const Generate2 = lazy(() => import("../views/ui/Generate2.js"));
+const GenerateStart = lazy(() => import("../views/ui/GenerateStart.js"));
+const GenerateList = lazy(() => import("../views/ui/GenerateList.js"));
+const GenerateProject = lazy(() => import("../views/ui/GenerateProject.js"));
 const Detect = lazy(() => import("../views/ui/Detect.js"));
 const Loading = lazy(() => import("../views/ui/Loading.js"));
 const Badges = lazy(() => import("../views/ui/Badges"));
@@ -31,8 +34,12 @@ const ThemeRoutes = [
       { path: "/starter", exact: true, element: <Starter /> },
       { path: "/login", exact: true, element: <Login /> },
       { path: "/register", exact: true, element: <Register /> },
+      { path: "/deepfake", exact: true, element: <Deepfake /> },
       { path: "/generate", exact: true, element: <Generate /> },
-      { path: "/generate2", exact: true, element: <Generate2 /> },
+      { path: "/generate/start", exact: true, element: <GenerateStart /> },
+      { path: "/generate/projects", exact: true, element: <GenerateList /> },
+      { path: "/generate/:project", exact: true, element: <GenerateProject /> },
+      { path: "/generate/:project/loading", exact: true, element: <Loading /> },
       { path: "/detect", exact: true, element: <Detect /> },
       { path: "/loading", exact: true, element: <Loading /> },
       { path: "/badges", exact: true, element: <Badges /> },

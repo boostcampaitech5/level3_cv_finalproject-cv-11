@@ -9,7 +9,7 @@ import Footer from "../../layouts/Footer";
 import { useNavigate } from "react-router-dom";
 import Video from '../../assets/video/loading.mp4'
 
-const Generate2 = () => {
+const Loading = () => {
   // For Dismiss Button with Alert
   const navigate = useNavigate();
 
@@ -21,27 +21,27 @@ const Generate2 = () => {
   return (
     <div>
       <div className='generate-container'>
-          <h1>AI Deepfake Detection</h1>
-          <p>당신의 이미지가 딥페이크를 통해 악용되고 있는지 확인해보세요!</p>
-          <div className='generate-btns'>
-          <Button className='btns'color="secondary" size="lg" onClick={handleClick}>
-          이전으로
+        <h1>AI Deepfake Detection</h1>
+        <p>당신의 이미지가 딥페이크를 통해 악용되고 있는지 확인해보세요!</p>
+        <div className='generate-btns'>
+          <Button className='btns' color="secondary" size="lg" onClick={handleClick}>
+            이전으로
           </Button>
-          </div>
+        </div>
       </div>
-        <Card>
+      <Card>
         <CardBody className="">
-            <div className="box-container3">
+          <div className="box-container3">
             <div className="box3">
-                <video autoPlay loop muted src={Video} type='video/mp4' />
-                <h3>모델 학습중입니다! 조금만 기다려주세요</h3>
-              </div>          
+              <video autoPlay loop muted src={Video} type='video/mp4' />
+              <h3>모델 학습중입니다! 조금만 기다려주세요</h3>
             </div>
+          </div>
         </CardBody>
-        <Footer/>
+        <Footer />
       </Card>
     </div>
   );
 };
 
-export default Generate2;
+export default Loading;

@@ -4,13 +4,13 @@ import {
   CardBody,
   Button
 } from "reactstrap";
-import './Generate.css'
+import './Detect.css'
 import Footer from "../../layouts/Footer";
 import Image from '../../assets/images/snow2.JPG'
 import { useNavigate } from "react-router-dom";
 
 
-const Generate2 = () => {
+const Detect = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const navigate = useNavigate();
@@ -27,47 +27,47 @@ const Generate2 = () => {
 
   const handleClickUploadButton = () => {
     const fileInput = document.getElementById('image-input');
-    fileInput.click(); 
+    fileInput.click();
   };
 
 
   return (
     <div>
       <div className='generate-container'>
-          <h1>AI Deepfake Detection</h1>
-          <h2>탐지하기</h2>
-          <p>당신의 이미지가 딥페이크를 통해 악용되고 있는지 확인해보세요!</p>
-          <div className='generate-btns'>
-          <Button className='btns'color="secondary" size="lg" onClick={handleClick}>
-          이전으로
+        <h1>AI Deepfake Detection</h1>
+        <h2>탐지하기</h2>
+        <p>당신의 이미지가 딥페이크를 통해 악용되고 있는지 확인해보세요!</p>
+        <div className='generate-btns'>
+          <Button className='btns' color="secondary" size="lg" onClick={handleClick}>
+            이전으로
           </Button>
-          </div>
+        </div>
       </div>
-        <Card>
+      <Card>
         <CardBody className="">
           <div className="mt-3">
             <h3>생성하기</h3>
             <div className="box-container2">
               <div className="box2">
-                <img src={Image} alt="이미지 유의사항"/>
-                <Button className='btns2'color="primary"size="lg" onClick={handleClickUploadButton}>
-                    사진 업로드
+                <img src={Image} alt="이미지 유의사항" />
+                <Button className='btns2' color="primary" size="lg" onClick={handleClickUploadButton}>
+                  사진 업로드
                 </Button>
                 <input
-                    id='image-input'
+                  id='image-input'
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
-                  style={{display:'none'}}
+                  style={{ display: 'none' }}
                 />
-              </div>          
+              </div>
             </div>
           </div>
         </CardBody>
-        <Footer/>
+        <Footer />
       </Card>
     </div>
   );
 };
 
-export default Generate2;
+export default Detect;
