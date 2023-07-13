@@ -1,42 +1,37 @@
-import { Row, Col, Card, CardBody, CardTitle, Button } from "reactstrap";
+import { Row, Col, Button } from "reactstrap";
 import Footer from "../layouts/Footer";
 import './Login.css'
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { func } from "prop-types";
+import React, { useState} from 'react';
 import { useNavigate } from "react-router-dom";
+import fastapi from '../lib/api'
 
-function Login() {
-  const [inputId, setInputId] = useState('')
-  const [inputPw, setInputPw] = useState('')
-  const [inputName, setInputName] = useState('')
+function Register(props) {
+  const [error, setError] = useState({ detail: [] });
+  const [signin_name,setInputName]=useState('')
+  const [username, setInputId] = useState('')
+  const [password, setInputPw] = useState('')
   const navigate = useNavigate();
 
-  const handleInputName = (e) => {
-    setInputName(e.target.value)
-  }
+  const handleLogin = (event) =>  {
+    event.preventDefault()
+        let url = "/signin"
+        let params = {
+            signin_name: signin_name,
+            username: username,
+            password: password
+        }
+        fastapi('signin', url, params, 
+            (json) => {
+                console.log(json);
+                navigate("/login")
+            },
+            (json_error) => {
+                setError(json_error);
+            }
+        );
+    }
 
-  const handleInputId = (e) => {
-    setInputId(e.target.value)
-  }
 
-  const handleInputPw = (e) => {
-      setInputPw(e.target.value)
-  }
-
-  // login 버튼 클릭 이벤트
-  const onClickLogin = () => {
-      console.log('click login')
-  }
-  // 페이지 렌더링 후 가장 처음 호출되는 함수
-  // useEffect(() => {
-  //     axios.get('/user_inform/login')
-  //     .then(res => console.log(res))
-  //     .catch()
-  // },
-  // 페이지 호출 후 처음 한번만 호출될 수 있도록 [] 추가
-  // [])
-  
   return (
     <div>
       <Row>
@@ -56,8 +51,8 @@ function Login() {
                     <br></br>
                     <input name='user-name'
                         type='text' 
-                        value={inputName} 
-                        onChange={handleInputName}
+                        value={signin_name} 
+                        onChange={event => {setInputName(event.target.value);}}
                         required
                     ></input>
                 </div>
@@ -66,8 +61,8 @@ function Login() {
                     <br></br>
                     <input name='user-id'
                         type='text' 
-                        value={inputId} 
-                        onChange={handleInputId}
+                        value={username} 
+                        onChange={event => {setInputId(event.target.value);}}
                         required
                     ></input>
                 </div>
@@ -77,14 +72,17 @@ function Login() {
                   <input 
                       name='user-pw'
                       type='password'
-                      value={inputPw} 
-                      onChange={handleInputPw}
+                      value={password} 
+                      onChange={event => {setInputPw(event.target.value);}}
                       required
                   ></input>
                 </div>
                 <div className='login-btns'>
-                <Button className='btns'color="primary" size="lg" onClick={onClickLogin}>
+                <Button className='btns' type='submit' color="primary" size="lg" onClick={handleLogin}>
                     회원가입
+                </Button>
+                <Button className='btns' color="primary" size="lg" onClick={()=>navigate('/login')}>
+                    이전으로
                 </Button>
                 </div>
             </div>
@@ -96,4 +94,4 @@ function Login() {
   );
 };
 
-export default Login;
+export default Register;

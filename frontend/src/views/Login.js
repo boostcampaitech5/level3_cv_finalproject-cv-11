@@ -1,50 +1,63 @@
-import { Row, Col, Card, CardBody, CardTitle, Button } from "reactstrap";
+import { Alert, Row, Col, Button } from "reactstrap";
 import Footer from "../layouts/Footer";
 import './Login.css'
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { func } from "prop-types";
 import { useNavigate } from "react-router-dom";
+// import  axios from 'axios';
+import fastapi from '../lib/api'
+// import { access_token, user_name, is_login } from "../lib/store"
 
-function Login(props) {
-  const [inputId, setInputId] = useState('')
-  const [inputPw, setInputPw] = useState('')
-  const handleInputId = (e) => {
-    setInputId(e.target.value)
-  }
-
+function Login() {
   const navigate = useNavigate();
+  const [error, setError] = useState({ detail: [] });
+  const [username, setInputId] = useState('')
+  const [password, setInputPw] = useState('')
+  const [isLogin, setIsLogin] = useState('');
 
-  const handleInputPw = (e) => {
-      setInputPw(e.target.value)
-  }
-
-  // login 버튼 클릭 이벤트
-  const onClickLogin = () => {
-    const userData = {
-      username: inputId,
-      password: inputPw,
-    };
-    fetch("http://115.85.182.51:30008/login", { //auth 주소에서 받을 예정
-      method: "post", // method :통신방법
-      headers: {      // headers: API 응답에 대한 정보를 담음
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(userData), //userData라는 객체를 보냄
-    })
-      .then((res) => res.json())
-      .then((json) => {            
-        if(json.isLogin==="True"){
-          props.setMode("WELCOME");
+  const handleLogin = (event) =>  {
+    event.preventDefault()
+        let url = "/login"
+        let params = {
+            username: username,
+            password: password
         }
-        else {
-          alert(json.isLogin)
-        }
-      });
+        fastapi('login', url, params, 
+            (json) => {
+                console.log(json['islogin']);
+                setIsLogin(json['islogin']);
+                if (json['islogin']===true){
+                  navigate('/starter');
+                }
+            },
+            (json_error) => {
+                setError(json_error);
+            }
+        );
     }
+    
+      // if(username === '' && password === ''){
+      //     return
+      // }else{
+      //     console.log('axios')
+      //     axios.post('http://115.85.182.51:30008/login', {
+      //         username: username,
+      //         password: password
+      //     })
+      //     .then(function (response) {
+      //         if(response.data.token){
+                  
+      //             setToken(response.data.token)
+      //             navigate("/register");
+      //         }
+      //     })
+      //     .catch(function (error) {
+      //         console.log(error, 'error');
+      //     });
+      // }
 
 
   const handleRegisterClick = () => {
+    // props.setMode("SIGNIN");
     navigate('/register');
   }
 
@@ -66,25 +79,23 @@ function Login(props) {
                     <label htmlFor='user-id'>Email</label>
                     <br></br>
                     <input name='user-id'
-                        type='text' 
-                        value={inputId} 
-                        onChange={handleInputId}
+                        type='text'
+                        value={username}
+                        onChange={event => {setInputId(event.target.value);}}
                         required
                     ></input>
                 </div>
                 <div className="pw">
                   <label htmlFor='user-pw' >Password</label>
                   <br></br>
-                  <form>
                   <input 
                       name='user-pw'
                       type='password'
+                      value={password}
                       autoComplete="new-password"
-                      value={inputPw} 
-                      onChange={handleInputPw}
+                      onChange={event => {setInputPw(event.target.value);}}
                       required
                   ></input>
-                  </form>
                 </div>
                 <div className='login-btns'>
                   <p>
@@ -93,9 +104,15 @@ function Login(props) {
                     회원가입
                   </span>
                   </p>
-                <Button className='btns'color="primary" size="lg" onClick={onClickLogin}>
-                    로그인
-                </Button>
+                <form onSubmit={handleLogin}>
+                  <Button className='btns' type='submit' color="primary" size="lg">
+                      로그인
+                  </Button>
+                    {isLogin===false && (
+                      <Alert color="danger">Login failed. Please try again.</Alert>
+                    )}
+                </form>
+
                 </div>
             </div>
           </div>
