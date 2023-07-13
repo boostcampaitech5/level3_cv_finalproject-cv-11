@@ -1,0 +1,81 @@
+
+.box-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    /* height: 100vh; */
+  }
+.box {
+    width: 700px; 
+    height: 550px; 
+    background-color: #d3f8f1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+.box h1 {
+  text-align: center;
+}
+
+.box-container3 {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  height: 60vh;
+  }
+
+.box3 {
+  width: 700px; 
+  height: 350px; 
+  background-color: #f2f7f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  }
+
+.login-btns {
+    margin-top: 32px;
+  }
+
+.btn{
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto;
+  margin-top: 15px;
+
+  }
+
+label{
+  font-weight: bold;
+}
+input{
+  background-color: #d3f8f1;
+  border: none;
+  border-radius: 10px;
+  height: 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.name {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.id {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.pw {
+  margin-top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .btn {
+        width: 100%;
+        }
+}

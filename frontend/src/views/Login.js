@@ -1,4 +1,4 @@
-import { Row, Col, Button } from "reactstrap";
+import { Alert, Row, Col, Button } from "reactstrap";
 import Footer from "../layouts/Footer";
 import './Login.css'
 import React, { useState, useEffect } from 'react';
@@ -12,19 +12,22 @@ function Login() {
   const [error, setError] = useState({ detail: [] });
   const [username, setInputId] = useState('')
   const [password, setInputPw] = useState('')
+  const [isLogin, setIsLogin] = useState('');
 
-  function login(event) {
+  const handleLogin = (event) =>  {
     event.preventDefault()
         let url = "/login"
         let params = {
             username: username,
-            password: password,
+            password: password
         }
         fastapi('login', url, params, 
             (json) => {
-                console.log(json)
-                //~를 받으면 ~~를 실행해라
-                navigate.push("/")
+                console.log(json['islogin']);
+                setIsLogin(json['islogin']);
+                if (json['islogin']===true){
+                  navigate('/starter');
+                }
             },
             (json_error) => {
                 setError(json_error);
@@ -101,9 +104,15 @@ function Login() {
                     회원가입
                   </span>
                   </p>
-                <Button className='btns' type='submit' color="primary" size="lg" onClick={login}>
-                    로그인
-                </Button>
+                <form onSubmit={handleLogin}>
+                  <Button className='btns' type='submit' color="primary" size="lg">
+                      로그인
+                  </Button>
+                    {isLogin===false && (
+                      <Alert color="danger">Login failed. Please try again.</Alert>
+                    )}
+                </form>
+
                 </div>
             </div>
           </div>

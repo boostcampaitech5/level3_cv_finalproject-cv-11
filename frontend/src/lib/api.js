@@ -1,12 +1,13 @@
+import qs from "qs"
 const fastapi = (operation, url, params, success_callback, failure_callback) => {
     let method = operation
     let content_type = 'application/json'
     let body = JSON.stringify(params)
 
-    if(operation === 'login') {
+    if(operation === 'login' || operation ==='signin') {
         method = 'post'
         content_type = 'application/x-www-form-urlencoded'
-        body = JSON.stringify(params)
+        body = qs.stringify(params)
     }
 
     let _url = 'http://115.85.182.51:30008'+url
