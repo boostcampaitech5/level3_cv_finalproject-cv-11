@@ -5,10 +5,10 @@ import { Col, Row } from "reactstrap";
 import React from "react";
 import Footer from "../layouts/Footer";
 import {
-    Card,
-    CardBody,
-    Button
-  } from "reactstrap";
+  Card,
+  CardBody,
+  Button
+} from "reactstrap";
 import Video from '../assets/video/main.mp4'
 import './Starter.css'
 import Blog from "../components/dashboard/Blog";
@@ -57,45 +57,45 @@ const Starter = () => {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/generate"); // generate2 페이지로 이동
+    navigate("/deepfake"); // deepfake 페이지로 이동
   };
   const handleAbout = () => {
-    navigate("/buttons"); // generate2 페이지로 이동
+    navigate("/buttons"); // 메인 페이지로 이동
   };
-    return (
-      <>
+  return (
+    <>
       <div className='hero-container'>
-          <video autoPlay loop muted src={Video} type='video/mp4' />
-          <h1>Deepfake Detection</h1>
-          <p>Aivengers</p>
-          <div className='hero-btns'>
-          <Button className='btns'color="primary" size="lg" onClick={handleGetStarted}>
-          Get Started!
+        <video autoPlay loop muted src={Video} type='video/mp4' />
+        <h1>Deepfake Detection</h1>
+        <p>Aivengers</p>
+        <div className='hero-btns'>
+          <Button className='btns' color="primary" size="lg" onClick={handleGetStarted}>
+            Get Started!
           </Button>
-          <Button className='btns'color="secondary"size="lg" onClick={handleAbout}>
-          About Us
+          <Button className='btns' color="secondary" size="lg" onClick={handleAbout}>
+            About Us
           </Button>
-          </div>
+        </div>
       </div>
       <div className="cards">
-      <h1>Our Services</h1>
-      <Row>
-      {BlogData.map((blg, index) => (
-          <Col sm="6" lg="6" xl="3" key={index}>
-          <Blog
-              image={blg.image}
-              title={blg.title}
-              subtitle={blg.subtitle}
-              text={blg.description}
-              color={blg.btnbg}
-          />
-          </Col>
-      ))}
-      </Row>
+        <h1>Our Services</h1>
+        <Row>
+          {BlogData.map((blg, index) => (
+            <Col sm="6" lg="6" xl="3" key={index}>
+              <Blog
+                image={blg.image}
+                title={blg.title}
+                subtitle={blg.subtitle}
+                text={blg.description}
+                color={blg.btnbg}
+              />
+            </Col>
+          ))}
+        </Row>
       </div>
-      <Footer/>
-      </>
-    );
+      <Footer />
+    </>
+  );
 };
 
 export default Starter;
