@@ -99,9 +99,9 @@ iteration = 0
 for id_ in train_id:
     print(f'start_id_{id_}')
     optimizer = optim.Adam(params=model.parameters(), lr=0.0001, weight_decay=1e-6)
-    real_path= f'/opt/ml/deepfake/data/celeb-df/meta_train/real/{id_}'
-    fake_path= f'/opt/ml/deepfake/data/celeb-df/meta_train/fake/{id_}'
-    target_path= f'/opt/ml/deepfake/data/celeb-df/target/real/{1}/id{1}_0009.000.png'
+    real_path= f'/opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/meta_train/real/{id_}'
+    fake_path= f'/opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/meta_train/fake/{id_}'
+    target_path= f'/opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/target/real/{1}/id{1}_0009.000.png'
     user_name = f'id{id_}'
     meta_train_loader = make_dataset(input_size=input_size, real_path=real_path, fake_path=fake_path, target_path=target_path)
     for epoch in range(max_epoch):
@@ -132,7 +132,7 @@ for id_ in train_id:
         iteration += 1
             
 
-        dest = '/opt/ml/deepfake/result/fewshot/'
+        dest = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot'
         if not os.path.exists(dest):
             os.makedirs(dest)
         output_path = os.path.join(dest, f"Meta_train_learning_id_{id_}.pt")

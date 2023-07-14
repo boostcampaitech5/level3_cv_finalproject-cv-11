@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
-import model, schemas
+# import model, schemas
+from backend.routers import model, schemas
+
 from passlib.context import CryptContext
 
 SECRET_KEY = "88c2a56e0d8fc664a5d89fc7a9ade75b118beb5beacd317e54d4841b4926570e"

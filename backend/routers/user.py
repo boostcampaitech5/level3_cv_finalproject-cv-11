@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Optional, Dict
-import crud, model, schemas
+# import crud, model, schemas
+from backend.routers import crud, model, schemas
+
 
 from fastapi import Depends, FastAPI, HTTPException, status, APIRouter, Form, Request, Response, Header
 from fastapi.responses import JSONResponse
@@ -10,7 +12,9 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from database import SessionLocal, engine
+# from database import SessionLocal, engine
+from backend.routers.database import SessionLocal, engine
+from deepfake import make_synthesis, inference
 
 from sqlalchemy.orm import Session
 
@@ -93,28 +97,49 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-async def get_current_user(request: Request):   #, token: str = Depends(oauth2_scheme)
-    token: str = request.cookies.get("access_token")
-    if token is None:
-        return None
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
+# async def get_current_user(request: Request):   #, token: str = Depends(oauth2_scheme)
+#     token: str = request.cookies.get("access_token")
+#     if token is None:
+#         return None
+#     credentials_exception = HTTPException(
+#         status_code=status.HTTP_401_UNAUTHORIZED,
+#         detail="Could not validate credentials",
+#         headers={"WWW-Authenticate": "Bearer"},
+#     )
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         username: str = payload.get("sub")
+#         if username is None:
+#             raise credentials_exception
+#         token_data = TokenData(username=username)
+#     except JWTError:
+#         raise credentials_exception
+#     user = get_user(fake_users_db, username=token_data.username)
+#     if user is None:
+#         raise credentials_exception
+#     return user
+@users_router.get("/generation")
+def generation(request: Request):
+    print('#########'*30)
+    print(request.cookies.get('username'))
+    source = f'/opt/ml/level3_cv_finalproject-cv-11/data/username/generation/{2}/source'
+    target = f'/opt/ml/level3_cv_finalproject-cv-11/data/username/generation/{2}/target'
+    output = f'/opt/ml/level3_cv_finalproject-cv-11/data/username/generation/{2}/result'
+    make_synthesis.make_synthesis(target,source,output)
+    return False
 
+@users_router.get("/inference")
+def inference_image():
+    model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/foundation_model.pt'
+    real_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/real'
+    fake_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
+    target_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/target'
+    user_name = 'username'
+    source = '/opt/ml/level3_cv_finalproject-cv-11/data/source'
+    make_synthesis.make_synthesis(real_path,source,fake_path)
+    result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
+    print(result)
+    return False
 
 
 @users_router.get("/")
@@ -139,7 +164,7 @@ def get_login_form(request: Request):
 @users_router.post("/login")#, response_model=Token
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = crud.get_user_for_login(db, username=form_data.username, password=form_data.password)
-
+    # print(request.cookies)
     if not user:
         # raise HTTPException(
         #     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -171,8 +196,8 @@ def create_user(signin_name: str = Form(...), username: str = Form(...),password
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
         # raise HTTPException(status_code=400, detail="Username already registered")
-        return {"valid":False}
+        return {"isvalid":False}
     # return crud.create_user(db=db, user=user)
     user = crud.create_user(db=db, user=user)
     # print(user)
-    return {"valid":True}
+    return {"isvalid":True}

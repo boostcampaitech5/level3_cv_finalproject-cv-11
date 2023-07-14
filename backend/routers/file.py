@@ -1,6 +1,9 @@
+import sys
+sys
+
 from typing import List
 from fastapi import File, UploadFile, APIRouter
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 import os
 file_router = APIRouter()
 
@@ -26,6 +29,18 @@ async def upload_files(files: List[UploadFile] = File(...)):
             buffer.write(await file.read())
     
     return {"filenames": [file.filename for file in files], "message": "Files uploaded successfully."}
+
+
+@file_router.get("/test")
+async def upload_files(username: str):
+    #username받고 original, fake는 react에서 생성해줬을꺼임
+    #이제 우리는 이 username에 접근해서 image를 generate!
+    #return 은 bool형으로 반환한다! -> 물론 async
+    # image =   
+    return "asfaso"
+    username
+
+
 
 
 @file_router.get("/upload")

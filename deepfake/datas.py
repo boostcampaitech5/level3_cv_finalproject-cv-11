@@ -205,12 +205,12 @@ class Inferset(Dataset):
         self.real_path = real_path
         self.fake_path = fake_path
 
-        real = random.sample(os.listdir(real_path), 90)
-        fake = random.sample(os.listdir(fake_path), 90)
+        real = random.sample(os.listdir(real_path), 10)
+        fake = random.sample(os.listdir(fake_path), 10)
         
-        self.real_pngs = real[:60]
-        self.fake_pngs = fake[:60]
-        self.valid_pngs = real[60:] + fake[60:]
+        self.real_pngs = real[:5]
+        self.fake_pngs = fake[:5]
+        self.valid_pngs = real[5:] + fake[5:]
         self.target_png = target_path
         
         self.transforms = transforms
