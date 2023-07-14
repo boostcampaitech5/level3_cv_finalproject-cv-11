@@ -95,7 +95,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.need_align:
         landmarkModel = LandmarkModel(name='landmarks')
-        landmarkModel.prepare(ctx_id= 0, det_thresh=0.6, det_size=(640,640))
+        landmarkModel.prepare(ctx_id= 0, det_thresh=0.6, det_size=(160,160))
         face_align(landmarkModel, args.source_img_path)
         face_align(landmarkModel, args.target_img_path, args.merge_result, args.image_size)
     os.makedirs(args.output_dir, exist_ok=True)
