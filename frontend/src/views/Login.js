@@ -1,7 +1,7 @@
 import { Alert, Row, Col, Button } from "reactstrap";
 import Footer from "../layouts/Footer";
 import './Login.css'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
 // import  axios from 'axios';
 import fastapi from '../lib/api'
@@ -13,6 +13,7 @@ function Login() {
   const [username, setInputId] = useState('')
   const [password, setInputPw] = useState('')
   const [isLogin, setIsLogin] = useState('');
+
 
   const handleLogin = (event) =>  {
     event.preventDefault()
@@ -26,7 +27,7 @@ function Login() {
                 console.log(json['islogin']);
                 setIsLogin(json['islogin']);
                 if (json['islogin']===true){
-                  navigate('/starter');
+                  navigate('/starter',{state:username});
                 }
             },
             (json_error) => {
@@ -34,27 +35,6 @@ function Login() {
             }
         );
     }
-    
-      // if(username === '' && password === ''){
-      //     return
-      // }else{
-      //     console.log('axios')
-      //     axios.post('http://115.85.182.51:30008/login', {
-      //         username: username,
-      //         password: password
-      //     })
-      //     .then(function (response) {
-      //         if(response.data.token){
-                  
-      //             setToken(response.data.token)
-      //             navigate("/register");
-      //         }
-      //     })
-      //     .catch(function (error) {
-      //         console.log(error, 'error');
-      //     });
-      // }
-
 
   const handleRegisterClick = () => {
     // props.setMode("SIGNIN");
@@ -62,65 +42,63 @@ function Login() {
   }
 
   return (
-    <div>
-      <Row>
-        <Col xs="12" md="7">
-            <div className="box-container">
-              <div className="box">
-                <h1>Welcome to Website!</h1>
+      <div>
+        <Row>
+          <Col xs="12" md="7">
+              <div className="box-container">
+                <div className="box">
+                  <h1>Welcome to Website!</h1>
+                </div>
               </div>
-            </div>
-        </Col>
-        <Col xs="12" md="5">
-          <div className="box-container2">
-            <div className="box2">
-              <h1>Sign In</h1>
-                <div className="id">
-                    <label htmlFor='user-id'>Email</label>
+          </Col>
+          <Col xs="12" md="5">
+            <div className="box-container2">
+              <div className="box2">
+                <h1>Sign In</h1>
+                  <div className="id">
+                      <label htmlFor='user-id'>Email</label>
+                      <br></br>
+                      <input name='user-id'
+                          type='text'
+                          value={username}
+                          onChange={event => {setInputId(event.target.value);}}
+                          required
+                      ></input>
+                  </div>
+                  <div className="pw">
+                    <label htmlFor='user-pw' >Password</label>
                     <br></br>
-                    <input name='user-id'
-                        type='text'
-                        value={username}
-                        onChange={event => {setInputId(event.target.value);}}
+                    <input 
+                        name='user-pw'
+                        type='password'
+                        value={password}
+                        autoComplete="new-password"
+                        onChange={event => {setInputPw(event.target.value);}}
                         required
                     ></input>
-                </div>
-                <div className="pw">
-                  <label htmlFor='user-pw' >Password</label>
-                  <br></br>
-                  <input 
-                      name='user-pw'
-                      type='password'
-                      value={password}
-                      autoComplete="new-password"
-                      onChange={event => {setInputPw(event.target.value);}}
-                      required
-                  ></input>
-                </div>
-                <div className='login-btns'>
-                  <p>
-                  아직 계정이 없으신가요?{' '}
-                  <span onClick={handleRegisterClick} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
-                    회원가입
-                  </span>
-                  </p>
-                <form onSubmit={handleLogin}>
-                  <Button className='btns' type='submit' color="primary" size="lg">
-                      로그인
-                  </Button>
-                    {isLogin===false && (
-                      <Alert color="danger">Login failed. Please try again.</Alert>
-                    )}
-                </form>
-
-                </div>
+                  </div>
+                  <div className='login-btns'>
+                    <p>
+                    아직 계정이 없으신가요?{' '}
+                    <span onClick={handleRegisterClick} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+                      회원가입
+                    </span>
+                    </p>
+                  <form onSubmit={handleLogin}>
+                    <Button className='btns' type='submit' color="primary" size="lg">
+                        로그인
+                    </Button>
+                      {isLogin===false && (
+                        <Alert color="danger">Login failed. Please try again.</Alert>
+                      )}
+                  </form>
+                  </div>
+              </div>
             </div>
-          </div>
-        </Col>
-        </Row>
-      <Footer/>
-      </div>
+          </Col>
+          </Row>
+        <Footer/>
+        </div>
   );
 };
-
 export default Login;

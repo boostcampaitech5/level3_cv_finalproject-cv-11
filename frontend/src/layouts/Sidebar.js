@@ -1,6 +1,7 @@
 import { Button, Nav, NavItem } from "reactstrap";
 import Logo from "./Logo";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Login from "../views/Login";
 
 const navigation = [
   {
@@ -10,7 +11,7 @@ const navigation = [
   },
   {
     title: "이미지 생성/탐지하기",
-    href: "/generate",
+    href: "/deepfake",
     icon: "bi bi-upc-scan",
   },
   // {
@@ -28,26 +29,7 @@ const navigation = [
     href: "/buttons",
     icon: "bi bi-hdd-stack",
   },
-  // {
-  //   title: "Cards",
-  //   href: "/cards",
-  //   icon: "bi bi-card-text",
-  // },
-  // {
-  //   title: "Grid",
-  //   href: "/grid",
-  //   icon: "bi bi-columns",
-  // },
-  // {
-  //   title: "Table",
-  //   href: "/table",
-  //   icon: "bi bi-layout-split",
-  // },
-  // {
-  //   title: "Forms",
-  //   href: "/forms",
-  //   icon: "bi bi-textarea-resize",
-  // },
+
 ];
 
 const Sidebar = () => {
@@ -55,6 +37,11 @@ const Sidebar = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   let location = useLocation();
+  const username=location.state
+  const navigate = useNavigate();
+  const navigateToGenerate = () => {
+    navigate("/deepfake", { state: username });
+  };
 
   return (
     <div className="p-3">
@@ -73,6 +60,19 @@ const Sidebar = () => {
         <Nav vertical className="sidebarNav">
           {navigation.map((navi, index) => (
             <NavItem key={index} className="sidenav-bg">
+              {navi.title === "이미지 생성/탐지하기" ? (
+                <button
+                  className={
+                    location.pathname === navi.href
+                      ? "text-primary nav-link py-3"
+                      : "nav-link text-secondary py-3"
+                  }
+                  onClick={navigateToGenerate}
+                >
+                  <i className={navi.icon}></i>
+                  <span className="ms-3 d-inline-block">{navi.title}</span>
+                </button>
+              ) : (
               <Link
                 to={navi.href}
                 className={
@@ -84,6 +84,7 @@ const Sidebar = () => {
                 <i className={navi.icon}></i>
                 <span className="ms-3 d-inline-block">{navi.title}</span>
               </Link>
+              )}
             </NavItem>
           ))}
         </Nav>

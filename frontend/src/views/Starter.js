@@ -2,7 +2,7 @@ import { Col, Row } from "reactstrap";
 // import SalesChart from "../components/dashboard/SalesChart";
 // import Feeds from "../components/dashboard/Feeds";
 // import ProjectTables from "../components/dashboard/ProjectTable";
-import React from "react";
+import React, {useContext} from "react";
 import Footer from "../layouts/Footer";
 import {
   Card,
@@ -16,7 +16,7 @@ import bg1 from "../assets/images/bg/bg1.jpg";
 import bg2 from "../assets/images/bg/bg2.jpg";
 import bg3 from "../assets/images/bg/bg3.jpg";
 import bg4 from "../assets/images/bg/bg4.jpg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const BlogData = [
   {
@@ -57,13 +57,17 @@ const Starter = () => {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/deepfake"); // deepfake 페이지로 이동
+    navigate("/deepfake", {state:username}); // deepfake 페이지로 이동
   };
   const handleAbout = () => {
     navigate("/buttons"); // 메인 페이지로 이동
   };
-  return (
-    <>
+
+  const location = useLocation();
+  const username=location.state
+
+    return (
+      <>
       <div className='hero-container'>
         <video autoPlay loop muted src={Video} type='video/mp4' />
         <h1>Deepfake Detection</h1>

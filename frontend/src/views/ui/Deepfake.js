@@ -7,8 +7,8 @@ import {
 import './Deepfake.css'
 import Footer from "../../layouts/Footer";
 import Image from '../../assets/images/snow.JPG'
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import Sidebar from "../../layouts/Sidebar";
 
 const Deepfake = () => {
   // For Dismiss Button with Alert
@@ -16,8 +16,11 @@ const Deepfake = () => {
 
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const username=location.state
+
   const handleGenerate = () => {
-    navigate("/generate"); // generate 페이지로 이동
+    navigate("/generate", {state:username}); // generate 페이지로 이동
   };
   const handleDetect = () => {
     navigate("/detect"); // detect 페이지로 이동
@@ -27,6 +30,8 @@ const Deepfake = () => {
     setVisible(false);
 
   };
+  
+
 
   return (
     <>

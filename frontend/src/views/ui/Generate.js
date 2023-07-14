@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import {
   Card,
   CardBody,
@@ -7,26 +7,26 @@ import {
 import './Generate.css'
 import Footer from "../../layouts/Footer";
 import Image from '../../assets/images/snow.JPG'
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 const Generate = () => {
   // For Dismiss Button with Alert
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
-  const username = 'johndoe_1'
+  const location = useLocation();
+  const username=location.state
 
   const handleGenerateStart = () => {
-    navigate("/generate/start", { state: { username } }); // 생성 시작 페이지 이동
+    navigate("/generate/start", { state: username }); // 생성 시작 페이지 이동
   };
 
   const handleGenerateList = () => {
-    navigate("/generate/projects", { state: { username } }); // 결과 확인 페이지 이동
+    navigate("/generate/projects", { state: username }); // 결과 확인 페이지 이동
   };
 
   const handleBackDeepfake = () => {
-    navigate("/deepfake", { state: { username } }); // deepfake 페이지로 이동
+    navigate("/deepfake", { state: username }); // deepfake 페이지로 이동
   };
 
   const onDismiss = () => {
