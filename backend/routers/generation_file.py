@@ -1,8 +1,11 @@
 from typing import List, Dict
 from fastapi import File, UploadFile, APIRouter
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, Response
 import os
 import time
+import base64
+# from PIL import Image
+
 generation_router = APIRouter()
 
 fake_users_db = {
@@ -35,16 +38,16 @@ def delete_folder(path):
 # 생성하기 서비스 시간 생성
 @generation_router.post("/generate/start")
 async def create_generation():#usernames : str):
-    username = 'johndoe_1'
+    username = 'johndoe1'
     project_name = time.strftime("%y%m%d%H%M%S", time.localtime())
     user_directory = f'../data/generate/{username}/{project_name}'
     make_folder(user_directory)
     return {'username': username, 'project_name' : project_name, "message": f"start generation."}
 
-# 생성하기 서비스 시간 생성
+# 생성하기 서비스 삭제
 @generation_router.post("/generate/calcel")
 async def create_generation():#usernames : str, project_name : str):
-    username = 'johndoe_1'
+    username = 'johndoe1'
     project_name = '230712150553'
     user_directory = f'../data/generate/{username}/{project_name}'
     delete_folder(user_directory)
@@ -54,7 +57,7 @@ async def create_generation():#usernames : str, project_name : str):
 # 생성하기 이미지 업로드
 @generation_router.post("/generate/{project_name}/upload") # 생성하기-대상이미지업로드버튼
 async def upload_files(project_name : str, files: List[UploadFile] = File(...)): #usernames : str):
-    username = 'johndoe_1'
+    username = 'johndoe1'
 
     # 파일 수 확인 
     if len(files) != 2:
@@ -78,36 +81,83 @@ async def upload_files(project_name : str, files: List[UploadFile] = File(...)):
 
 # generation 프로젝트 리스트 조회
 @generation_router.get("/generate/projects")
-async def generation_project_list():#usernames : str):
-    username = 'johndoe_1'
+async def generation_project_list():
+    username = 'johndoe1'
     service_directory = f'../data/generation/{username}'
-    project_list = [f for f in os.listdir(service_directory) if os.path.isdir(os.path.join(service_directory, f))]
+    project_list = os.listdir(service_directory)
     return {"username": username, "project_list": project_list}
 
-
-# 이미지 리스트 조회
+# 프로젝트 내 이미지 리스트 조회
 @generation_router.get("/generate/{project_name}")
-async def get_user_folders(project_name : str):# usernames : str
-    username = 'johndoe_1'
+async def get_user_project_imgs(project_name: str):
+    username = 'johndoe1'
+    port = 'http://0.0.0.0:30008'
     service_directory = f'../data/generation/{username}/{project_name}'
-    source_path = os.path.join(service_directory, 'source.jpeg')
-    target_path = os.path.join(service_directory, 'target.jpeg')
     output_path = os.path.join(service_directory, 'output.jpeg')
+
     if os.path.exists(output_path):
         return {
             "username": username,
             "project": project_name,
             "complete": True,
-            "source": source_path,
-            "target": target_path,
-            "output": output_path
+            "source": f'{port}/generate/{username}/{project_name}/source',
+            "target": f'{port}/generate/{username}/{project_name}/target',
+            "output": f'{port}/generate/{username}/{project_name}/output',
         }
     else:
         return {
             "username": username,
             "project": project_name,
             "complete": False,
-            "source": source_path,
-            "target": target_path,
-            "output": output_path
+            "source": None,
+            "target": None,
+            "output": None
         }
+
+# source 이미지 링크로 보내주기
+@generation_router.get("/generate/{username}/{project_name}/source")
+async def get_source_image(username: str, project_name: str):
+    service_directory = f'../data/generation/{username}/{project_name}'
+    source_path = os.path.join(service_directory, 'source.jpeg')
+
+    if os.path.exists(source_path):
+        with open(source_path, "rb") as file:
+            contents = file.read()
+        response = Response(content=contents, media_type="image/jpeg")
+        response.headers["Content-Disposition"] = "inline"
+        return response
+    else:
+        return Response(status_code=404)
+
+
+# target 이미지 링크로 보내주기
+@generation_router.get("/generate/{username}/{project_name}/target")
+async def get_target_image(project_name: str):
+    username = 'johndoe1'
+    service_directory = f'../data/generation/{username}/{project_name}'
+    target_path = os.path.join(service_directory, 'target.jpeg')
+
+    if os.path.exists(target_path):
+        with open(target_path, "rb") as file:
+            contents = file.read()
+        response = Response(content=contents, media_type="image/jpeg")
+        response.headers["Content-Disposition"] = "inline"
+        return response
+    else:
+        return Response(status_code=404)
+
+# output 이미지 링크로 보내주기
+@generation_router.get("/generate/{username}/{project_name}/output")
+async def get_output_image(project_name: str):
+    username = 'johndoe1'
+    service_directory = f'../data/generation/{username}/{project_name}'
+    output_path = os.path.join(service_directory, 'output.jpeg')
+
+    if os.path.exists(output_path):
+        with open(output_path, "rb") as file:
+            contents = file.read()
+        response = Response(content=contents, media_type="image/jpeg")
+        response.headers["Content-Disposition"] = "inline"
+        return response
+    else:
+        return Response(status_code=404)

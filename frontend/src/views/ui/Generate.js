@@ -15,17 +15,18 @@ const Generate = () => {
   // For Dismiss Button with Alert
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
+  const username = 'johndoe_1'
 
   const handleGenerateStart = () => {
-    navigate("/generate/start"); // 생성 시작 페이지 이동
+    navigate("/generate/start", { state: { username } }); // 생성 시작 페이지 이동
   };
 
   const handleGenerateList = () => {
-    navigate("/generate/projects"); // 결과 확인 페이지 이동
+    navigate("/generate/projects", { state: { username } }); // 결과 확인 페이지 이동
   };
 
   const handleBackDeepfake = () => {
-    navigate("/deepfake"); // deepfake 페이지로 이동
+    navigate("/deepfake", { state: { username } }); // deepfake 페이지로 이동
   };
 
   const onDismiss = () => {
