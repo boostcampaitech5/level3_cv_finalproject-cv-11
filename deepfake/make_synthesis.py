@@ -2,8 +2,9 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
-pyfile = '/opt/ml/deepfake/MobileFaceSwap/image_test.py'
-source_img_path = f'/opt/ml/deepfake/data/original'
+pyfile = '/opt/ml/level3_cv_finalproject-cv-11/MobileFaceSwap/image_test.py'
+source_img_path = f'/opt/ml/level3_cv_finalproject-cv-11/data/original'
+
 
 
 def make_synthesis(target_img_path,output_dir):
@@ -15,8 +16,9 @@ def make_synthesis(target_img_path,output_dir):
         os.system(f'python {pyfile} --target_img_path {source_img} --source_img_path {target_img} --output_dir {output_dir}')
     print(f'complete_{target_img_}')
 
-target_img_paths = os.listdir('/opt/ml/deepfake/data/celeb-df/meta_test/real')
+target_img_paths = os.listdir('/opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/meta_test/real')
+
 for i in target_img_paths:
-    target_img_path = f'/opt/ml/deepfake/data/celeb-df/meta_test/real/{i}'
-    output_dir = f'/opt/ml/deepfake/data/celeb-df/meta_test/mobilefaseswap/{i}'
+    target_img_path = f'/opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/meta_test/real/{i}'
+    output_dir = f'/opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/meta_test/mobilefaceswap/{i}'
     make_synthesis(target_img_path,output_dir)
