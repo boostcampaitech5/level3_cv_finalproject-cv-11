@@ -1,4 +1,4 @@
-import { Row, Col, Button } from "reactstrap";
+import { Alert, Row, Col, Button } from "reactstrap";
 import Footer from "../layouts/Footer";
 import './Login.css'
 import React, { useState} from 'react';
@@ -10,6 +10,8 @@ function Register(props) {
   const [signin_name,setInputName]=useState('')
   const [username, setInputId] = useState('')
   const [password, setInputPw] = useState('')
+  const [isvalid, setIsValid] = useState('')
+
   const navigate = useNavigate();
 
   const handleLogin = (event) =>  {
@@ -22,8 +24,11 @@ function Register(props) {
         }
         fastapi('signin', url, params, 
             (json) => {
-                console.log(json);
-                navigate("/login")
+                console.log(json['isvalid']);
+                setIsValid(json['isvalid']);
+                if (json['isvalid']===true){
+                   navigate("/login");
+                }
             },
             (json_error) => {
                 setError(json_error);
@@ -78,12 +83,17 @@ function Register(props) {
                   ></input>
                 </div>
                 <div className='login-btns'>
-                <Button className='btns' type='submit' color="primary" size="lg" onClick={handleLogin}>
-                    회원가입
-                </Button>
-                <Button className='btns' color="primary" size="lg" onClick={()=>navigate('/login')}>
+                  <form onSubmit={handleLogin}>
+                  {isvalid===false && (
+                        <Alert color="danger">이미 가입된 이메일이 있습니다. 다시 시도해주세요</Alert>
+                      )}
+                  <Button className='btns' type='submit' color="primary" size="lg">
+                      회원가입
+                  </Button>
+                  </form>
+                {/* <Button className='btns' color="primary" size="lg" onClick={()=>navigate('/login')}>
                     이전으로
-                </Button>
+                </Button> */}
                 </div>
             </div>
           </div>
