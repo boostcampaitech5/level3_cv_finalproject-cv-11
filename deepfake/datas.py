@@ -205,12 +205,12 @@ class Inferset(Dataset):
         self.real_path = real_path
         self.fake_path = fake_path
 
-        real = random.sample(os.listdir(real_path), 10)
-        fake = random.sample(os.listdir(fake_path), 10)
+        real = random.sample(os.listdir(real_path), 15)
+        fake = random.sample(os.listdir(fake_path), 15)
         
-        self.real_pngs = real[:5]
-        self.fake_pngs = fake[:5]
-        self.valid_pngs = real[5:] + fake[5:]
+        self.real_pngs = real[:10]
+        self.fake_pngs = fake[:10]
+        self.valid_pngs = real[10:] + fake[10:]
         self.target_png = target_path
         
         self.transforms = transforms
@@ -229,7 +229,7 @@ class Inferset(Dataset):
 
         valid_image_name = self.valid_pngs[item]
 
-        if item<30: 
+        if item<5: 
             valid_image_path = os.path.join(self.real_path, valid_image_name)
             label = np.array([1,0])
         else:
@@ -286,7 +286,6 @@ class Inferset(Dataset):
         label = torch.from_numpy(label).float()
             
         return r_infer_image, f_infer_image, valid_image, target_image, label
-        
         
         
         
