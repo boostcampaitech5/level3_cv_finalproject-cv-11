@@ -28,7 +28,7 @@ input_size = 224
 code_size = 100
 batch_size = 10
 LR = 0.0001
-max_epoch = 300
+max_epoch = 50
 
 def wandb_config():
     wandb.init(config={'batch_size':batch_size,
@@ -129,6 +129,7 @@ for id_ in train_id:
         wandb.log(train, step = iteration)
         if iteration % 5 == 0:
             validation(iteration, model, meta_train_loader)
+
         iteration += 1
             
 
