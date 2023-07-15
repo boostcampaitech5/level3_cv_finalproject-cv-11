@@ -3,13 +3,17 @@ import { Card, CardBody, Button } from "reactstrap";
 import "./GenerateStart.css";
 import Footer from "../../layouts/Footer";
 import Image from "../../assets/images/snow2.JPG";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import fastapi from "../../lib/api";
 
 const GenerateStart = () => {
   const [visible, setVisible] = useState(true);
+  const [error, setError] = useState({ detail: [] });
   const [selectedImage, setSelectedImage] = useState([]); // Change variable name to `selectedImage`
   const navigate = useNavigate();
+  const location = useLocation();
+  const username=location.state
 
   // 메인 페이지로 이동
   const handleBackGenerate = async () => {
@@ -24,9 +28,22 @@ const GenerateStart = () => {
   };
 
   // 전송하기 버튼 : 프로젝트 생성, 이미지 input
-  const handleClickUploadButton = () => {
+  const handleClickUploadButton = (event) => {
     const fileInput = document.getElementById("image-input");
     fileInput.click();
+    event.preventDefault()
+        let url = "/"
+        let params = {
+            username: username,
+        }
+        fastapi('post', url, params, 
+            (json) => {
+                console.log(json);
+            },
+            (json_error) => {
+                setError(json_error);
+            }
+        );
   };
 
   // 생성하기 -> 생성프로젝트 생성
