@@ -130,7 +130,7 @@ def generation(request: Request):
 
 @users_router.get("/inference")
 def inference_image():
-    model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/foundation_model.pt'
+    model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/Meta_train_learning_id_60.pt'
     real_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/real'
     fake_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
     target_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/target'
@@ -139,7 +139,7 @@ def inference_image():
     make_synthesis.make_synthesis(real_path,source,fake_path)
     result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
     print(result)
-    return False
+    return result
 
 
 @users_router.get("/")
