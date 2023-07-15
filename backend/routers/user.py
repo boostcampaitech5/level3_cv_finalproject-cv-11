@@ -133,7 +133,7 @@ def inference_image():
     model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/Meta_train_learning_id_60.pt'
     real_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/real'
     fake_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
-    target_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/target'
+    target_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/target/id1_0002.059.png'
     user_name = 'username'
     source = '/opt/ml/level3_cv_finalproject-cv-11/data/source'
     make_synthesis.make_synthesis(real_path,source,fake_path)

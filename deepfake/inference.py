@@ -63,7 +63,7 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
     target_path= target_path
     user_name = user_name
     input_size = 224
-    max_epoch = 30
+    max_epoch = 50
 
     model = torch.load(model_path)
     model = model.cuda()

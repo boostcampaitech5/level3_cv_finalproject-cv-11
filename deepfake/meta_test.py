@@ -27,7 +27,7 @@ input_size = 224
 code_size = 100
 batch_size = 10
 LR = 0.0001
-max_epoch = 300
+max_epoch = 50
 
 def wandb_config():
     wandb.init(config={'batch_size':batch_size,
@@ -87,14 +87,16 @@ test_id = [1,7,11,17,21,27,31,37,41,47,51,57,61]
 results = []
 labels = []
 
+iteration = 0
+
 for id_ in test_id:
 
-    real_path= f'/opt/ml/deepfake/data/celeb-df/meta_test/real/{id_}'
-    fake_path= f'/opt/ml/deepfake/data/celeb-df/meta_test/fake/{id_}'
-    target_path= f'/opt/ml/deepfake/data/celeb-df/target/real/{id_}/id{id_}_0009.000.png'
+    real_path= f'/opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/meta_test/real/{id_}'
+    fake_path= f'/opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/meta_test/fake/{id_}'
+    target_path= f'//opt/ml/level3_cv_finalproject-cv-11/data/celeb-df/target/real/{id_}/id{id_}_0009.000.png'
     user_name = f'id{id_}'
 
-    model = torch.load('/opt/ml/deepfake/result/fewshot/Metalearning_tf=224_cln=True_e=60_sd=0.pt')
+    model = torch.load('/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/Meta_train_learning_id_60.pt')
     model = model.cuda()
 
     wandb_config()
@@ -121,9 +123,11 @@ for id_ in test_id:
             f'Loss: {round(loss.item(),4)}'
         )
         train={'Loss':round(loss.item(),4)}
-        wandb.log(train, step = epoch)
+        wandb.log(train, step = iteration)
         if epoch % 5 == 0:
-            validation(epoch, model, meta_train_loader)
+            validation(iteration, model, meta_train_loader)
+
+        iteration += 1
             
 
     dest = f'/opt/ml/deepfake/result/fewshot/{user_name}'
