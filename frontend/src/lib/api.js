@@ -5,7 +5,7 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
     let content_type = "application/json";
     let body = JSON.stringify(params);
 
-    if (opertaion === "formdata") {
+    if (operation === "formdata") {
         method = "post";
         content_type = "multipart/form-data";
     }
