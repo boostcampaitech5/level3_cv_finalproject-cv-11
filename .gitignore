@@ -1,5 +1,5 @@
 *.pyc
-/data
+/datas
 /checkpoints
 /deepfake/checkpoints
 *.log
