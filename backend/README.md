@@ -75,3 +75,17 @@ In the project directory, you can run:
 user table info may change accoring to development  
 when error caused by db remake table by command again
 
+
+# 스키마와 users 테이블 생성 이후 조회하기
+
+1. 관리자로 mysql 접속
+    mysql -u root -p
+2. 스키마 조회 및 선택
+    SHOW SCHEMAS;
+    USE user_db
+
+3. 테이블 조회 및 users 테이블 select
+    SHOW TABLES;
+    select * from users;
+
+
