@@ -53,7 +53,7 @@ In the project directory, you can run:
 
 
 ## config mysql database, table  
-0. start mysql server
+0. start mysql server  
 `service mysql start`
 1. make root user & make user_db database  
 `mysqladmin -u root create user_db -p`
@@ -71,6 +71,8 @@ In the project directory, you can run:
 `insert into users values ("temp_username", "temp_hashed_password", "temp_email@temp.com");`
 7. check user info  
 `select * from users;`
+8. change table charset to utf-8
+`ALTER TABLE users CONVERT TO CHARSET UTF8;`
 
 user table info may change accoring to development  
 when error caused by db remake table by command again
