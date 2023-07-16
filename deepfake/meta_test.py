@@ -179,6 +179,9 @@ for id_ in test_id:
             results.append(1)
         labels.append(0)
 
+    f1, acc = metrics.f1_score(results,labels[:len(results)]), metrics.accuracy_score(results,labels[:len(results)])
+    print(f'acc : {acc}, f1 : {f1}')
+
 print(results)
 print(labels)
     
