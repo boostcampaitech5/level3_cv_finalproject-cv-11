@@ -47,7 +47,7 @@ In the project directory, you can run:
 
 ## install mysql
 1.install mysql  
-`apt-get install mysql-server mysql-client`  
+`apt-get install mysql-server mysql-client libmysqlclient-dev`  
 2. check installed mysql version  
 `mysql --version`
 
