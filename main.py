@@ -27,4 +27,4 @@ app.include_router(users_router, tags=["users"])
 app.include_router(generation_router, tags=["generation_file"])
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=30007)
+    uvicorn.run(app, host="0.0.0.0", port=30008)
