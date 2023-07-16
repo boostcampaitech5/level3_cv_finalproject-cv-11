@@ -25,4 +25,4 @@ app.include_router(users_router, tags=["users"])
 app.include_router(file_router, tags=["file"])
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=30008)
+    uvicorn.run(app, host="0.0.0.0", port=30007)

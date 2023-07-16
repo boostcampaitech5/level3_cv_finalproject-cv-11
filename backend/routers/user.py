@@ -119,27 +119,23 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 #         raise credentials_exception
 #     return user
 @users_router.get("/generation")
-def generation(request: Request):
-    print('#########'*30)
-    print(request.cookies.get('username'))
-    source = f'/opt/ml/level3_cv_finalproject-cv-11/data/username1/generation/projectname1/source/'
-    target = f'/opt/ml/level3_cv_finalproject-cv-11/data/username1/generation/projectname1/target/'
-    output = f'/opt/ml/level3_cv_finalproject-cv-11/data/username1/generation/projectname1/result'
+def generation():
+    source = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/source'
+    target = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/target'
+    output = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/result'
     make_synthesis.make_synthesis(target,source,output)
     return False
 
 @users_router.get("/detection")
 def inference_image():
     model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/Meta_train_learning_id_60.pt'
-    real_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/real'
-    fake_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
-    target_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/target/id1_0002.059.png'
+    real_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/username/detection/1/real'
+    fake_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/username/detection/1/fake'
+    target_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/username/detection/1/target/id1_0002.059.png'
     user_name = 'username'
     source = '/opt/ml/level3_cv_finalproject-cv-11/data/source'
     make_synthesis.make_synthesis(real_path,source,fake_path)
     result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
-    print(result)
-
     return result
 
 
@@ -147,7 +143,6 @@ def inference_image():
 def get_login_form(request: Request):
     print(request)
     print(f"cookie: {request._cookies}")
-
     print(f"request: {request.cookies.get('username')}")
     print(f"header: {request.headers}")
     print(f"body: {request.body}")
