@@ -6,19 +6,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import fastapi from '../../lib/api';
 
 const GenerateProject = () => {
-  const [visible, setVisible] = useState(true);
-  const [selectedImage, setSelectedImage] = useState([]);
   const [imageUrls, setImageUrls] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const username = location.state?.username || 'test';
+  const project_name = location.state?.project_name || '';
+
 
   // 이전으로
   const handleBackGenerateList = () => {
-    navigate("/generate/projects", { state: { username: location.state.username } });
+    navigate(`/generate/projects`, { state: { username: username } });
   };
-
-  // Extracting username and project_name from location.state
-  const { username, project_name: projectName } = location.state;
 
   useEffect(() => {
     fetchImageUrls();
@@ -27,16 +25,17 @@ const GenerateProject = () => {
   const handleImageClick = (imageUrl) => {
     window.open(imageUrl, "_blank");
   };
+
   const fetchImageUrls = async () => {
     try {
       fastapi(
         "get",
-        `/generate/${projectName}`,
+        `/generate/${username}/${project_name}`,
         {},
         (response) => {
           setImageUrls(response);
           if (!response.complete) {
-            navigate(`/generate/${projectName}/upload`);
+            navigate(`/generate/Loading`);
           }
         },
         (error) => {
@@ -80,7 +79,7 @@ const GenerateProject = () => {
         </div>
 
         <div className="image-container">
-          <h2>프로젝트: {projectName}</h2>
+          <h2>프로젝트: {project_name}</h2>
           <div className="image-wrapper">
             <h3>Source Image</h3>
             {imageUrls.source && (

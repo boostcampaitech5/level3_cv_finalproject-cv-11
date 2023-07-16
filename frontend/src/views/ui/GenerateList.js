@@ -10,27 +10,31 @@ import { useNavigate, useLocation } from "react-router-dom";
 import fastapi from '../../lib/api';
 
 const GenerateList = () => {
+  const [projectCnt, setProjectCnt] = useState(0);
   const [projectList, setProjectList] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const username = 'test';
 
   useEffect(() => {
-    fetchProjectList();
+    fetchProjectList(username);
   }, []);
 
   // 이전으로
   const handleBackGenerate = () => {
-    navigate("/generate", { state: { username: location.state } }); // deepfake 페이지로 이동
+    // navigate("/generate", { state: { username: location.state } }); // generate 페이지로 이동
+    navigate("/generate", { state: { username: username } }); // generate 페이지로 이동
   };
 
   // 조회된 프로젝트 리스트
-  const fetchProjectList = () => {
+  const fetchProjectList = (username) => {
     fastapi(
       "get",
-      "/generate/projects",
+      `/generate/${username}`,
       {},
       (response) => {
-        const { username, project_list } = response;
+        const { project_len, project_list } = response;
+        setProjectCnt(project_len);
         setProjectList(project_list);
       },
       (error) => {
@@ -39,19 +43,8 @@ const GenerateList = () => {
     );
   };
 
-  // const handleNavigateToProject = (projectName) => {
-  //   let project = projectList.find(
-  //     (p) => p.project_name === projectName
-  //   );
-  //   if (project) {
-  //     let username = location.state.username;
-  //     navigate(`/generate/${projectName}`, { state: { username, project_name: projectName } });
-  //   }
-  // };
-
-
   const handleNavigateToProject = (projectName) => {
-    navigate(`/generate/${projectName}`, { state: { username: location.state, project_name: projectName } });
+    navigate(`/generate/${projectName}`, { state: { username: username, project_name: projectName } });
   };
 
   return (
@@ -69,15 +62,16 @@ const GenerateList = () => {
         <CardBody>
           <div className="mt-3">
             <h2>생성하기 프로젝트 리스트</h2>
+            <p>프로젝트 {projectCnt} 개</p>
             <div className="generate-list">
               <div className="box">
-                {projectList.map((project) => (
+                {projectList.map((projectName) => (
                   <p
-                    key={project}
-                    onClick={() => handleNavigateToProject(project)}
+                    key={projectName}
+                    onClick={() => handleNavigateToProject(projectName)}
                     style={{ cursor: "pointer" }}
                   >
-                    {project}
+                    {projectName}
                   </p>
                 ))}
               </div>
