@@ -8,3 +8,5 @@
 *.yaml
 *.json
 /deepfake/wandb
+data/*
+datas/*
