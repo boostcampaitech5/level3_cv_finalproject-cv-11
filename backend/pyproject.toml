@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "fianlbackend"
+name = "finalbackend"
 version = "0.1.0"
 description = "Backend environment for Final project"
 authors = ["hjhhijk"]
