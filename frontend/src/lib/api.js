@@ -7,9 +7,9 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
 
     if (operation === "formdata") {
         method = "post";
-        content_type = "multipart/form-data";
-    }
-    if (operation === "login" || operation === "signin") {
+        content_type = `multipart/form-data`;
+        body = params;
+    } else if (operation === "login" || operation === "signin") {
         method = "post";
         content_type = "application/x-www-form-urlencoded";
         body = qs.stringify(params);
@@ -25,16 +25,22 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
         headers: {
             "Content-Type": content_type,
         },
+        body: body,
     };
-
-    if (method !== "get" && operation !== 'formdata') {
-        options["body"] = body;
+    if (operation === "get") {
+        options = {
+            method: 'GET',
+            headers: {
+                "Content-Type": content_type,
+            },
+        };
     }
-
     if (operation === "formdata") {
-        options["body"] = params;
+        options = {
+            method: 'POST',
+            body: params,
+        };
     }
-
     fetch(_url, options)
         .then((response) => {
             if (response.status >= 200 && response.status < 300) {
@@ -56,5 +62,24 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
             }
         });
 };
+
+function generateBoundary() {
+    return "----WebKitFormBoundary" + generateRandomString();
+}
+
+function generateRandomString() {
+    return Math.random().toString(36).substring(2);
+}
+
+// function createFormData(params) {
+//     const boundary = generateBoundary();
+//     const formData = new FormData();
+
+//     Object.entries(params).forEach(([key, value]) => {
+//         formData.append(key, value);
+//     });
+
+//     return formData;
+// }
 
 export default fastapi;
