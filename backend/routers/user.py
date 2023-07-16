@@ -122,13 +122,13 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 def generation(request: Request):
     print('#########'*30)
     print(request.cookies.get('username'))
-    source = f'/opt/ml/level3_cv_finalproject-cv-11/data/username/generation/{2}/source'
-    target = f'/opt/ml/level3_cv_finalproject-cv-11/data/username/generation/{2}/target'
-    output = f'/opt/ml/level3_cv_finalproject-cv-11/data/username/generation/{2}/result'
+    source = f'/opt/ml/level3_cv_finalproject-cv-11/data/username1/generation/projectname1/source/'
+    target = f'/opt/ml/level3_cv_finalproject-cv-11/data/username1/generation/projectname1/target/'
+    output = f'/opt/ml/level3_cv_finalproject-cv-11/data/username1/generation/projectname1/result'
     make_synthesis.make_synthesis(target,source,output)
     return False
 
-@users_router.get("/inference")
+@users_router.get("/detection")
 def inference_image():
     model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/Meta_train_learning_id_60.pt'
     real_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/real'
@@ -139,6 +139,7 @@ def inference_image():
     make_synthesis.make_synthesis(real_path,source,fake_path)
     result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
     print(result)
+
     return result
 
 
