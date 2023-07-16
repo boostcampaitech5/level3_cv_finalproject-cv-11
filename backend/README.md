@@ -65,7 +65,7 @@ In the project directory, you can run:
 `create table users (
         username varchar(255) primary key,
         hashed_password varchar(255) not null,
-        email varchar(255) not null
+        signin_name varchar(255) not null
         );`
 5. insert test user info  
 `insert into users values ("temp_username", "temp_hashed_password", "temp_email@temp.com");`
