@@ -103,9 +103,9 @@ const GenerateStart = () => {
       <Card>
         <CardBody className="">
           <div className="mt-3">
-            <h3>생성하기</h3>
-            <div className="box-container2">
-              <div className="box2">
+            <h2>생성하기</h2>
+            <div className="box-container">
+              <div className="box">
                 <img src={Image} alt="이미지 유의사항" />
                 <div>
                   <Button
@@ -114,7 +114,7 @@ const GenerateStart = () => {
                     size="lg"
                     onClick={handleClickUploadButton}
                   >
-                    source 업로드 - 대상이미지
+                    대상이미지 업로드
                   </Button>
                   <input
                     id="image-input"
@@ -131,7 +131,7 @@ const GenerateStart = () => {
                     size="lg"
                     onClick={handleClickUploadButton}
                   >
-                    target 업로드 - 배경이미지
+                    배경이미지 업로드
                   </Button>
                   <input
                     id="image-input"

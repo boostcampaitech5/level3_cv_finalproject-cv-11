@@ -4,7 +4,7 @@ import {
   CardBody,
   Button
 } from "reactstrap";
-import "./GenerateList.css";
+import "./GenerateProject.css";
 import Footer from "../../layouts/Footer";
 import { useNavigate, useLocation } from "react-router-dom";
 import fastapi from '../../lib/api';
@@ -68,7 +68,7 @@ const GenerateList = () => {
       <Card>
         <CardBody>
           <div className="mt-3">
-            <h3>생성하기 프로젝트 리스트</h3>
+            <h2>생성하기 프로젝트 리스트</h2>
             <div className="generate-list">
               <div className="box">
                 {projectList.map((project) => (

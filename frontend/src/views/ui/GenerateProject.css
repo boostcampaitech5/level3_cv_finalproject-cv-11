@@ -42,19 +42,19 @@ video {
     height: 50px;
     }
 
-  h3{
+  h2{
     text-align: center;
     margin-top:50px;
     font-weight: bold;
   }
-  .box-container {
+  .generate-list {
     display: flex;
     justify-content: center; /* 가로 중앙 정렬 */
     align-items: center; /* 세로 중앙 정렬 */
     height: 80vh; /* 부모 요소의 높이 설정 (화면 전체 높이로 설정하려면 vh를 사용합니다) */
   }
-  .box {
-    width: 500px; 
+  .box{
+    width: 700px; 
     height: 550px; 
     background-color: #ccc;
     border-radius: 10px;
@@ -62,39 +62,6 @@ video {
     flex-direction: column;
     align-items: center;
     padding: 20px;
-  }
-  .box-container2 {
-    display: flex;
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-    height: 90vh; /* 부모 요소의 높이 설정 (화면 전체 높이로 설정하려면 vh를 사용합니다) */
-  }
-  .box2 {
-    width: 500px; 
-    height: 800px; 
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  .box-container3 {
-    display: flex;
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-    height:70vh; /* 부모 요소의 높이 설정 (화면 전체 높이로 설정하려면 vh를 사용합니다) */
-  }
-  .box3 {
-    width: 500px; 
-    height: 400px; 
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  .btns2{
-    margin-top: 20px;
   }
 
   @media screen and (max-width: 960px) {
