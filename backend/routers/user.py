@@ -118,16 +118,16 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 #     if user is None:
 #         raise credentials_exception
 #     return user
-@users_router.get("/generation")
-def generation():
+@users_router.post("/generation")
+def generation(username: dict, db: Session = Depends(get_db)):
     source = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/source'
     target = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/target'
     output = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/result'
     make_synthesis.make_synthesis(target,source,output)
-    return False
+    return {'result':False}
 
-@users_router.get("/detection")
-def inference_image():
+@users_router.post("/detection")
+def detection(username: dict, db: Session = Depends(get_db)):
     model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/Meta_train_learning_id_60.pt'
     real_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/username/detection/1/real'
     fake_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/username/detection/1/fake'
@@ -136,6 +136,7 @@ def inference_image():
     source = '/opt/ml/level3_cv_finalproject-cv-11/data/source'
     make_synthesis.make_synthesis(real_path,source,fake_path)
     result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
+    
     return result
 
 
