@@ -1,9 +1,8 @@
-# level3_cv_finalproject-cv-11
-
 # Getting Started with Google Cloud Platform
 
 ## Make GCP instance 
-1. [make gcp instance](https://console.cloud.google.com/compute/instances)
+0. call for GPU allocation [참고]: https://kim6394.tistory.com/98  
+1. [Make gcp instance](https://console.cloud.google.com/compute/instances)
 2. GCP config
 region: asia-northeast3-b  
 GPU: Nvidia-T4, num:1  
