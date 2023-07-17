@@ -13,8 +13,12 @@ const Loading = () => {
   // For Dismiss Button with Alert
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/generate2"); // generate2 페이지로 이동
+  const handleClickGenerate = () => {
+    navigate("/generate"); // generate 페이지로 이동
+  };
+
+  const handleClickGenerateList = () => {
+    navigate("/generate/projects"); // generate 페이지로 이동
   };
 
 
@@ -24,8 +28,11 @@ const Loading = () => {
         <h1>AI Deepfake Detection</h1>
         <p>당신의 이미지가 딥페이크를 통해 악용되고 있는지 확인해보세요!</p>
         <div className='generate-btns'>
-          <Button className='btns' color="secondary" size="lg" onClick={handleClick}>
+          <Button className='btns' color="secondary" size="lg" onClick={handleClickGenerate}>
             이전으로
+          </Button>
+          <Button className='btns' color="secondary" size="lg" onClick={handleClickGenerateList}>
+            목록으로
           </Button>
         </div>
       </div>

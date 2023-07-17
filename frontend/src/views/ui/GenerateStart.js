@@ -4,83 +4,77 @@ import "./GenerateStart.css";
 import Footer from "../../layouts/Footer";
 import Image from "../../assets/images/snow2.JPG";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import fastapi from "../../lib/api";
 
 const GenerateStart = () => {
-  const [visible, setVisible] = useState(true);
-  const [error, setError] = useState({ detail: [] });
-  const [selectedImage, setSelectedImage] = useState([]); // Change variable name to `selectedImage`
+  const [selectedSourceImage, setSelectedSourceImage] = useState(null);
+  const [selectedTargetImage, setSelectedTargetImage] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation();
-  const username=location.state
+  const username = 'test';
 
   // 메인 페이지로 이동
-  const handleBackGenerate = async () => {
+  const handleBackGenerate = () => {
     navigate("/generate");
   };
 
-  // 소스, 타겟 이미지 업로드
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files); // 업로드된 파일들 가져오기
-    const images = files.map((file) => URL.createObjectURL(file)); // 선택된 이미지들 업데이트
-    setSelectedImage(images); // Change variable name to `selectedImage`
+  // 소스 or 타겟 이미지를 받아 userState 객체로 변환
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    const image = files[0];
+
+    if (event.target.id === "source-image-input") {
+      setSelectedSourceImage(image);
+    } else if (event.target.id === "target-image-input") {
+      setSelectedTargetImage(image);
+    }
   };
 
-  // 전송하기 버튼 : 프로젝트 생성, 이미지 input
+  // 이미지를 서버로 전송 후 모델 학습 페이지로 이동
+  const handleImageSubmit = async (username, project_name) => {
+    const formData = new FormData();
+    formData.append("source_file", selectedSourceImage);
+    formData.append("target_file", selectedTargetImage);
+
+    //("/generate/{username}/{project_name}/upload"
+    const url = `/generate/${username}/${project_name}/upload`;
+    // const params = formData;
+    await fastapi("formdata", url, formData);
+    try {
+      navigate(`/generate/loading`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 생성하기 -> 생성프로젝트 생성 -> return project_name
+  const handleGenerateStart = async (username) => {
+    await fastapi(
+      "post",
+      `/generate/${username}/start`,
+      {},
+      (response) => {
+        const { project_name } = response;
+        handleImageSubmit(username, project_name);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  // 이미지 선택 창 띄우기
   const handleClickUploadButton = (event) => {
-    const fileInput = document.getElementById("image-input");
-    fileInput.click();
-    event.preventDefault()
-        let url = "/"
-        let params = {
-            username: username,
-        }
-        fastapi('post', url, params, 
-            (json) => {
-                console.log(json);
-            },
-            (json_error) => {
-                setError(json_error);
-            }
-        );
-  };
-
-  // 생성하기 -> 생성프로젝트 생성
-  const handleGenerateStart = async () => {
-    try {
-      const response = await axios.post("/generate/start"); // fastapi - 생성프로젝트생성
-      const username = response.data.username;
-      const project_name = response.data.project_name;
-      navigate(`/generate/${project_name}/upload`, {
-        state: { username, project_name },
-      }); // 생성하기-이미지 업로드 페이지로 이동
-    } catch (error) {
-      console.log(error);
+    const fileInputId = event.target.getAttribute("data-file-input");
+    const fileInput = document.getElementById(fileInputId);
+    if (fileInput) {
+      fileInput.click();
     }
+    event.preventDefault();
   };
 
-  // 서버로 이미지 전송
-  const handleSendImages = async () => {
-    try {
-      const formData = new FormData();
-      selectedImage.forEach((image, index) => {
-        formData.append(`image${index}`, image);
-      });
-
-      const { state } = navigate(); // 현재 경로의 상태 가져오기
-      const { username, project_name } = state; // state에서 username과 project_name 가져오기
-
-      await axios.post(`/generate/${project_name}/upload`, formData); // project_name 변수 적용
-      navigate(`/generate/${project_name}/loading`); // 모델 학습 페이지로 이동
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  // 전송 버튼 클릭
   const handleUploadButtonClick = () => {
-    handleGenerateStart(); // 프로젝트 생성을 위해 handleGenerateStart 호출
-    handleSendImages(); // 이미지를 서버로 전송하기 위해 handleSendImages 호출
+    handleGenerateStart(username);
   };
 
   return (
@@ -103,9 +97,9 @@ const GenerateStart = () => {
       <Card>
         <CardBody className="">
           <div className="mt-3">
-            <h2>생성하기</h2>
-            <div className="box-container">
-              <div className="box">
+            <h3>생성하기</h3>
+            <div className="box-container2">
+              <div className="box2">
                 <img src={Image} alt="이미지 유의사항" />
                 <div>
                   <Button
@@ -113,30 +107,31 @@ const GenerateStart = () => {
                     color="primary"
                     size="lg"
                     onClick={handleClickUploadButton}
+                    data-file-input="source-image-input"
                   >
-                    대상이미지 업로드
+                    source 업로드 - 대상이미지
                   </Button>
                   <input
-                    id="image-input"
+                    id="source-image-input"
                     type="file"
-                    accept="image/*"
+                    accept="image/jpg, image/jpeg, image/png"
                     onChange={handleImageUpload}
                     style={{ display: "none" }}
                   />
-                </div>
-                <div>
+
                   <Button
                     className="btns2"
                     color="primary"
                     size="lg"
                     onClick={handleClickUploadButton}
+                    data-file-input="target-image-input"
                   >
-                    배경이미지 업로드
+                    target 업로드 - 배경이미지
                   </Button>
                   <input
-                    id="image-input"
+                    id="target-image-input"
                     type="file"
-                    accept="image/*"
+                    accept="image/jpg, image/jpeg, image/png"
                     onChange={handleImageUpload}
                     style={{ display: "none" }}
                   />
@@ -160,4 +155,3 @@ const GenerateStart = () => {
 };
 
 export default GenerateStart;
-

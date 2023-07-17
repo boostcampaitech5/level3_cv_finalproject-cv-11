@@ -15,7 +15,8 @@ const Generate = () => {
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const username=location.state
+  // const username=location.state
+  const username = 'test';
 
   const handleGenerateStart = () => {
     navigate("/generate/start", { state: username }); // 생성 시작 페이지 이동

@@ -40,6 +40,7 @@ const ThemeRoutes = [
       { path: "/generate/projects", exact: true, element: <GenerateList /> },
       { path: "/generate/:project", exact: true, element: <GenerateProject /> },
       { path: "/generate/:project/loading", exact: true, element: <Loading /> },
+      { path: "/generate/loading", exact: true, element: <Loading /> },
       { path: "/detect", exact: true, element: <Detect /> },
       { path: "/loading", exact: true, element: <Loading /> },
       { path: "/badges", exact: true, element: <Badges /> },

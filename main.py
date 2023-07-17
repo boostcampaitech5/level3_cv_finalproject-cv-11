@@ -7,6 +7,7 @@ import uvicorn
 
 from backend.routers.user import users_router
 from backend.routers.file import file_router
+from backend.routers.generation_file import generation_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -22,7 +23,8 @@ app.add_middleware(
 )
 
 app.include_router(users_router, tags=["users"])
-app.include_router(file_router, tags=["file"])
+# app.include_router(file_router, tags=["file"])
+app.include_router(generation_router, tags=["generation_file"])
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=30007)
+    uvicorn.run(app, host="0.0.0.0", port=30008)

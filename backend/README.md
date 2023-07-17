@@ -42,6 +42,16 @@ In the project directory, you can run:
 
 'poetry shell`
 
+## conda env
+0. DB부터 설치할 것
+1. conda create -n test python=3.9.7
+2. conda activate test
+3. pip install -r requirements.txt
+    - v100에서 설치가 안된다
+    1. conda init bash
+    2. source ~/.bashrc
+    3. 다시 pip install
+
 ## backend start
 `python3 main.py`
 
@@ -76,4 +86,18 @@ In the project directory, you can run:
 
 user table info may change accoring to development  
 when error caused by db remake table by command again
+
+
+# 스키마와 users 테이블 생성 이후 조회하기
+
+1. 관리자로 mysql 접속
+    mysql -u root -p
+2. 스키마 조회 및 선택
+    SHOW SCHEMAS;
+    USE user_db
+
+3. 테이블 조회 및 users 테이블 select
+    SHOW TABLES;
+    select * from users;
+
 
