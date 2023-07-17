@@ -2,7 +2,53 @@ from typing import List, Dict
 from fastapi import File, UploadFile, APIRouter, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse, Response
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
+
+from backend.routers import crud, model, schemas
+from sqlalchemy.orm import Session
+from backend.routers.database import SessionLocal, engine
+
+
+## DB 세팅
+model.Base.metadata.create_all(bind=engine)
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+class User(BaseModel):
+    username: str
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    disabled: Optional[bool] = None
+
+class UserInDB(User):
+    hashed_password: str
+
+def get_project(db, username: str, project_name = str):
+    if username in db:
+        project_dict = db[username]
+        return UserInDB(**project_dict)
+
+
+
+
+def create_project(db: Session, project: schemas.ProjectCreate):
+    project_data = model.Project(
+        username=project.username,
+        project_name=project.project_name,
+        state=project.state
+    )
+
+    db.add(project_data)
+    db.commit()
+    db.refresh(project_data)
+
+    return project_data
 
 # 폴더 생성
 def make_folder(path):
@@ -11,6 +57,7 @@ def make_folder(path):
             os.makedirs(path)
     except OSError:
         return ('Error: Creating directory. ' +  path)
+    
 
 # # # 폴더 삭제
 # # def delete_folder(path):
