@@ -15,19 +15,19 @@ const Generate = () => {
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  // const username=location.state
-  const username = 'test';
+  const login=location.state
+  console.log(login)
 
   const handleGenerateStart = () => {
-    navigate("/generate/start", { state: username }); // 생성 시작 페이지 이동
+    navigate("/generate/start", { state: login }); // 생성 시작 페이지 이동
   };
 
   const handleGenerateList = () => {
-    navigate("/generate/projects", { state: username }); // 결과 확인 페이지 이동
+    navigate("/generate/projects", { state: login }); // 결과 확인 페이지 이동
   };
 
   const handleBackDeepfake = () => {
-    navigate("/deepfake", { state: username }); // deepfake 페이지로 이동
+    navigate("/deepfake", { state: login }); // deepfake 페이지로 이동
   };
 
   const onDismiss = () => {

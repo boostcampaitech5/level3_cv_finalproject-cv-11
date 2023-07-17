@@ -55,16 +55,16 @@ const BlogData = [
 
 const Starter = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const login=location.state
 
   const handleGetStarted = () => {
-    navigate("/deepfake", {state:username}); // deepfake 페이지로 이동
+    navigate("/deepfake", {state:login}); // deepfake 페이지로 이동
   };
   const handleAbout = () => {
     navigate("/buttons"); // 메인 페이지로 이동
   };
 
-  const location = useLocation();
-  const username=location.state
 
     return (
       <>

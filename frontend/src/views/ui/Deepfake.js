@@ -17,10 +17,11 @@ const Deepfake = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const username=location.state
+  const login=location.state
+  console.log(login)
 
   const handleGenerate = () => {
-    navigate("/generate", {state:username}); // generate 페이지로 이동
+    navigate("/generate", {state:login}); // generate 페이지로 이동
   };
   const handleDetect = () => {
     navigate("/detect"); // detect 페이지로 이동
