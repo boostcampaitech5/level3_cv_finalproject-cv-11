@@ -54,9 +54,29 @@ async def create_generation(username: str):
 
     return {'username': username, 'project_name': project_name, "message": "Project Create Success"}
 
+# 생성 - 신규 프로젝트 생성
+@generation_router.post("/detect/{username}/start")
+async def create_detection(username: str):
+    # 특정 유저 폴더 여부 확인
+    user_dir = f'./datas/{username}'
+    make_folder(user_dir)
+
+    # 특정 유저의 generation 폴더 여부 확인, 없으면 생성
+    user_generation_dir = os.path.join(user_dir, 'detection')
+    make_folder(user_generation_dir)
+
+    # 현재 시간 기준으로 project 폴더 생성
+    project_name = datetime.now().strftime("%y%m%d%H%M%S")
+    project_dir = os.path.join(user_generation_dir, f'{project_name}')
+    make_folder(project_dir)
+
+    return {'username': username, 'project_name': project_name, "message": "Project Create Success"}
+
+
+
 # 생성 - 프로젝트 이미지 업로드
 @generation_router.post("/generate/{username}/{project_name}/upload") # 생성하기-대상이미지업로드버튼
-async def upload_file(username : str, project_name : str, source_file: UploadFile = File(...), target_file: UploadFile = File(...)): #usernames : str):
+async def upload_generate_file(username : str, project_name : str, source_file: UploadFile = File(...), target_file: UploadFile = File(...)): #usernames : str):
     # source, target, result 폴더 생성
     project_dir = f'./datas/{username}/generation/{project_name}'
     source_dir = os.path.join(project_dir, 'source')
@@ -80,6 +100,35 @@ async def upload_file(username : str, project_name : str, source_file: UploadFil
     
     return { 'result': True , "message": f"File uploaded successfully."}
 
+
+#detection 이미지 저장
+@generation_router.post("/detect/{username}/{project_name}/upload") # 생성하기-대상이미지업로드버튼
+async def upload_detect_file(username : str, project_name : str,  real_file: List[UploadFile] = File(...), target_file : UploadFile = File(...) ): #usernames : str):
+    # source, target, result 폴더 생성
+    project_dir = f'./datas/{username}/detection/{project_name}'
+    real_dir = os.path.join(project_dir, 'real')
+    fake_dir = os.path.join(project_dir, 'fake')
+    target_dir = os.path.join(project_dir, 'target')
+
+    make_folder(real_dir)
+    make_folder(fake_dir)
+    make_folder(target_dir)
+
+    # source, target 순으로 파일 저장
+    target_path = os.path.join(target_dir, 'target.jpeg')
+
+
+    # 파일 저장
+    for i in real_file:
+        real_path = os.path.join(real_dir, f'real_{i.filename}.jpeg')
+        with open(real_path, "wb") as buffer:
+            buffer.write(await i.read())
+    
+
+    with open(target_path, "wb") as buffer:
+        buffer.write(await target_file.read())
+    
+    return { 'result': True , "message": f"File uploaded successfully."}
 
 
 # 프로젝트 내 이미지 리스트 조회

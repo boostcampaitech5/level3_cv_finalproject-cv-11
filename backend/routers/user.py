@@ -121,7 +121,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 #     return user
 @users_router.post("/generation")
 def generation(info: dict, db: Session = Depends(get_db)):
-    print(info)
     username = info['username']
     project_name = info['project_name']
     password = info['password']
@@ -138,8 +137,6 @@ def generation(info: dict, db: Session = Depends(get_db)):
     
     port = 'http://118.67.133.181:30007'
     result_path = output + '/source.jpeg'
-    print('*'*100)
-    print(result_path)
 
     if os.path.exists(result_path):
         return {
@@ -162,7 +159,6 @@ def generation(info: dict, db: Session = Depends(get_db)):
     
 @users_router.post("/detection")
 def detection(info: dict, db: Session = Depends(get_db)):
-    print(info)
     username = info['username']
     project_name = info['project_name']
     password = info['password']
@@ -176,7 +172,7 @@ def detection(info: dict, db: Session = Depends(get_db)):
     fake_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
     target_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
     user_name = f'{username}'
-    source = '/opt/ml/level3_cv_finalproject-cv-11/data/source'
+    source = '/opt/ml/level3_cv_finalproject-cv-11/datas/source'
     make_synthesis.make_synthesis(real_path,source,fake_path)
     result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
     

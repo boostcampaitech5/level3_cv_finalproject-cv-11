@@ -109,14 +109,14 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
     for step, (r_image, f_image, valid_image, target_image, label) in tqdm(enumerate(meta_train_loader), total=len(meta_train_loader)):
         r_image, f_image, valid_image, target_image, label = r_image.cuda(), f_image.cuda(), valid_image.cuda(), target_image.cuda(), label.cuda()
         pred = model(r_image, f_image, target_image)
-        pred = torch.sum(pred, axis=0)
-        
-        if pred[0] >= pred[1]:
-            result = 'real'
-        else:
-            result = 'fake'
-        print(result)
-        return result
+
+    pred = torch.sum(pred, axis=0)
+    if pred[0] >= pred[1]:
+        result = 'real'
+    else:
+        result = 'fake'
+    print(result)
+    return result
 
 
 
