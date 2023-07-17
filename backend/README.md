@@ -42,6 +42,16 @@ In the project directory, you can run:
 
 'poetry shell`
 
+## conda env
+0. DB부터 설치할 것
+1. conda create -n test python=3.9.7
+2. conda activate test
+3. pip install -r requirements.txt
+    - v100에서 설치가 안된다
+    1. conda init bash
+    2. source ~/.bashrc
+    3. 다시 pip install
+
 ## backend start
 `python3 main.py`
 
