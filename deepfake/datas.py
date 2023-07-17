@@ -211,7 +211,7 @@ class Inferset(Dataset):
         self.real_pngs = real[:10]
         self.fake_pngs = fake[:10]
         self.valid_pngs = real[10:] + fake[10:]
-        self.target_png = target_path
+        self.target_png = os.listdir(target_path)[0]
         
         self.transforms = transforms
         
