@@ -85,9 +85,10 @@ async def upload_file(username : str, project_name : str, source_file: UploadFil
 # 프로젝트 내 이미지 리스트 조회
 @generation_router.get("/generate/{username}/{project_name}")
 async def get_user_project_imgs(username : str, project_name: str):
-    port = 'http://0.0.0.0:30007'
+    port = 'http://118.67.133.181:30007'
     result_dir = f'./datas/{username}/generation/{project_name}/result'
-    result_path = os.path.join(result_dir, 'result.jpeg')
+    jpgs = os.listdir(result_dir)
+    result_path = result_dir + '/' +jpgs[0]
 
     if os.path.exists(result_path):
         return {
@@ -142,7 +143,7 @@ async def get_target_image(username : str, project_name: str):
 @generation_router.get("/generate/{username}/{project_name}/result")
 async def get_result_image(username:str, project_name: str):
     result_dir = f'./datas/{username}/generation/{project_name}/result'
-    result_path = os.path.join(result_dir, 'result.jpeg')
+    result_path = os.path.join(result_dir, 'source.jpeg')
 
     if os.path.exists(result_path):
         with open(result_path, "rb") as file:
