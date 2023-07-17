@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardBody,
@@ -6,12 +5,17 @@ import {
 } from "reactstrap";
 import './Generate.css'
 import Footer from "../../layouts/Footer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import Video from '../../assets/video/loading.mp4'
+import fastapi from "../../lib/api";
 
 const Loading = () => {
   // For Dismiss Button with Alert
   const navigate = useNavigate();
+  const location = useLocation();
+  const [error, setError] = useState({ detail: [] });
+  const username=location.state
 
   const handleClickGenerate = () => {
     navigate("/generate"); // generate 페이지로 이동
@@ -20,6 +24,41 @@ const Loading = () => {
   const handleClickGenerateList = () => {
     navigate("/generate/projects"); // generate 페이지로 이동
   };
+  
+  const handleCheckState = async () => {
+    try {
+      let params = {
+        username: "yoon"
+      };
+      let response;
+  
+      await new Promise((resolve, reject) => {
+        fastapi('post', '/generation', params,
+          (json) => {
+            console.log(json);
+            response = json;
+            resolve(); // 응답을 받았음을 알림
+          },
+          (json_error) => {
+            setError(json_error);
+            reject(json_error); // 에러 발생을 알림
+          }
+        );
+      });
+  
+      // 도착한 응답이 있는 경우 페이지를 이동시키는 로직
+      if (response) {
+        navigate('/generate/projects');
+      }
+    } catch (error) {
+      // 에러 처리
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    handleCheckState();
+  }, []);
 
 
   return (
