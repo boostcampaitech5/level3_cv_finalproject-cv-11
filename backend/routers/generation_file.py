@@ -85,7 +85,7 @@ async def upload_file(username : str, project_name : str, source_file: UploadFil
 # 프로젝트 내 이미지 리스트 조회
 @generation_router.get("/generate/{username}/{project_name}")
 async def get_user_project_imgs(username : str, project_name: str):
-    port = 'http://0.0.0.0:30008'
+    port = 'http://0.0.0.0:30007'
     result_dir = f'./datas/{username}/generation/{project_name}/result'
     result_path = os.path.join(result_dir, 'result.jpeg')
 
