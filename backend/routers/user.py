@@ -119,11 +119,21 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 #         raise credentials_exception
 #     return user
 @users_router.post("/generation")
-def generation(username: dict, db: Session = Depends(get_db)):
-    source = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/source'
-    target = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/target'
-    output = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/result'
+def generation(info: dict, db: Session = Depends(get_db)):
+    print(info)
+    username = info['username']
+    projectname = info['project_name']
+    password = info['password']
+    
+    print(username)
+    print(projectname)
+    print(password)
+    
+    source = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{projectname}/source'
+    target = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{projectname}/target'
+    output = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{projectname}/result'
     make_synthesis.make_synthesis(target,source,output)
+    
     return {'result':False}
 
 @users_router.post("/detection")
