@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Alert, Card, CardBody, Button } from "reactstrap";
-import "../GenerateStart.css";
+import "./DetectStart.css";
 import Footer from "../../../layouts/Footer";
 import Image from "../../../assets/images/snow2.JPG";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -11,8 +11,8 @@ const DetectStart = () => {
   const [selectedTargetImage, setSelectedTargetImage] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const username=location.state.username
-  const password=location.state.password
+  const username = location.state.username
+  const password = location.state.password
 
   // 메인 페이지로 이동
   const handleBackDetect = () => {
@@ -23,11 +23,11 @@ const DetectStart = () => {
   const handleFolderUpload = (event) => {
     const files = Array.from(event.target.files);
     const imageFiles = files.filter((file) => file.type.startsWith('image/'));
-    
+
     if (event.target.id === "real-images-input") {
       setSelectedImages(imageFiles);
     } else if (event.target.id === "target-image-input") {
-        setSelectedTargetImage(imageFiles);
+      setSelectedTargetImage(imageFiles);
     }
   };
 
@@ -35,10 +35,10 @@ const DetectStart = () => {
   const handleFolderSubmit = async (username, project_name) => {
     const formData = new FormData();
     selectedImages.forEach((image, index) => {
-        formData.append('real_file', image,`${index}`); //0 ~14
-      });
+      formData.append('real_file', image, `${index}`); //0 ~14
+    });
     selectedTargetImage.forEach((image, index) => {
-        formData.append('target_file', image,'target_file'); //0 ~14
+      formData.append('target_file', image, 'target_file'); //0 ~14
     });
 
     //("/generate/{username}/{project_name}/upload"
@@ -46,7 +46,7 @@ const DetectStart = () => {
     // const params = formData;
     await fastapi("formdata", url, formData);
     try {
-      navigate('/detect/loading',{state: {username: username, password: password, project_name: project_name}});
+      navigate('/detect/loading', { state: { username: username, password: password, project_name: project_name } });
     } catch (error) {
       console.log(error);
     }
@@ -87,8 +87,8 @@ const DetectStart = () => {
     <div>
       <div className="generate-start-container">
         <h1>AI Deepfake Detection</h1>
-        <h2>생성하기</h2>
-        <p>딥페이크를 통해서 타인과 '나'의 얼굴을 바꿔보세요</p>
+        <h2>탐지하기</h2>
+        <p>당신의 이미지가 딥페이크를 통해 악용되고 있는지 확인해보세요!</p>
         <div className="generate-back-btns">
           <Button
             className="btns"
@@ -131,7 +131,7 @@ const DetectStart = () => {
                     size="lg"
                     onClick={handleClickFolderUploadButton}
                     data-files-input="target-image-input"
-                    >
+                  >
                     target 이미지
                   </Button>
                   <input

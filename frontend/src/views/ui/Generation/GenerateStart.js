@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Card, CardBody, Button } from "reactstrap";
 import "./GenerateStart.css";
-import Footer from "../../layouts/Footer";
-import Image from "../../assets/images/snow2.JPG";
+import Footer from "../../../layouts/Footer";
+import Image from "../../../assets/images/snow2.JPG";
 import { useNavigate, useLocation } from "react-router-dom";
-import fastapi from "../../lib/api";
+import fastapi from "../../../lib/api";
 
 const GenerateStart = () => {
   const [selectedSourceImage, setSelectedSourceImage] = useState(null);
   const [selectedTargetImage, setSelectedTargetImage] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const username=location.state.username
-  const password=location.state.password
+  const username = location.state.username
+  const password = location.state.password
 
   // 메인 페이지로 이동
   const handleBackGenerate = () => {
@@ -42,7 +42,7 @@ const GenerateStart = () => {
     // const params = formData;
     await fastapi("formdata", url, formData);
     try {
-      navigate('/generate/loading',{state: {username: username, password: password, project_name: project_name}});
+      navigate('/generate/loading', { state: { username: username, password: password, project_name: project_name } });
     } catch (error) {
       console.log(error);
     }

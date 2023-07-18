@@ -15,26 +15,26 @@ const Detect = () => {
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const login=location.state
+  const login = location.state
   console.log(login)
 
-  const handleGenerateStart = () => {
+  const handleDetectStart = () => {
     if (!login) {
       alert("로그인이 필요합니다");
       return;
     }
-    else{
-    navigate("/detect/start", { state: login }); // 생성 시작 페이지 이동
+    else {
+      navigate("/detect/start", { state: login }); // 생성 시작 페이지 이동
     }
   };
 
-  const handleGenerateList = () => {
+  const handleDetectList = () => {
     if (!login) {
       alert("로그인이 필요합니다");
       return;
     }
-    else{
-    navigate("/detect/projects", { state: login }); // 결과 확인 페이지 이동
+    else {
+      navigate("/detect/projects", { state: login }); // 결과 확인 페이지 이동
     }
   };
 
@@ -50,12 +50,12 @@ const Detect = () => {
     <>
       <div className='generate-container'>
         <h1>AI Deepfake Detection</h1>
-        <p>1. 딥페이크를 통해서 타인과 '나'의 얼굴을 바꿔보세요</p>
+        <p>당신의 이미지가 딥페이크를 통해 악용되고 있는지 확인해보세요!</p>
         <div className='generate-btns'>
-          <Button className='btns' color="secondary" size="lg" onClick={handleGenerateStart}>
+          <Button className='btns' color="secondary" size="lg" onClick={handleDetectStart}>
             탐지하기
           </Button>
-          <Button className='btns' color="secondary" size="lg" onClick={handleGenerateList}>
+          <Button className='btns' color="secondary" size="lg" onClick={handleDetectList}>
             결과보기
           </Button>
           <Button className='btns' color="secondary" size="lg" onClick={handleBackDeepfake}>
