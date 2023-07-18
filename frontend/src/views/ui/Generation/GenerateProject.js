@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardBody, Button } from "reactstrap";
+import { Row,Col,Card, CardBody, Button } from "reactstrap";
 import "./GenerateProject.css";
 import Footer from "../../../layouts/Footer";
 import { useNavigate, useLocation } from "react-router-dom";
 import fastapi from '../../../lib/api';
+import Arrow from '../../../assets/images/arrow.png'
 
 const GenerateProject = () => {
   const [imageUrls, setImageUrls] = useState({});
@@ -78,61 +79,72 @@ const GenerateProject = () => {
             <Button className='btns' color="secondary" size="lg" onClick={handleBackGenerateList}>
               목록으로
             </Button>
-          </div>
-          <div className='generate-btns'>
             <Button className='btns' color="secondary" size="lg" onClick={handleBackMain}>
               메인으로
             </Button>
           </div>
         </div>
 
-        <div className="image-container">
-          <h2>프로젝트: {project_name}</h2>
-          <div className="image-wrapper">
-            <h3>Source Image</h3>
-            {imageUrls.source && (
-              <img
-                src={imageUrls.source}
-                alt="Source"
-                className="image"
-                onClick={() => handleImageClick(imageUrls.source)}
-              />
-            )}
-          </div>
-          <div className="image-wrapper">
-            <h3>Target Image</h3>
-            {imageUrls.target && (
-              <img
-                src={imageUrls.target}
-                alt="Target"
-                className="image"
-                onClick={() => handleImageClick(imageUrls.target)}
-              />
-            )}
-          </div>
-          <div className="image-wrapper">
-            <h3>Output Image</h3>
-            {imageUrls.output && (
-              <div>
+        <h3>폴더 이름: {project_name}</h3>
+        <Row>
+          <Col xs="12" md="6">
+          <div className="image-container">
+            <h3>대상이미지</h3>
+              {imageUrls.source && (
+                <div className="image-wrapper">
                 <img
-                  src={imageUrls.output}
-                  alt="Output"
+                  src={imageUrls.source}
+                  alt="Source"
                   className="image"
-                  onClick={() => handleImageClick(imageUrls.output)}
+                  onClick={() => handleImageClick(imageUrls.source)}
                 />
-                <Button
-                  className="download-btn"
-                  color="primary"
-                  onClick={handleDownloadOutput}
-                >
-                  Download
-                </Button>
+                </div>
+              )}
+            </div>
+            <div className="image-container">
+              <h3>배경이미지</h3>
+              <div className="image-wrapper">
+                {imageUrls.target && (
+                  <img
+                    src={imageUrls.target}
+                    alt="Target"
+                    className="image"
+                    onClick={() => handleImageClick(imageUrls.target)}
+                  />
+                )}
               </div>
-            )}
+            </div>
+          </Col>
+          <Col xs="12" md="1" className="image-arrow">
+            <img className='arrow' src={Arrow} alt='arrow'/>
+          </Col>
+          <Col xs="12" md="5">
+            <div className="image-container2">
+            <h3>결과 이미지</h3>
+            <div className="image-wrapper">
+              {imageUrls.output && (
+                <div>
+                  <img
+                    src={imageUrls.output}
+                    alt="Output"
+                    className="image"
+                    onClick={() => handleImageClick(imageUrls.output)}
+                  />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+          </Col>
+        </Row>
+        <Button
+          className="btns"
+          color="primary"
+          onClick={handleDownloadOutput}
+        >
+          결과 이미지 다운로드
+        </Button>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 };

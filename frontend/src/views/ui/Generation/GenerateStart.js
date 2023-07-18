@@ -16,7 +16,7 @@ const GenerateStart = () => {
 
   // 메인 페이지로 이동
   const handleBackGenerate = () => {
-    navigate("/generate");
+    navigate("/generate",{state: location.state});
   };
 
   // 소스 or 타겟 이미지를 받아 userState 객체로 변환

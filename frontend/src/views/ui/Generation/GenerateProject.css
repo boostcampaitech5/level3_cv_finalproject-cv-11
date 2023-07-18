@@ -1,6 +1,36 @@
-video {
-  width: 100%;
+.image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 4px solid #60e1cb;
+}
+.image-wrapper img{
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+}
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.image-container2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100%;
+}
+.image-arrow{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arrow{
+  width: 150px;
+  height: 150px;
+  margin-top: 100px;
 }
 .generate-container {
     /* background: url('\images/img-1.jpg') center center/cover no-repeat;  */
@@ -40,9 +70,11 @@ video {
     border-radius: 30px;
     width: 200px;
     height: 50px;
+    margin-bottom: 30px;
+    font-weight: bold;
     }
 
-  h2{
+  h3{
     text-align: center;
     margin-top:50px;
     font-weight: bold;
@@ -53,16 +85,15 @@ video {
     align-items: center; /* 세로 중앙 정렬 */
     height: 80vh; /* 부모 요소의 높이 설정 (화면 전체 높이로 설정하려면 vh를 사용합니다) */
   }
-  .box{
-    width: 700px; 
-    height: 550px; 
+  /* .image-wrapper{
+    width: 300px;
     background-color: #ccc;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-  }
+  } */
 
   @media screen and (max-width: 960px) {
     .generate-container > h1 {
