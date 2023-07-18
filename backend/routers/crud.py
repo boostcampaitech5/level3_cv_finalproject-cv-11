@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 # import model, schemas
 from backend.routers import model, schemas
-
 from passlib.context import CryptContext
+import datetime
 
 SECRET_KEY = "88c2a56e0d8fc664a5d89fc7a9ade75b118beb5beacd317e54d4841b4926570e"
 ALGORITHM = "HS256"
@@ -80,12 +80,34 @@ def create_project(db: Session, project_type: str, project: schemas.ProjectCreat
 
 def get_all_project_by_username(db: Session, username: str, project_type :str):
     if project_type == 'generate':
-        return db.query(model.GenerateProject).filter(model.GenerateProject.user_name == username)
+        return db.query(model.GenerationProject).filter(model.GenerationProject.user_name == username).all()
     else:
-        return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username)
+        return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username).all()
 
 def get_project_by_username(db: Session, username: str, project_name : str, project_type :str):
     if project_type == 'generate':
-        return db.query(model.GenerateProject).filter(model.GenerateProject.user_name == username).filter(model.GenerateProject.project_name == project_name).first()
+        return db.query(model.GenerationProject).filter(model.GenerationProject.user_name == username).filter(model.GenerateProject.project_name == project_name).first()
     else:
         return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username).filter(model.DetectionProject.project_name == project_name).first()
+
+def update_state_by_projectname(db: Session, username: str, project_type: str, project_name: str, new_state: str):
+    if project_type == 'generate':
+        project = db.query(model.GenerationProject).filter_by(user_name=username, project_name=project_name).first()
+        if project:
+            project.state = new_state
+            project.end_time = datetime.datetime.now()
+            db.commit()
+            db.refresh(project)
+            return True
+        return False
+    elif project_type == 'detect':
+        project = db.query(model.DetectionProject).filter_by(user_name=username, project_name=project_name).first()
+        if project:
+            project.state = new_state
+            project.end_time = datetime.datetime.now()
+            db.commit()
+            db.refresh(project)
+            return True
+        return False
+    else:
+        return False
