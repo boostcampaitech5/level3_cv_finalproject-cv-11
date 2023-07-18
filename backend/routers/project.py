@@ -149,7 +149,7 @@ async def upload_detection_file(username : str, project_name : str,  real_file: 
 # 프로젝트 내 이미지 리스트 조회
 @project_router.get("/generate/{username}/{project_name}")
 async def get_user_project_imgs(username : str, project_name: str):
-    port = 'http://49.50.161.9:30007'
+    port = 'http://49.50.161.98:30007'
     result_dir = f'./datas/{username}/generation/{project_name}/result'
     jpgs = os.listdir(result_dir)
     result_path = result_dir + '/' +jpgs[0]
