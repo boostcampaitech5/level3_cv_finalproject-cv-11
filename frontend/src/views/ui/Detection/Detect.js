@@ -2,49 +2,64 @@ import React, { useState } from "react";
 import {
   Card,
   CardBody,
-  Button
+  Button,
 } from "reactstrap";
-import './Deepfake.css'
-import Footer from "../../layouts/Footer";
-import Image from '../../assets/images/snow.JPG'
+import './Detect.css'
+import Footer from "../../../layouts/Footer";
+import Image from '../../../assets/images/snow.JPG'
 import { useNavigate, useLocation } from "react-router-dom";
-import Sidebar from "../../layouts/Sidebar";
 
-const Deepfake = () => {
+
+const Detect = () => {
   // For Dismiss Button with Alert
   const [visible, setVisible] = useState(true);
-
   const navigate = useNavigate();
-
   const location = useLocation();
   const login=location.state
   console.log(login)
 
-  const handleGenerate = () => {
-    navigate("/generate", {state:login}); // generate 페이지로 이동
+  const handleGenerateStart = () => {
+    if (!login) {
+      alert("로그인이 필요합니다");
+      return;
+    }
+    else{
+    navigate("/detect/start", { state: login }); // 생성 시작 페이지 이동
+    }
   };
-  const handleDetect = () => {
-    navigate("/detect",{state:login}); // detect 페이지로 이동
+
+  const handleGenerateList = () => {
+    if (!login) {
+      alert("로그인이 필요합니다");
+      return;
+    }
+    else{
+    navigate("/detect/projects", { state: login }); // 결과 확인 페이지 이동
+    }
+  };
+
+  const handleBackDeepfake = () => {
+    navigate("/deepfake", { state: login }); // deepfake 페이지로 이동
   };
 
   const onDismiss = () => {
     setVisible(false);
-
   };
-  
-
 
   return (
     <>
       <div className='generate-container'>
         <h1>AI Deepfake Detection</h1>
-        <p>1. 딥페이크를 통해서 타인과 '나'의 얼굴을 바꿔보세요<br></br>2. 당신의 이미지가 딥페이크를 통해 악용되고 있는지 확인해보세요!</p>
+        <p>1. 딥페이크를 통해서 타인과 '나'의 얼굴을 바꿔보세요</p>
         <div className='generate-btns'>
-          <Button className='btns' color="secondary" size="lg" onClick={handleGenerate}>
-            생성하기
-          </Button>
-          <Button className='btns' color="secondary" size="lg" onClick={handleDetect}>
+          <Button className='btns' color="secondary" size="lg" onClick={handleGenerateStart}>
             탐지하기
+          </Button>
+          <Button className='btns' color="secondary" size="lg" onClick={handleGenerateList}>
+            결과보기
+          </Button>
+          <Button className='btns' color="secondary" size="lg" onClick={handleBackDeepfake}>
+            이전으로
           </Button>
         </div>
       </div>
@@ -70,4 +85,4 @@ const Deepfake = () => {
   );
 };
 
-export default Deepfake;
+export default Detect;
