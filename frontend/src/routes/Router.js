@@ -14,6 +14,7 @@ const Cards = lazy(() => import("../views/ui/Cards"));
 const Tables = lazy(() => import("../views/ui/Tables"));
 const Forms = lazy(() => import("../views/ui/Forms"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
+const Survey = lazy(() => import("../views/ui/Survey.js"));
 
 // main //
 const Deepfake = lazy(() => import("../views/ui/Deepfake.js"));
@@ -60,6 +61,7 @@ const ThemeRoutes = [
       { path: "/table", exact: true, element: <Tables /> },
       { path: "/forms", exact: true, element: <Forms /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
+      { path: "/survey", exact: true, element: <Survey /> },
     ],
   },
 ];
