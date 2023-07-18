@@ -5,8 +5,8 @@ import {
   Button
 } from "reactstrap";
 import './Generate.css'
-import Footer from "../../layouts/Footer";
-import Image from '../../assets/images/snow.JPG'
+import Footer from "../../../layouts/Footer";
+import Image from '../../../assets/images/snow.JPG'
 import { useNavigate, useLocation } from "react-router-dom";
 
 
@@ -15,7 +15,7 @@ const Generate = () => {
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const login=location.state
+  const login = location.state
   console.log(login)
 
   const handleGenerateStart = () => {
@@ -23,8 +23,8 @@ const Generate = () => {
       alert("로그인이 필요합니다");
       return;
     }
-    else{
-    navigate("/generate/start", { state: login }); // 생성 시작 페이지 이동
+    else {
+      navigate("/generate/start", { state: login }); // 생성 시작 페이지 이동
     }
   };
 
@@ -33,8 +33,8 @@ const Generate = () => {
       alert("로그인이 필요합니다");
       return;
     }
-    else{
-    navigate("/generate/projects", { state: login }); // 결과 확인 페이지 이동
+    else {
+      navigate("/generate/projects", { state: login }); // 결과 확인 페이지 이동
     }
   };
 

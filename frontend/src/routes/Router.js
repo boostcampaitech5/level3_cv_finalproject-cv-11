@@ -8,15 +8,6 @@ const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 const Starter = lazy(() => import("../views/Starter.js"));
 const Login = lazy(() => import("../views/Login.js"));
 const Register = lazy(() => import("../views/Register.js"));
-const Deepfake = lazy(() => import("../views/ui/Deepfake.js"));
-const Generate = lazy(() => import("../views/ui/Generate.js"));
-const GenerateStart = lazy(() => import("../views/ui/GenerateStart.js"));
-const GenerateList = lazy(() => import("../views/ui/GenerateList.js"));
-const GenerateProject = lazy(() => import("../views/ui/GenerateProject.js"));
-const GenerateLoading = lazy(() => import("../views/ui/Loading.js"));
-const Detect = lazy(() => import("../views/ui/Detection/Detect.js"));
-const DetectStart = lazy(() => import("../views/ui/Detection/DetectStart.js"));
-const DetectLoading = lazy(() => import("../views/ui/Detection/Loading.js"));
 const Badges = lazy(() => import("../views/ui/Badges"));
 const Buttons = lazy(() => import("../views/ui/Buttons"));
 const Cards = lazy(() => import("../views/ui/Cards"));
@@ -25,8 +16,25 @@ const Tables = lazy(() => import("../views/ui/Tables"));
 const Forms = lazy(() => import("../views/ui/Forms"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
 
-/*****Routes******/
+// main //
+const Deepfake = lazy(() => import("../views/ui/Deepfake.js"));
 
+// generation // 
+const Generate = lazy(() => import("../views/ui/Generation/Generate.js"));
+const GenerateStart = lazy(() => import("../views/ui/Generation/GenerateStart.js"));
+const GenerateList = lazy(() => import("../views/ui/Generation/GenerateList.js"));
+const GenerateProject = lazy(() => import("../views/ui/Generation/GenerateProject.js"));
+const GenerateLoading = lazy(() => import("../views/ui/Generation/Loading.js"));
+
+// detection // 
+const Detect = lazy(() => import("../views/ui/Detection/Detect.js"));
+const DetectStart = lazy(() => import("../views/ui/Detection/DetectStart.js"));
+const DetectList = lazy(() => import("../views/ui/Detection/DetectList.js"));
+const DetectProject = lazy(() => import("../views/ui/Detection/DetectProject.js"));
+const DetectLoading = lazy(() => import("../views/ui/Detection/Loading.js"));
+
+
+/*****Routes******/
 const ThemeRoutes = [
   {
     path: "/",
@@ -44,6 +52,8 @@ const ThemeRoutes = [
       { path: "/generate/loading", exact: true, element: <GenerateLoading /> },
       { path: "/detect", exact: true, element: <Detect /> },
       { path: "/detect/start", exact: true, element: <DetectStart /> },
+      { path: "/detect/projects", exact: true, element: <DetectList /> },
+      { path: "/detect/:project", exact: true, element: <DetectProject /> },
       { path: "/detect/loading", exact: true, element: <DetectLoading /> },
       { path: "/badges", exact: true, element: <Badges /> },
       { path: "/buttons", exact: true, element: <Buttons /> },

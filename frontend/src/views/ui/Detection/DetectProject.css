@@ -1,0 +1,96 @@
+video {
+  width: 100%;
+  height: 100%;
+}
+
+.generate-container {
+  /* background: url('\images/img-1.jpg') center center/cover no-repeat;  */
+  height: 70vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.2); */
+  object-fit: contain;
+  background-color: #60e1cb;
+}
+
+.generate-container>h1 {
+  color: #000000;
+  font-size: 60px;
+}
+
+.generate-container>p {
+  margin-top: 20px;
+  color: #000000;
+  font-size: 15px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+    'Lucida Sans', Arial, sans-serif;
+}
+
+.generate-btns {
+  margin-top: 32px;
+}
+
+.generate-btns .btn {
+  margin: 15px;
+}
+
+.btn {
+  border-radius: 30px;
+  width: 200px;
+  height: 50px;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 50px;
+  font-weight: bold;
+}
+
+.generate-list {
+  display: flex;
+  justify-content: center;
+  /* 가로 중앙 정렬 */
+  align-items: center;
+  /* 세로 중앙 정렬 */
+  height: 80vh;
+  /* 부모 요소의 높이 설정 (화면 전체 높이로 설정하려면 vh를 사용합니다) */
+}
+
+.box {
+  width: 700px;
+  height: 550px;
+  background-color: #ccc;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+@media screen and (max-width: 960px) {
+  .generate-container>h1 {
+    font-size: 50px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .generate-container>h1 {
+    font-size: 40px;
+  }
+
+  .generate-container>p {
+    font-size: 13px;
+  }
+
+  .btn-mobile {
+    display: block;
+    text-decoration: none;
+  }
+
+  .btns {
+    width: 150px;
+  }
+}
