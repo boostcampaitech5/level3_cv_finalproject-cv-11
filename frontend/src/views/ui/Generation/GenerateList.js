@@ -5,7 +5,7 @@ import Footer from "../../../layouts/Footer";
 import { useNavigate, useLocation } from "react-router-dom";
 import fastapi from "../../../lib/api";
 
-const DetectionList = () => {
+const GenerateList = () => {
   const [projectCnt, setProjectCnt] = useState(0);
   const [projectList, setProjectList] = useState([]);
   const navigate = useNavigate();
@@ -18,14 +18,14 @@ const DetectionList = () => {
 
   // 이전으로
   const handleBackGenerate = () => {
-    navigate("/detect", { state: { username: username } }); // generate 페이지로 이동
+    navigate("/generate", { state: { username: username } }); // generate 페이지로 이동
   };
 
   // 조회된 프로젝트 리스트
   const fetchProjectList = (username) => {
     fastapi(
       "get",
-      `/detect/${username}`,
+      `/generate/${username}`,
       {},
       (response) => {
         const { project_len, project_list } = response;
@@ -39,7 +39,7 @@ const DetectionList = () => {
   };
 
   const handleNavigateToProject = (projectName) => {
-    navigate(`/detect/${projectName}`, {
+    navigate(`/generate/${projectName}`, {
       state: { username: username, project_name: projectName },
     });
   };
@@ -115,4 +115,4 @@ const DetectionList = () => {
   );
 };
 
-export default DetectionList;
+export default GenerateList;
