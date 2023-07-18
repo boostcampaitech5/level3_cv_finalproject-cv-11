@@ -9,13 +9,13 @@ const GenerateProject = () => {
   const [imageUrls, setImageUrls] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
-  const username = location.state?.username || 'test';
-  const project_name = location.state?.project_name || '';
+  const username = location.state.username;
+  const project_name = location.state.project_name;
 
 
   // 이전으로
   const handleBackGenerateList = () => {
-    navigate(`/generate/projects`, { state: { username: username } });
+    navigate(`/generate/projects`, { state: { username: username, project_name: project_name} });
   };
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const GenerateProject = () => {
         (response) => {
           setImageUrls(response);
           if (!response.complete) {
-            navigate(`/generate/Loading`);
+            navigate('/generate/loading');
           }
         },
         (error) => {

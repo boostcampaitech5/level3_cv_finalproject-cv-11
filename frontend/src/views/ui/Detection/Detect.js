@@ -1,16 +1,16 @@
-import React, { useState, use } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardBody,
-  Button
+  Button,
 } from "reactstrap";
-import './Generate.css'
-import Footer from "../../layouts/Footer";
-import Image from '../../assets/images/snow.JPG'
+import './Detect.css'
+import Footer from "../../../layouts/Footer";
+import Image from '../../../assets/images/snow.JPG'
 import { useNavigate, useLocation } from "react-router-dom";
 
 
-const Generate = () => {
+const Detect = () => {
   // For Dismiss Button with Alert
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const Generate = () => {
       return;
     }
     else{
-    navigate("/generate/start", { state: login }); // 생성 시작 페이지 이동
+    navigate("/detect/start", { state: login }); // 생성 시작 페이지 이동
     }
   };
 
@@ -34,7 +34,7 @@ const Generate = () => {
       return;
     }
     else{
-    navigate("/generate/projects", { state: login }); // 결과 확인 페이지 이동
+    navigate("/detect/projects", { state: login }); // 결과 확인 페이지 이동
     }
   };
 
@@ -53,7 +53,7 @@ const Generate = () => {
         <p>1. 딥페이크를 통해서 타인과 '나'의 얼굴을 바꿔보세요</p>
         <div className='generate-btns'>
           <Button className='btns' color="secondary" size="lg" onClick={handleGenerateStart}>
-            생성하기
+            탐지하기
           </Button>
           <Button className='btns' color="secondary" size="lg" onClick={handleGenerateList}>
             결과보기
@@ -85,4 +85,4 @@ const Generate = () => {
   );
 };
 
-export default Generate;
+export default Detect;

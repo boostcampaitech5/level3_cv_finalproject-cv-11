@@ -15,7 +15,9 @@ const Loading = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState({ detail: [] });
-  const username=location.state
+  const username=location.state.username
+  const password=location.state.password
+  const project_name=location.state.project_name
 
   const handleClickGenerate = () => {
     navigate("/generate"); // generate 페이지로 이동
@@ -28,7 +30,9 @@ const Loading = () => {
   const handleCheckState = async () => {
     try {
       let params = {
-        username: "yoon"
+        username: username,
+        password: password,
+        project_name: project_name,
       };
       let response;
   
@@ -48,7 +52,7 @@ const Loading = () => {
   
       // 도착한 응답이 있는 경우 페이지를 이동시키는 로직
       if (response) {
-        navigate('/generate/projects');
+        navigate(`/generate/${project_name}`,{state:location.state});
       }
     } catch (error) {
       // 에러 처리

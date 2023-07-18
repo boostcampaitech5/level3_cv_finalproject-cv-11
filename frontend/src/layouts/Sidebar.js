@@ -37,10 +37,10 @@ const Sidebar = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   let location = useLocation();
-  const username=location.state
+  const login=location.state
   const navigate = useNavigate();
   const navigateToGenerate = () => {
-    navigate("/deepfake", { state: username });
+    navigate("/deepfake", { state: login});
   };
 
   return (

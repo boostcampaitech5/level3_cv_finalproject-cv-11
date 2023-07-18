@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional, Dict
 # import crud, model, schemas
-from backend.routers import crud, model, schemas
+from backend.routers import crud, model, schemas, generation_file# generation_file -> generation 변경예정
 
 
 from fastapi import Depends, FastAPI, HTTPException, status, APIRouter, Form, Request, Response, Header
@@ -17,6 +17,7 @@ from backend.routers.database import SessionLocal, engine
 from deepfake import make_synthesis, inference
 
 from sqlalchemy.orm import Session
+import os
 
 
 templates = Jinja2Templates(directory='./')             #for debug
@@ -119,21 +120,59 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 #         raise credentials_exception
 #     return user
 @users_router.post("/generation")
-def generation(username: dict, db: Session = Depends(get_db)):
-    source = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/source'
-    target = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/target'
-    output = f'/opt/ml/level3_cv_finalproject-cv-11/datas/username1/generation/projectname1/result'
+def generation(info: dict, db: Session = Depends(get_db)):
+    username = info['username']
+    project_name = info['project_name']
+    password = info['password']
+    
+    user = crud.get_user_for_login(db, username=username, password=password)
+    if not user:
+        return {"result": False}
+    
+    source = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/source'
+    target = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/target'
+    output = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
     make_synthesis.make_synthesis(target,source,output)
-    return {'result':False}
+    
+    
+    port = 'http://118.67.133.181:30007'
+    result_path = output + '/source.jpeg'
 
+    if os.path.exists(result_path):
+        return {
+            "username": username,
+            "project": project_name,
+            "complete": True,
+            "source": f'{port}/generate/{username}/{project_name}/source',
+            "target": f'{port}/generate/{username}/{project_name}/target',
+            "output": f'{port}/generate/{username}/{project_name}/result',
+        }
+    else:
+        return {
+            "username": username,
+            "project": project_name,
+            "complete": False,
+            "source": None,
+            "target": None,
+            "output": None
+        }
+    
 @users_router.post("/detection")
-def detection(username: dict, db: Session = Depends(get_db)):
-    model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/Meta_train_learning_id_60.pt'
-    real_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/username/detection/1/real'
-    fake_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/username/detection/1/fake'
-    target_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/username/detection/1/target/id1_0002.059.png'
-    user_name = 'username'
-    source = '/opt/ml/level3_cv_finalproject-cv-11/data/source'
+def detection(info: dict, db: Session = Depends(get_db)):
+    username = info['username']
+    project_name = info['project_name']
+    password = info['password']
+    
+    user = crud.get_user_for_login(db, username=username, password=password)
+    if not user:
+        return {"result": False}
+    
+    model_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/Meta_train_learning_id_60.pt'
+    real_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/real'
+    fake_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
+    target_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
+    user_name = f'{username}'
+    source = '/opt/ml/level3_cv_finalproject-cv-11/source'
     make_synthesis.make_synthesis(real_path,source,fake_path)
     result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
     

@@ -204,14 +204,16 @@ class Inferset(Dataset):
 
         self.real_path = real_path
         self.fake_path = fake_path
+        self.target_path = target_path
 
         real = random.sample(os.listdir(real_path), 15)
         fake = random.sample(os.listdir(fake_path), 15)
+        target = os.listdir(target_path)
         
         self.real_pngs = real[:10]
         self.fake_pngs = fake[:10]
         self.valid_pngs = real[10:] + fake[10:]
-        self.target_png = target_path
+        self.target_png = target[0]
         
         self.transforms = transforms
         
@@ -236,7 +238,8 @@ class Inferset(Dataset):
             valid_image_path = os.path.join(self.fake_path, valid_image_name)
             label = np.array([0,1])
 
-        target_image_path = self.target_png
+        target_image_path = os.path.join(self.target_path, self.target_png)
+        print(target_image_path)
         
         
         r_infer_image = cv2.imread(r_infer_image_path)

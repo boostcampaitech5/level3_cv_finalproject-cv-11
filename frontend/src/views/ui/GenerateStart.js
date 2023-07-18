@@ -10,7 +10,9 @@ const GenerateStart = () => {
   const [selectedSourceImage, setSelectedSourceImage] = useState(null);
   const [selectedTargetImage, setSelectedTargetImage] = useState(null);
   const navigate = useNavigate();
-  const username = 'test';
+  const location = useLocation();
+  const username=location.state.username
+  const password=location.state.password
 
   // 메인 페이지로 이동
   const handleBackGenerate = () => {
@@ -40,7 +42,7 @@ const GenerateStart = () => {
     // const params = formData;
     await fastapi("formdata", url, formData);
     try {
-      navigate(`/generate/loading`);
+      navigate('/generate/loading',{state: {username: username, password: password, project_name: project_name}});
     } catch (error) {
       console.log(error);
     }

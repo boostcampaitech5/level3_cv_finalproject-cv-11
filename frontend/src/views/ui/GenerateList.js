@@ -14,7 +14,7 @@ const GenerateList = () => {
   const [projectList, setProjectList] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const username = 'test';
+  const username = location.state.username;
 
   useEffect(() => {
     fetchProjectList(username);

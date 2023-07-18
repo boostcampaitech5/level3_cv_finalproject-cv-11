@@ -27,7 +27,7 @@ function Login() {
                 console.log(json['islogin']);
                 setIsLogin(json['islogin']);
                 if (json['islogin']===true){
-                  navigate('/starter',{state:username});
+                  navigate('/starter',{state: {username: username, password: password}});
                 }
             },
             (json_error) => {
