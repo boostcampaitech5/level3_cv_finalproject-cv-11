@@ -1,15 +1,12 @@
 import os
-from typing import List, Dict
+from typing import List
 from fastapi import File, UploadFile, APIRouter, Depends
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from backend.routers import crud, model, schemas
 from backend.routers.database import SessionLocal, engine
 from datetime import datetime
-
-
-## DB 세팅
-model.Base.metadata.create_all(bind=engine)
+# from backend.routers.user import get_db # Dependency
 
 # Dependency
 def get_db():
@@ -18,6 +15,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+## DB 세팅
+model.Base.metadata.create_all(bind=engine)
+
 
 # 폴더 생성
 def make_folder(path):
@@ -40,7 +42,8 @@ generation_router = APIRouter()
 # 프로젝트 리스트 조회
 @generation_router.get("/{project_type}/{username}")
 async def generation_project_list(project_type : str, username:str):
-    if project_type == 'generation':
+    if project_type == 'generate':
+        # crud.get_all_project_by_username(db = db, username= username, project_type = project_type)
         user_dir = f'./datas/{username}'
         if not os.path.exists(user_dir):
             return {"username": username,"project_type" : project_type, "project_len" : 0, "message" : '생성된 유저 폴더가 없습니다'}
@@ -60,51 +63,34 @@ async def create_user_project(project_type : str, username: str, db: Session = D
     make_folder(user_dir)
     if project_type == 'generate':
         # 특정 유저의 generation 폴더 여부 확인, 없으면 생성
-        user_generation_dir = os.path.join(user_dir, 'generation')
-        make_folder(user_generation_dir)
-
-        try:
-            # 현재 시간 기준으로 project 폴더 생성
-            current_time = datetime.now()
-            project_name = current_time.strftime("%y%m%d%H%M%S")
-            project_dir = os.path.join(user_generation_dir, f'{project_name}')
-            make_folder(project_dir)
-        except:
-            return {'result' : False, 'username': username, 'project_type' : project_type, 'project_name': project_name, "message": "Fail - created project folders "}
-
-        # DB 신규 프로젝트 insert
-        project_dict = {
-            'username' : username,
-            'project_name' : project_name,
-            'state' : 'created',
-            'start_time' : current_time
-        }
-        project = schemas.ProjectCreate(**project_dict)
-        result = crud.create_project(db = db, project_type =project_type, project = project) # return T or F
+        user_project_dir = os.path.join(user_dir, 'generation')
+        make_folder(user_project_dir)
 
     elif project_type == 'detect':
         # 특정 유저의 generation 폴더 여부 확인, 없으면 생성
-        user_generation_dir = os.path.join(user_dir, 'detection')
-        make_folder(user_generation_dir)
+        user_project_dir = os.path.join(user_dir, 'detection')
+        make_folder(user_project_dir)
+    else:
+        pass
 
-        try:
-            # 현재 시간 기준으로 project 폴더 생성
-            current_time = datetime.now()
-            project_name = current_time.strftime("%y%m%d%H%M%S")
-            project_dir = os.path.join(user_generation_dir, f'{project_name}')
-            make_folder(project_dir)
-        except:
-            return {'result' : False, 'username': username, 'project_type' : project_type, 'project_name': project_name, "message": "Fail - created project folders "}
+    # try:
+    # 현재 시간 기준으로 project 폴더 생성
+    current_time = datetime.now()
+    project_name = current_time.strftime("%y%m%d%H%M%S")
+    project_dir = os.path.join(user_project_dir, f'{project_name}')
+    make_folder(project_dir)
+    # except:
+    #     return {'result' : False, 'username': username, 'project_type' : project_type, 'project_name': project_name, "message": "Fail - created project folders "}
 
-        # DB 신규 프로젝트 insert
-        project_dict = {
-            'username' : username,
-            'project_name' : project_name,
-            'state' : 'created',
-            'start_time' : current_time
-        }
-        project = schemas.ProjectCreate(**project_dict)
-        result = crud.create_project(db = db, project_type =project_type, project = project) # return T or F
+    # DB 신규 프로젝트 insert
+    project_dict = {
+        'user_name' : username,
+        'project_name' : project_name,
+        'state' : 'created',
+        'start_time' : current_time
+    }
+    project = schemas.ProjectCreate(**project_dict)
+    result = crud.create_project(db = db, project_type =project_type, project = project) # return T or F
 
     if result:
         return {'result' : True, 'username': username, 'project_type' : project_type, 'project_name': project_name, "message": "Project Create Success"}
@@ -133,7 +119,7 @@ async def create_user_project(project_type : str, username: str, db: Session = D
 
 
 
-# 생성 프로젝트 이미지 저장 - 1개ㅆ이미지만
+# 생성 프로젝트 이미지 저장 - 1개 이미지만
 @generation_router.post("/generate/{username}/{project_name}/upload") # 생성하기-대상이미지업로드버튼
 async def upload_file(username : str, project_name : str, source_file: UploadFile = File(...), target_file: UploadFile = File(...)): #usernames : str):
     # source, target, result 폴더 생성
@@ -191,7 +177,7 @@ async def upload_detect_file(username : str, project_name : str,  real_file: Lis
 # 프로젝트 내 이미지 리스트 조회
 @generation_router.get("/generate/{username}/{project_name}")
 async def get_user_project_imgs(username : str, project_name: str):
-    port = 'http://118.67.133.181:30007'
+    port = 'http://49.50.161.9:30007'
     result_dir = f'./datas/{username}/generation/{project_name}/result'
     jpgs = os.listdir(result_dir)
     result_path = result_dir + '/' +jpgs[0]
@@ -250,7 +236,9 @@ async def get_target_image(username : str, project_name: str):
 @generation_router.get("/generate/{username}/{project_name}/result")
 async def get_result_image(username:str, project_name: str):
     result_dir = f'./datas/{username}/generation/{project_name}/result'
-    result_path = os.path.join(result_dir, 'result.jpeg')
+    jpgs = os.listdir(result_dir)
+    result_path = result_dir + '/' +jpgs[0]
+    # result_path = os.path.join(result_dir, 'result.jpeg')
 
     if os.path.exists(result_path):
         with open(result_path, "rb") as file:
