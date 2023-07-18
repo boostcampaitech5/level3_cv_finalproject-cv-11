@@ -52,7 +52,7 @@ const Loading = () => {
   
       // 도착한 응답이 있는 경우 페이지를 이동시키는 로직
       if (response) {
-        navigate(`/generate/${project_name}`);
+        navigate(`/generate/${project_name}`,{state:location.state});
       }
     } catch (error) {
       // 에러 처리
