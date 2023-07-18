@@ -17,7 +17,7 @@ class GenerationProject(Base):
     __tablename__ = "generation"
 
     project_id = Column(Integer, primary_key=True)
-    username = Column(String, index=True)
+    user_name = Column(String, index=True)
     project_name = Column(String, index=True)
     state = Column(String)
     start_time = Column(DateTime)
@@ -28,7 +28,7 @@ class DetectionProject(Base):
     __tablename__ = "detection"
 
     project_id = Column(Integer, primary_key=True)
-    username = Column(String, index=True)
+    user_name = Column(String, index=True)
     project_name = Column(String, index=True)
     state = Column(String)
     start_time = Column(DateTime)

@@ -32,13 +32,13 @@ class User(UserBase):           #sqlalchemy의 모델
 
 ## project 생성
 class ProjectCreate(BaseModel):
-    username: str = Field(..., description="Username of the user")
+    user_name: str = Field(..., description="Username of the user")
     project_name: str = Field(..., description="Creation time of the project")
     state: str = Field(..., description="Learning-state of the project")
     start_time: datetime = Field(..., description="start time of the project")
 
 class Project(ProjectCreate):           #sqlalchemy의 모델
-    username: str
+    user_name: str
     project_name : str
     state : str
     start_time : datetime
