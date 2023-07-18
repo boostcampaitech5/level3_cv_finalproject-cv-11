@@ -19,11 +19,23 @@ const Generate = () => {
   console.log(login)
 
   const handleGenerateStart = () => {
+    if (!login) {
+      alert("로그인이 필요합니다");
+      return;
+    }
+    else{
     navigate("/generate/start", { state: login }); // 생성 시작 페이지 이동
+    }
   };
 
   const handleGenerateList = () => {
+    if (!login) {
+      alert("로그인이 필요합니다");
+      return;
+    }
+    else{
     navigate("/generate/projects", { state: login }); // 결과 확인 페이지 이동
+    }
   };
 
   const handleBackDeepfake = () => {
