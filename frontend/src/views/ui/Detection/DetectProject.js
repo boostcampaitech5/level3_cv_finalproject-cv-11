@@ -26,10 +26,6 @@ const DetectProject = () => {
     fetchImageUrls();
   }, []);
 
-  const handleImageClick = (imageUrl) => {
-    window.open(imageUrl, "_blank");
-  };
-
   const fetchImageUrls = async () => {
     try {
       fastapi(
@@ -48,24 +44,6 @@ const DetectProject = () => {
       );
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const handleDownloadOutput = async () => {
-    if (imageUrls.output) {
-      try {
-        const response = await fetch(imageUrls.output);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "output.jpeg");
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      } catch (error) {
-        console.log(error);
-      }
     }
   };
 
