@@ -1,12 +1,11 @@
-from typing import List, Dict
-from fastapi import File, UploadFile, APIRouter, HTTPException
-from fastapi.responses import HTMLResponse, FileResponse, Response
 import os
-from datetime import datetime, timedelta
-
-from backend.routers import crud, model, schemas
+# from typing import List, Dict
+from fastapi import File, UploadFile, APIRouter, Depends
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
+from backend.routers import crud, model, schemas
 from backend.routers.database import SessionLocal, engine
+from datetime import datetime
 
 
 ## DB 세팅
@@ -20,36 +19,6 @@ def get_db():
     finally:
         db.close()
 
-class User(BaseModel):
-    username: str
-    email: Optional[str] = None
-    full_name: Optional[str] = None
-    disabled: Optional[bool] = None
-
-class UserInDB(User):
-    hashed_password: str
-
-def get_project(db, username: str, project_name = str):
-    if username in db:
-        project_dict = db[username]
-        return UserInDB(**project_dict)
-
-
-
-
-def create_project(db: Session, project: schemas.ProjectCreate):
-    project_data = model.Project(
-        username=project.username,
-        project_name=project.project_name,
-        state=project.state
-    )
-
-    db.add(project_data)
-    db.commit()
-    db.refresh(project_data)
-
-    return project_data
-
 # 폴더 생성
 def make_folder(path):
     try:
@@ -58,80 +27,98 @@ def make_folder(path):
     except OSError:
         return ('Error: Creating directory. ' +  path)
     
-
-# # # 폴더 삭제
-# # def delete_folder(path):
-# #     try:
-# #         if not os.path.exists(path):
-# #             os.remove(path)
-# #     except OSError:
-# #         return ('Error: not exists directory. ' +  path)
+# 폴더 삭제
+def delete_folder(path):
+    try:
+        if not os.path.exists(path):
+            os.remove(path)
+    except OSError:
+        return ('Error: not exists directory. ' +  path)
 
 generation_router = APIRouter()
 
-# generation 프로젝트 리스트 조회
-@generation_router.get("/generate/{username}")
-async def generation_project_list(username:str):
-    user_dir = f'./datas/{username}'
-    if not os.path.exists(user_dir):
-        return {"username": username, "project_len" : 0, "message" : '생성된 유저 폴더가 없습니다'}
-    
-    user_generation_dir = os.path.join(user_dir, 'generation')
-    if not os.path.exists(user_generation_dir):
-            return {"username": username, "project_len" : 0, "message" : '생성된 generate 프로젝트가 없습니다'}
+# 프로젝트 리스트 조회
+@generation_router.get("/{project_type}/{username}")
+async def generation_project_list(project_type : str, username:str):
+    if project_type == 'generation':
+        user_dir = f'./datas/{username}'
+        if not os.path.exists(user_dir):
+            return {"username": username,"project_type" : project_type, "project_len" : 0, "message" : '생성된 유저 폴더가 없습니다'}
+        
+        user_generation_dir = os.path.join(user_dir, 'generation')
+        if not os.path.exists(user_generation_dir):
+                return {"username": username, "project_type" : project_type, "project_len" : 0, "message" : '생성된 generate 프로젝트가 없습니다'}
 
-    project_list = os.listdir(user_generation_dir)
-    return {"username": username, "project_len" : len(project_list), "project_list": project_list}
+        project_list = os.listdir(user_generation_dir)
+        return {"username": username, "project_type" : project_type, "project_len" : len(project_list), "project_list": project_list}
 
-# 생성 - 신규 프로젝트 생성
-@generation_router.post("/generate/{username}/start")
-async def create_generation(username: str):
+# 신규 프로젝트 생성
+@generation_router.post("/{project_type}/{username}/start")
+async def create_generation(project_type : str, username: str, db: Session = Depends(get_db)):
     # 특정 유저 폴더 여부 확인
     user_dir = f'./datas/{username}'
     make_folder(user_dir)
+    if project_type == 'generate':
+        # 특정 유저의 generation 폴더 여부 확인, 없으면 생성
+        user_generation_dir = os.path.join(user_dir, 'generation')
+        make_folder(user_generation_dir)
 
-    # 특정 유저의 generation 폴더 여부 확인, 없으면 생성
-    user_generation_dir = os.path.join(user_dir, 'generation')
-    make_folder(user_generation_dir)
+        try:
+            # 현재 시간 기준으로 project 폴더 생성
+            current_time = datetime.now()
+            project_name = current_time.strftime("%y%m%d%H%M%S")
+            project_dir = os.path.join(user_generation_dir, f'{project_name}')
+            make_folder(project_dir)
+        except:
+            return {'result' : False, 'username': username, 'project_type' : project_type, 'project_name': project_name, "message": "Fail - created project folders "}
 
-    # 현재 시간 기준으로 project 폴더 생성
-    project_name = datetime.now().strftime("%y%m%d%H%M%S")
-    project_dir = os.path.join(user_generation_dir, f'{project_name}')
-    make_folder(project_dir)
+        # DB 신규 프로젝트 insert
+        project_dict = {
+            'username' : username,
+            'project_name' : project_name,
+            'state' : 'created',
+            'start_time' : current_time
+        }
+        project = schemas.ProjectCreate(**project_dict)
+        result = crud.create_project(db = db, project_type =project_type, project = project) # return T or F
 
-    return {'username': username, 'project_name': project_name, "message": "Project Create Success"}
-
-# 생성 - 프로젝트 이미지 업로드
-@generation_router.post("/generate/{username}/{project_name}/upload") # 생성하기-대상이미지업로드버튼
-async def upload_file(username : str, project_name : str, source_file: UploadFile = File(...), target_file: UploadFile = File(...)): #usernames : str):
-    # source, target, result 폴더 생성
-    project_dir = f'./datas/{username}/generation/{project_name}'
-    source_dir = os.path.join(project_dir, 'source')
-    target_dir = os.path.join(project_dir, 'target')
-    result_dir = os.path.join(project_dir, 'result')
-    make_folder(source_dir)
-    make_folder(target_dir)
-    make_folder(result_dir)
-
-    # source, target 순으로 파일 저장
-    source_path = os.path.join(source_dir, 'source.jpeg')
-    target_path = os.path.join(target_dir, 'target.jpeg')
-
-    # 파일 저장
-    with open(source_path, "wb") as buffer:
-        buffer.write(await source_file.read())
-
-    # 파일 저장
-    with open(target_path, "wb") as buffer:
-        buffer.write(await target_file.read())
-    
-    return { 'result': True , "message": f"File uploaded successfully."}
+    if result:
+        return {'result' : True, 'username': username, 'project_type' : project_type, 'project_name': project_name, "message": "Project Create Success"}
+    else:
+        # delete_folder(project_dir) # 해당 프로젝트 자체를 삭제함
+        return {'result' : False, 'username': username, 'project_type' : project_type, 'project_name': project_name, "message": "Fail - insert project to DB "}
 
 
+# 생성 프로젝트 이미지 업로드 - 1개이미지만
+@generation_router.post("/{project_type}/{username}/{project_name}/upload") # 생성하기-대상이미지업로드버튼
+async def upload_file(project_type : str, username : str, project_name : str, source_file: UploadFile = File(...), target_file: UploadFile = File(...)): #usernames : str):
+    if project_type == 'generation':
+        # source, target, result 폴더 생성
+        project_dir = f'./datas/{username}/generation/{project_name}'
+        source_dir = os.path.join(project_dir, 'source')
+        target_dir = os.path.join(project_dir, 'target')
+        result_dir = os.path.join(project_dir, 'result')
+        make_folder(source_dir)
+        make_folder(target_dir)
+        make_folder(result_dir)
 
-# 프로젝트 내 이미지 리스트 조회
+        # source, target 순으로 파일 저장
+        source_path = os.path.join(source_dir, 'source.jpeg')
+        target_path = os.path.join(target_dir, 'target.jpeg')
+
+        # 파일 저장
+        with open(source_path, "wb") as buffer:
+            buffer.write(await source_file.read())
+
+        # 파일 저장
+        with open(target_path, "wb") as buffer:
+            buffer.write(await target_file.read())
+        
+    return { 'result': True , "project_type" : project_type, "message": f"File uploaded successfully."}
+
+# 생성 프로젝트 내 이미지 리스트 조회
 @generation_router.get("/generate/{username}/{project_name}")
-async def get_user_project_imgs(username : str, project_name: str):
+async def get_generation_imgs(username : str, project_name: str):
     port = 'http://49.50.161.9:30008'
     result_dir = f'./datas/{username}/generation/{project_name}/result'
     result_path = os.path.join(result_dir, 'result.jpeg')
@@ -155,51 +142,22 @@ async def get_user_project_imgs(username : str, project_name: str):
             "output": None
         }
 
-# source 이미지 링크로 보내주기
-@generation_router.get("/generate/{username}/{project_name}/source")
-async def get_source_image(username: str, project_name: str):
-    source_dir = f'./datas/{username}/generation/{project_name}/source'
-    source_path = os.path.join(source_dir, 'source.jpeg')
-
-    if os.path.exists(source_path):
-        with open(source_path, "rb") as file:
-            contents = file.read()
-        response = Response(content=contents, media_type="image/jpeg")
-        response.headers["Content-Disposition"] = "inline"
-        return response
+# generation 프로젝트 이미지 링크로 보내주기
+@generation_router.get("/generate/{username}/{project_name}/{img_type}")
+async def get_generation_project_image(username : str, project_name: str, img_type : str):
+    if img_type in ['source', 'target', 'result']:
+        img_dir = f'./datas/{username}/generation/{project_name}/{img_type}'
+        img_path = os.path.join(img_dir, f'{img_type}.jpeg')
+        if os.path.exists(img_path):
+            with open(img_path, "rb") as file:
+                contents = file.read()
+            response = Response(content=contents, media_type="image/jpeg")
+            response.headers["Content-Disposition"] = "inline"
+            return response
+        else:
+            return Response(status_code=404)
     else:
         return Response(status_code=404)
-
-# target 이미지 링크로 보내주기
-@generation_router.get("/generate/{username}/{project_name}/target")
-async def get_target_image(username : str, project_name: str):
-    target_dir = f'./datas/{username}/generation/{project_name}/target'
-    target_path = os.path.join(target_dir, 'target.jpeg')
-
-    if os.path.exists(target_path):
-        with open(target_path, "rb") as file:
-            contents = file.read()
-        response = Response(content=contents, media_type="image/jpeg")
-        response.headers["Content-Disposition"] = "inline"
-        return response
-    else:
-        return Response(status_code=404)
-
-# output 이미지 링크로 보내주기
-@generation_router.get("/generate/{username}/{project_name}/result")
-async def get_result_image(username:str, project_name: str):
-    result_dir = f'./datas/{username}/generation/{project_name}/result'
-    result_path = os.path.join(result_dir, 'result.jpeg')
-
-    if os.path.exists(result_path):
-        with open(result_path, "rb") as file:
-            contents = file.read()
-        response = Response(content=contents, media_type="image/jpeg")
-        response.headers["Content-Disposition"] = "inline"
-        return response
-    else:
-        return Response(status_code=404)
-
 
 # # 생성 - 프로젝트 이미지 업로드 - 파일 여러개 버전
 # @generation_router.post("/generate/{username}/{project_name}/upload") # 생성하기-대상이미지업로드버튼
