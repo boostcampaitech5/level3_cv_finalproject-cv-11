@@ -1,6 +1,4 @@
 import sys
-sys
-
 from typing import List
 from fastapi import File, UploadFile, APIRouter
 from fastapi.responses import HTMLResponse, FileResponse
