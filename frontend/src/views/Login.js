@@ -56,7 +56,7 @@ function Login() {
               <div className="box2">
                 <h1>Sign In</h1>
                   <div className="id">
-                      <label htmlFor='user-id'>Email</label>
+                      <label htmlFor='user-id'>ID</label>
                       <br></br>
                       <input name='user-id'
                           type='text'
