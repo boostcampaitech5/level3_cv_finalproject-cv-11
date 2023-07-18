@@ -21,6 +21,9 @@ const GenerateProject = () => {
   const handleBackMain = () => {
     navigate(`/deepfake`, { state: { username: username, project_name: project_name } });
   };
+  const handleSurvey = () => {
+    navigate(`/survey`, { state: username });
+  };
 
   useEffect(() => {
     fetchImageUrls();
@@ -142,6 +145,13 @@ const GenerateProject = () => {
           onClick={handleDownloadOutput}
         >
           결과 이미지 다운로드
+        </Button>
+        <Button
+          className="btns"
+          color="primary"
+          onClick={handleSurvey}
+        >
+          만족도 조사 하러가기!
         </Button>
         <Footer />
       </div>
