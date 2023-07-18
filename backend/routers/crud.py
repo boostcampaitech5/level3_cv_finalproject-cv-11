@@ -49,3 +49,43 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+## project - generation / detection
+def create_project(db: Session, project_type: str, project: schemas.ProjectCreate):
+    if project_type == 'generate':
+        project_data = model.GenerationProject(
+            user_name=project.user_name,
+            project_name=project.project_name,
+            state=project.state, # created, running, finish, error
+            start_time=project.start_time
+        )
+    elif project_type == 'detect':
+        project_data = model.DetectionProject(
+            user_name=project.user_name,
+            project_name=project.project_name,
+            state=project.state,
+            start_time=project.start_time
+        )
+    else:
+        pass
+        # return False
+
+    db.add(project_data)
+    db.commit()
+    db.refresh(project_data)
+    return True
+    # except:
+    #     return False
+
+
+def get_all_project_by_username(db: Session, username: str, project_type :str):
+    if project_type == 'generate':
+        return db.query(model.GenerateProject).filter(model.GenerateProject.user_name == username)
+    else:
+        return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username)
+
+def get_project_by_username(db: Session, username: str, project_name : str, project_type :str):
+    if project_type == 'generate':
+        return db.query(model.GenerateProject).filter(model.GenerateProject.user_name == username).filter(model.GenerateProject.project_name == project_name).first()
+    else:
+        return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username).filter(model.DetectionProject.project_name == project_name).first()
