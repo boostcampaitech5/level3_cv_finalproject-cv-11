@@ -172,7 +172,7 @@ def detection(info: dict, db: Session = Depends(get_db)):
     fake_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
     target_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
     user_name = f'{username}'
-    source = '/opt/ml/level3_cv_finalproject-cv-11/datas/source'
+    source = '/opt/ml/level3_cv_finalproject-cv-11/source'
     make_synthesis.make_synthesis(real_path,source,fake_path)
     result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
     

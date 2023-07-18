@@ -95,7 +95,7 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
             validation(epoch, model, meta_train_loader)
             
 
-    dest = f'/opt/ml/level3_cv_finalproject-cv-11/data/{user_name}/model'
+    dest = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{user_name}/model'
     if not os.path.exists(dest):
         os.makedirs(dest)
                     
