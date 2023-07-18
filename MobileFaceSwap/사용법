@@ -1,3 +1,10 @@
+## Checkpoints 폴더 다운로드
+!wget https://github.com/takhyun12/MobileFaceSwap/releases/download/checkpoints/checkpoints.zip
+
+!mkdir /content/MobileFaceSwap/checkpoints
+!unzip /content/MobileFaceSwap/checkpoints.zip -d /content/MobileFaceSwap/checkpoints
+
+## 가상환경 구축 및 pip install
 conda create -n mobilefaceswap python=3.9.7
 pip install paddlepaddle==2.1.2
 pip install insightface==0.2.1
