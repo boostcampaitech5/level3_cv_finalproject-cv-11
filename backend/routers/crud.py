@@ -51,12 +51,12 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 ## project - generation / detection
-def create_project(db: Session, project: schemas.ProjectCreate, project_type: str):
+def create_project(db: Session, project_type: str, project: schemas.ProjectCreate):
     if project_type == 'generation':
         project_data = model.GenerationProject(
             username=project.username,
             project_name=project.project_name,
-            state=project.state,
+            state=project.state, # created, running, finish, error
             start_time=project.start_time
         )
     elif project_type == 'detection':
@@ -67,13 +67,15 @@ def create_project(db: Session, project: schemas.ProjectCreate, project_type: st
             start_time=project.start_time
         )
     else:
-        return None
+        return False
 
-    db.add(project_data)
-    db.commit()
-    db.refresh(project_data)
-
-    return project_data
+    try:
+        db.add(project_data)
+        db.commit()
+        db.refresh(project_data)
+        return True
+    except:
+        return False
 
 
 def get_all_project_by_username(db: Session, username: str, project_type :str):
