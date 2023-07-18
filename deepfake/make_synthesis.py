@@ -1,6 +1,6 @@
 import os
 
-pyfile = '/opt/ml/level3_cv_finalproject-cv-11/MobileFaceSwap/image_test.py'
+pyfile = '/opt/ml/input/level3_cv_finalproject-cv-11/MobileFaceSwap/image_test.py'
 
 def make_synthesis(target_img_path, source_img_path, output_dir):
     target_imgs = os.listdir(target_img_path)
@@ -11,7 +11,7 @@ def make_synthesis(target_img_path, source_img_path, output_dir):
         os.system(f'python {pyfile} --target_img_path {source_img} --source_img_path {target_img} --output_dir {output_dir}')
         print(f'complete_{target_img_}')
 
-    dir = '/opt/ml/level3_cv_finalproject-cv-11/MobileFaceSwap/temp'
+    dir = '/opt/ml/input/level3_cv_finalproject-cv-11/MobileFaceSwap/temp'
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))
 

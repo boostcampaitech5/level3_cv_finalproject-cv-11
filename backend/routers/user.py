@@ -129,13 +129,13 @@ def generation(info: dict, db: Session = Depends(get_db)):
     if not user:
         return {"result": False}
     
-    source = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/source'
-    target = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/target'
-    output = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
+    source = f'/opt/ml/input/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/source'
+    target = f'/opt/ml/input/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/target'
+    output = f'/opt/ml/input/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
     make_synthesis.make_synthesis(target,source,output)
     
     
-    port = 'http://118.67.133.181:30007'
+    port = 'http://49.50.161.9:30007'
     result_path = output + '/source.jpeg'
 
     if os.path.exists(result_path):
@@ -167,12 +167,12 @@ def detection(info: dict, db: Session = Depends(get_db)):
     if not user:
         return {"result": False}
     
-    model_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/Meta_train_learning_id_60.pt'
-    real_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/real'
-    fake_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
-    target_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
+    model_path = '/opt/ml/input/level3_cv_finalproject-cv-11/datas/Meta_train_learning_id_60.pt'
+    real_path = f'/opt/ml/input/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/real'
+    fake_path = f'/opt/ml/input/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
+    target_path = f'/opt/ml/input/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
     user_name = f'{username}'
-    source = '/opt/ml/level3_cv_finalproject-cv-11/source'
+    source = '/opt/ml/input/level3_cv_finalproject-cv-11/source'
     make_synthesis.make_synthesis(real_path,source,fake_path)
     result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
     
