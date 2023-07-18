@@ -36,7 +36,7 @@ video {
     margin: 15px;
   }
   
-  .btns2{
+  .btns{
     border-radius: 30px;
     width: 200px;
     height: 50px;
@@ -47,16 +47,19 @@ video {
     margin-top:50px;
     font-weight: bold;
   }
+  .snow{
+    height: 500px;
+  }
   .box-container {
     display: flex;
     justify-content: center; /* 가로 중앙 정렬 */
     align-items: center; /* 세로 중앙 정렬 */
-    height: 110vh; /* 부모 요소의 높이 설정 (화면 전체 높이로 설정하려면 vh를 사용합니다) */
+    height: 120vh; /* 부모 요소의 높이 설정 (화면 전체 높이로 설정하려면 vh를 사용합니다) */
   }
   .box {
     width: 500px; 
     height: 800px; 
-    background-color: #ccc;
+    background-color: #c9f5ee;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -84,7 +87,6 @@ video {
       display: block;
       text-decoration: none;
     }
-  
     .btns {
       width: 150px;
     }
