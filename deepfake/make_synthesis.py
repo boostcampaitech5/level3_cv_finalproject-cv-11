@@ -16,4 +16,9 @@ def make_synthesis(target_img_path, source_img_path, output_dir):
         os.remove(os.path.join(dir, f))
 
 if __name__ == '__main__':
-    print('import complete')
+    username = 'yoon'
+    project_name = '230717175420'
+    source_img_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/source'
+    target_img_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/target'
+    output_dir = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
+    make_synthesis(target_img_path, source_img_path, output_dir)
