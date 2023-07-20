@@ -12,17 +12,18 @@ const GenerateProject = () => {
   const location = useLocation();
   const username = location.state.username;
   const project_name = location.state.project_name;
+  const password=location.state.password;
 
 
   // 이전으로
   const handleBackGenerateList = () => {
-    navigate(`/generate/projects`, { state: { username: username, project_name: project_name } });
+    navigate(`/generate/projects`, { state: { username: username, password: password, project_name: project_name } });
   };
   const handleBackMain = () => {
-    navigate(`/deepfake`, { state: { username: username, project_name: project_name } });
+    navigate(`/deepfake`, { state: { username: username, password: password, project_name: project_name } });
   };
   const handleSurvey = () => {
-    navigate(`/survey`, { state: username });
+    navigate(`/survey`, {state: { username: username, password: password, project_name: project_name }});
   };
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const GenerateProject = () => {
         (response) => {
           setImageUrls(response);
           if (!response.complete) {
-            navigate('/generate/loading');
+            navigate('/generate/loading',{state: { username: username, password: password, project_name: project_name }});
           }
         },
         (error) => {

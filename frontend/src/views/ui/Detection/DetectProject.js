@@ -11,15 +11,16 @@ const DetectProject = () => {
   const location = useLocation();
   const username = location.state.username;
   const project_name = location.state.project_name;
+  const password=location.state.password
   const result = location.state.result; // fake, real
 
 
   // 이전으로
   const handleBackDetectList = () => {
-    navigate(`/detect/projects`, { state: { username: username, project_name: project_name } });
+    navigate(`/detect/projects`, { state: { username: username, password: password, project_name: project_name } });
   };
   const handleBackMain = () => {
-    navigate(`/deepfake`, { state: { username: username, project_name: project_name } });
+    navigate(`/deepfake`, { state: { username: username, password: password, project_name: project_name } });
   };
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const DetectProject = () => {
         (response) => {
           setImageUrls(response);
           if (!response.complete) {
-            navigate('/generate/loading');
+            navigate('/generate/loading', {state: { username: username, password: password, project_name: project_name }});
           }
         },
         (error) => {
