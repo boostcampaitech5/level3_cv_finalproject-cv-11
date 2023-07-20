@@ -2,11 +2,11 @@
 CREATE TABLE generation (
   project_id INT AUTO_INCREMENT PRIMARY KEY,
   project_name VARCHAR(255),
+  user_id INT
   user_name VARCHAR(255),
   start_time DATETIME,
   end_time DATETIME,
   state VARCHAR(255),
-  output_url VARCHAR(255)
 );
 
 INSERT INTO generation (project_name, user_name, start_time, end_time, state, output_url)
@@ -16,11 +16,12 @@ VALUES ('230101000000', 'test', '2023-01-01 00:00:00', NULL, 'running', NULL);
 CREATE TABLE detection (
   project_id INT AUTO_INCREMENT PRIMARY KEY,
   project_name VARCHAR(255),
+  user_id INT
   user_name VARCHAR(255),
   start_time DATETIME,
   end_time DATETIME,
   state VARCHAR(255),
-  output_url VARCHAR(255)
+  output VARCHAR(255)
 );
 
 INSERT INTO detection (project_name, user_name, start_time, end_time, state, output_url)

@@ -84,7 +84,7 @@ async def create_user_project(project_type : str, username: str, db: Session = D
     }
     project = schemas.ProjectCreate(**project_dict)
     result = crud.create_project(db = db, project_type =project_type, project = project) # return T or F
-
+    update_user_id(db = db,project_type =project_type) # user_id 채우기
     if result:
         return {'result' : True, 'username': username, 'project_type' : project_type, 'project_name': project_name, "message": "Project Create Success"}
     else:
@@ -220,3 +220,39 @@ async def get_result_image(username:str, project_name: str):
         return response
     else:
         return Response(status_code=404)
+    
+## project tabel의 user_id 채우기
+def update_user_id(db: Session = Depends(get_db), project_type = str):
+    if project_type == 'generate':
+        try:
+            # Update user_id in the Detection table based on user_name and users table
+            db.execute("""
+                UPDATE generation AS g
+                JOIN users AS u ON g.user_name = u.username
+                SET g.user_id = u.user_id
+            """)
+            db.commit()
+            return {"message": "User IDs updated successfully!"}
+        except Exception as e:
+            db.rollback()
+            return {"error": str(e)}
+        finally:
+            db.close()
+    elif project_type == 'detect':
+        try:
+            # Update user_id in the Detection table based on user_name and users table
+            db.execute("""
+                UPDATE detection AS d
+                JOIN users AS u ON d.user_name = u.username
+                SET d.user_id = u.user_id
+            """)
+            db.commit()
+            return {"message": "User IDs updated successfully!"}
+        except Exception as e:
+            db.rollback()
+            return {"error": str(e)}
+        finally:
+            db.close()
+    else:
+        db.close()
+

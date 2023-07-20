@@ -21,13 +21,13 @@ def detection(info: dict, db: Session = Depends(get_db)):
     password = info['password']
     
     ## running로 state 변경 후 학습 시작
-    state_running = crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'running')
+    state_running = crud.update_detection_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'running')
     if not state_running: # DB state -  running 실패
-        crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error(db)')
+        crud.update_detection_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error-db')
     else: # DB state -  running 성공
         user = crud.get_user_for_login(db, username=username, password=password)
         if not user:
-            crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error(not user)')
+            crud.update_detection_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error-not user')
             return {"result": False}
     
         try:
@@ -39,7 +39,7 @@ def detection(info: dict, db: Session = Depends(get_db)):
             source = '/opt/ml/level3_cv_finalproject-cv-11/source'
             make_synthesis.make_synthesis(real_path,source,fake_path)
             result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
-            crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'finished')
+            crud.update_detection_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'finished', output = result)
             return result
         except:
-            crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error(model)')
+            crud.update_detection_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error-model')

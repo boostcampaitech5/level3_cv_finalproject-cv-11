@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 
-
 ## user 생성
 class UserId(BaseModel):      #pydantic의 모델
     id: int
@@ -29,7 +28,6 @@ class User(UserBase):           #sqlalchemy의 모델
         orm_mode = True
 
 
-
 ## project 생성
 class ProjectCreate(BaseModel):
     user_name: str = Field(..., description="Username of the user")
@@ -37,13 +35,27 @@ class ProjectCreate(BaseModel):
     state: str = Field(..., description="Learning-state of the project")
     start_time: datetime = Field(..., description="start time of the project")
 
-class Project(ProjectCreate):           #sqlalchemy의 모델
-    user_name: str
+class GenerationProject(ProjectCreate): 
+    project_id : int
     project_name : str
+    user_id :str       
+    user_name: str
     state : str
     start_time : datetime
     end_time : datetime
-    output_url : str
+
+    class Config:
+        orm_mode = True
+
+class DetectionProject(ProjectCreate):           #sqlalchemy의 모델
+    project_id : int
+    project_name : str
+    user_id :str       
+    user_name: str
+    state : str
+    start_time : datetime
+    end_time : datetime
+    output : str
 
     class Config:
         orm_mode = True

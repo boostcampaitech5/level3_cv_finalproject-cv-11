@@ -9,6 +9,13 @@ ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 def get_password_hash(password):
     return pwd_context.hash(password)
@@ -77,7 +84,7 @@ def create_project(db: Session, project_type: str, project: schemas.ProjectCreat
     # except:
     #     return False
 
-
+## 프로젝트 조회
 def get_all_project_by_username(db: Session, username: str, project_type :str):
     if project_type == 'generate':
         return db.query(model.GenerationProject).filter(model.GenerationProject.user_name == username).all()
@@ -90,24 +97,37 @@ def get_project_by_username(db: Session, username: str, project_name : str, proj
     else:
         return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username).filter(model.DetectionProject.project_name == project_name).first()
 
-def update_state_by_projectname(db: Session, username: str, project_type: str, project_name: str, new_state: str):
+def get_all_project_by_user_id(db: Session, user_id: str, project_type :str):
     if project_type == 'generate':
-        project = db.query(model.GenerationProject).filter_by(user_name=username, project_name=project_name).first()
-        if project:
-            project.state = new_state
-            project.end_time = datetime.datetime.now()
-            db.commit()
-            db.refresh(project)
-            return True
-        return False
-    elif project_type == 'detect':
-        project = db.query(model.DetectionProject).filter_by(user_name=username, project_name=project_name).first()
-        if project:
-            project.state = new_state
-            project.end_time = datetime.datetime.now()
-            db.commit()
-            db.refresh(project)
-            return True
-        return False
+        return db.query(model.GenerationProject).filter(model.GenerationProject.user_id == user_id).all()
     else:
-        return False
+        return db.query(model.DetectionProject).filter(model.DetectionProject.user_id == user_id).all()
+
+def get_project_by_user_id(db: Session, user_id: str, project_name : str, project_type :str):
+    if project_type == 'generate':
+        return db.query(model.GenerationProject).filter(model.GenerationProject.user_name == user_id).filter(model.GenerateProject.project_name == project_name).first()
+    else:
+        return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == user_id).filter(model.DetectionProject.project_name == project_name).first()
+    
+## 프로젝트 상태 업데이트
+def update_generation_state_by_projectname(db: Session, username: str, project_name: str, new_state: str):
+    project = db.query(model.GenerationProject).filter_by(user_name=username, project_name=project_name).first()
+    if project:
+        project.state = new_state
+        project.end_time = datetime.datetime.now()
+        db.commit()
+        db.refresh(project)
+        return True
+    return False
+
+def update_detection_state_by_projectname(db: Session, username: str, project_name: str, new_state: str, output : None):
+    project = db.query(model.DetectionProject).filter_by(user_name=username, project_name=project_name).first()
+    if project:
+        project.state = new_state
+        project.end_time = datetime.datetime.now()
+        if output is not None:
+            project.output = output
+        db.commit()
+        db.refresh(project)
+        return True
+    return False

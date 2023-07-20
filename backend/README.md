@@ -71,18 +71,66 @@ In the project directory, you can run:
 `mysql -u root -p`
 3. activate user_db database  
 `use user_db;`
-4. make table  
+4. make table 
+* 이전버전 
 `create table users (
         username varchar(255) primary key,
         hashed_password varchar(255) not null,
         signin_name varchar(255) not null
         );`
+
+* 수정된 버전
+`create table users (
+        user_id int AUTO_INCREMENT primary key,
+        username varchar(255),
+        hashed_password varchar(255) not null,
+        signin_name varchar(255) not null
+        );`
+
+* 기존 버전에서 수정된 버전으로 변경하는 코드
+`ALTER TABLE users
+ADD COLUMN user_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+`
+
 5. insert test user info  
 `insert into users values ("temp_username", "temp_hashed_password", "temp_email@temp.com");`
 7. check user info  
 `select * from users;`
 8. change table charset to utf-8
 `ALTER TABLE users CONVERT TO CHARSET UTF8;`
+
+## create generation, detection table
+ `CREATE TABLE generation (
+  project_id INT AUTO_INCREMENT PRIMARY KEY,
+  project_name VARCHAR(255),
+  user_id INT
+  user_name VARCHAR(255),
+  start_time DATETIME,
+  end_time DATETIME,
+  state VARCHAR(255),
+);`
+
+
+`CREATE TABLE detection (
+  project_id INT AUTO_INCREMENT PRIMARY KEY,
+  project_name VARCHAR(255),
+  user_id INT
+  user_name VARCHAR(255),
+  start_time DATETIME,
+  end_time DATETIME,
+  state VARCHAR(255),
+  output VARCHAR(255)
+);`
+
+## fill generation, detection user_id
+`UPDATE generation AS g
+JOIN users AS u ON g.user_name = u.username
+SET g.user_id = u.user_id;`
+
+`UPDATE detection AS d
+JOIN users AS u ON d.user_name = u.username
+SET d.user_id = u.user_id;`
+
 
 user table info may change accoring to development  
 when error caused by db remake table by command again
