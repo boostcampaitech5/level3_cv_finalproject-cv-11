@@ -93,7 +93,7 @@ const GenerateProject = () => {
         <Row>
           <Col xs="12" md="6">
           <div className="image-container">
-            <h3>대상이미지</h3>
+            <h3>배경이미지</h3>
               {imageUrls.source && (
                 <div className="image-wrapper">
                 <img
@@ -106,7 +106,7 @@ const GenerateProject = () => {
               )}
             </div>
             <div className="image-container">
-              <h3>배경이미지</h3>
+              <h3>대상이미지</h3>
               <div className="image-wrapper">
                 {imageUrls.target && (
                   <img
