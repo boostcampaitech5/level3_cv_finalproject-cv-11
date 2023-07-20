@@ -3,11 +3,10 @@ import {
   CardBody,
   Button
 } from "reactstrap";
-import './Generate.css'
+import './Loading.css'
 import Footer from "../../../layouts/Footer";
 import { useNavigate, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import Video from '../../../assets/video/loading.mp4'
 import fastapi from "../../../lib/api";
 
 const Loading = () => {
@@ -20,11 +19,11 @@ const Loading = () => {
   const project_name = location.state.project_name
 
   const handleClickGenerate = () => {
-    navigate("/generate"); // generate 페이지로 이동
+    navigate("/generate",{state: { username: username, password: password, project_name: project_name }}); // generate 페이지로 이동
   };
 
   const handleClickGenerateList = () => {
-    navigate("/generate/projects"); // generate 페이지로 이동
+    navigate("/generate/projects",{state: { username: username, password: password, project_name: project_name }}); // generate 페이지로 이동
   };
 
   const handleCheckState = async () => {
@@ -52,7 +51,7 @@ const Loading = () => {
 
       // 도착한 응답이 있는 경우 페이지를 이동시키는 로직
       if (response) {
-        navigate(`/generate/${project_name}`, { state: location.state });
+        navigate(`/generate/${project_name}`, {state: { username: username, password: password, project_name: project_name }});
       }
     } catch (error) {
       // 에러 처리
@@ -80,16 +79,16 @@ const Loading = () => {
         </div>
       </div>
       <Card>
-        <CardBody className="">
-          <div className="box-container3">
-            <div className="box3">
-              <video autoPlay loop muted src={Video} type='video/mp4' />
-              <h3>모델 학습중입니다! 조금만 기다려주세요</h3>
+          <CardBody className="">
+            <div class="video-container">
+              <video autoPlay muted loop>
+                <source src='/videos/loading.mp4' type='video/mp4'/>
+              </video>
             </div>
-          </div>
-        </CardBody>
-        <Footer />
+            <h3>모델 학습중입니다! 조금만 기다려주세요</h3>
+          </CardBody>
       </Card>
+      <Footer />
     </div>
   );
 };
