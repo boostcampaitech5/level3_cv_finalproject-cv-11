@@ -173,6 +173,29 @@ async def get_user_project_imgs(username : str, project_name: str):
             "output": None
         }
 
+    
+@project_router.get("/detect/{username}/{project_name}")
+async def get_user_project_imgs(username : str, project_name: str):
+    port = 'http://49.50.161.98:30007'
+    result_dir = f'./datas/{username}/detection/{project_name}/target'
+    jpgs = os.listdir(result_dir)
+    result_path = result_dir + '/' +jpgs[0]
+
+    if os.path.exists(result_path):
+        return {
+            "username": username,
+            "project": project_name,
+            "complete": True,
+            "target": f'{port}/detect/{username}/{project_name}/target',
+        }
+    else:
+        return {
+            "username": username,
+            "project": project_name,
+            "complete": False,
+            "target": None,
+        }
+
 
 # source 이미지 링크로 보내주기
 @project_router.get("/generate/{username}/{project_name}/source")
@@ -214,6 +237,20 @@ async def get_result_image(username:str, project_name: str):
 
     if os.path.exists(result_path):
         with open(result_path, "rb") as file:
+            contents = file.read()
+        response = Response(content=contents, media_type="image/jpeg")
+        response.headers["Content-Disposition"] = "inline"
+        return response
+    else:
+        return Response(status_code=404)
+
+@project_router.get("/detect/{username}/{project_name}/target")
+async def get_target_image(username : str, project_name: str):
+    target_dir = f'./datas/{username}/detection/{project_name}/target'
+    target_path = os.path.join(target_dir, 'target.jpeg')
+
+    if os.path.exists(target_path):
+        with open(target_path, "rb") as file:
             contents = file.read()
         response = Response(content=contents, media_type="image/jpeg")
         response.headers["Content-Disposition"] = "inline"
