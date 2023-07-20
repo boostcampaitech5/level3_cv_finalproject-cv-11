@@ -51,7 +51,7 @@
     
         // 도착한 응답이 있는 경우 페이지를 이동시키는 로직
         if (response) {
-          navigate(`/detect/${project_name}`,{state:location.state});
+          navigate(`/detect/${project_name}`,{state:{ username: username, password: password, project_name: project_name, result:response }});
         }
       } catch (error) {
         // 에러 처리
@@ -80,15 +80,15 @@
         </div>
         <Card>
           <CardBody className="">
-            <div class="video-container">
+            <div className="video-container">
               <video autoPlay muted loop>
                 <source src='/videos/loading.mp4' type='video/mp4'/>
               </video>
             </div>
             <h3>모델 학습중입니다! 조금만 기다려주세요</h3>
           </CardBody>
+          <Footer />
         </Card>
-        <Footer />
       </div>
     );
   };

@@ -80,15 +80,15 @@ const Loading = () => {
       </div>
       <Card>
           <CardBody className="">
-            <div class="video-container">
+            <div className="video-container">
               <video autoPlay muted loop>
                 <source src='/videos/loading.mp4' type='video/mp4'/>
               </video>
             </div>
             <h3>모델 학습중입니다! 조금만 기다려주세요</h3>
           </CardBody>
-      </Card>
-      <Footer />
+          <Footer />
+        </Card>
     </div>
   );
 };
