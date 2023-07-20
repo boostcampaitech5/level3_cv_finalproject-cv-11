@@ -11,7 +11,7 @@ from utils.prepare_data import LandmarkModel
 
 def get_id_emb(id_net, id_img_path):
     id_img = cv2.imread(id_img_path)
-
+    
     id_img = cv2.resize(id_img, (112, 112))
     id_img = cv2paddle(id_img)
     mean = paddle.to_tensor([[0.485, 0.456, 0.406]]).reshape((1, 3, 1, 1))
@@ -81,6 +81,9 @@ def face_align(landmarkModel, image_path, merge_result=False, image_size=224):
             cv2.imwrite(base_path + '_aligned.png', aligned_img)
             if merge_result:
                 np.save(base_path + '_back.npy', back_matrix)
+        else:
+            return False
+    return True
 
 
 if __name__ == '__main__':
@@ -98,8 +101,17 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.need_align:
         landmarkModel = LandmarkModel(name='landmarks')
-        landmarkModel.prepare(ctx_id= 0, det_thresh=0.6, det_size=(160,160))
-        face_align(landmarkModel, args.source_img_path)
+        landmarkModel.prepare(ctx_id= 0, det_thresh=0.6, det_size=(800,800))
+        if not face_align(landmarkModel, args.source_img_path):
+            print('fail to 920')
+            landmarkModel = LandmarkModel(name='landmarks')
+            landmarkModel.prepare(ctx_id= 0, det_thresh=0.6, det_size=(640,640))
+            if not face_align(landmarkModel, args.source_img_path):
+                print('fail to 640')
+                landmarkModel = LandmarkModel(name='landmarks')
+                landmarkModel.prepare(ctx_id= 0, det_thresh=0.6, det_size=(160,160))
+                if not face_align(landmarkModel, args.source_img_path):
+                    print('source align fail')
         face_align(landmarkModel, args.target_img_path, args.merge_result, args.image_size)
     os.makedirs(args.output_dir, exist_ok=True)
     image_test(args)

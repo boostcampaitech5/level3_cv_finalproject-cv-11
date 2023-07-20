@@ -62,7 +62,7 @@ function Register(props) {
                     ></input>
                 </div>
                 <div className="id">
-                    <label htmlFor='user-id'>Email</label>
+                    <label htmlFor='user-id'>ID</label>
                     <br></br>
                     <input name='user-id'
                         type='text' 

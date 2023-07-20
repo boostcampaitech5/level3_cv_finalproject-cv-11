@@ -1,42 +1,54 @@
 # Getting Started with Google Cloud Platform
 
 ## Make GCP instance 
-0. call for GPU allocation [참고]: https://kim6394.tistory.com/98  
-1. [Make gcp instance](https://console.cloud.google.com/compute/instances)
+0. [Make gcp instance](https://console.cloud.google.com/compute/instances)
+1. call for GPU allocation [참고]: https://kim6394.tistory.com/98  
+
 2. GCP config
+```
 region: asia-northeast3-b  
 GPU: Nvidia-T4, num:1  
 CPU: n1-standard-4(vCPU 4개, 15GB 메모리)
 Boot-disk: Ubuntu20.04LTS at least 30GB
 Firewall: allow all
-
-3. make SSH-key & add metadata & access with VSCode to GCE
+```
+3. make SSH-key & add metadata & access with VSCode to GCE  
 follow this link to make key by puttygen(don't need private key)https://amanokaze.github.io/blog/Connect-GCE-using-VS-Code/
 
-4. install cuda  
-`sudo apt install ubuntu-drivers-common`  
-`sudo apt install nvidia-driver-515`  
-`wget https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux.run`  
+4. install cuda
+```  
+sudo apt install ubuntu-drivers-common  
+sudo apt install nvidia-driver-515  
+wget https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux.run
+```
 if above link expired find appropriate version in this link https://developer.nvidia.com/cuda-toolkit-archive  
+
+  
 `sudo sh cuda_11.7.0_515.43.04_linux.run` need to wait long time  
 ![image](https://github.com/boostcampaitech5/level3_cv_finalproject-cv-11/assets/58303938/06df2ae9-883b-4653-a30d-847de3a6a686)  
-*remember checkout Driver!*
+*remember checkout Driver!*  
+
+  
 5. update .bashrc  
 add this to /home/USERNAME/.bashrc  
-`export PATH=/usr/local/cuda-11.7/bin${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}`
+```
+export PATH=/usr/local/cuda-11.7/bin${PATH:+:${PATH}}`  
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+```
 
 6. run bashrc  
 `source ~/.bashrc`  
 7. check installed CUDA  
 `nvcc --version`
-8. download cudnn fron oneDrive
+8. download cudnn fron oneDrive  
 filename is cudnn-linux-x86_64-8.5.0.96_cuda11-archive.tar.zip
 9. install cudnn  
-`tar -xvf cudnn-linux-x86_64-8.5.0.96_cuda11-archive.tar.xz`  
-`sudo cp cudnn-linux-x86_64-8.5.0.96_cuda11-archive/include/cudnn*.h /usr/local/cuda/include
+`tar -xvf cudnn-linux-x86_64-8.5.0.96_cuda11-archive.tar.xz`
+```
+sudo cp cudnn-linux-x86_64-8.5.0.96_cuda11-archive/include/cudnn*.h /usr/local/cuda/include
 sudo cp -P cudnn-linux-x86_64-8.5.0.96_cuda11-archive/lib/libcudnn* /usr/local/cuda/lib64
-sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*`
+sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+```
 10. check installed cudnn  
 `cat /usr/local/cuda/include/cudnn_version.h | grep CUDNN_MAJOR -A 2`
 11. reboot to apply changes  
@@ -74,11 +86,13 @@ after this move to develop branch and pull
 3. activate user_db database  
 `use user_db;`
 4. make table  
-`create table users (
+```
+create table users (
         username varchar(255) primary key,
         hashed_password varchar(255) not null,
         signin_name varchar(255) not null
-        );`
+        );
+```
 5. insert test user info  
 `insert into users values ("temp_username", "temp_hashed_password", "temp_email@temp.com");`
 7. check user info  

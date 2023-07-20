@@ -11,14 +11,14 @@ const DetectList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const username = location.state.username;
-
+  const password=location.state.password
   useEffect(() => {
     fetchProjectList(username);
   }, []);
 
   // 이전으로
   const handleBackDetect = () => {
-    navigate("/detect", { state: { username: username } }); // generate 페이지로 이동
+    navigate("/detect", { state: { username: username, password:password } }); // generate 페이지로 이동
   };
 
   // 조회된 프로젝트 리스트
@@ -40,7 +40,7 @@ const DetectList = () => {
 
   const handleNavigateToProject = (projectName) => {
     navigate(`/detect/${projectName}`, {
-      state: { username: username, project_name: projectName },
+      state: { username: username, password:password, project_name: projectName },
     });
   };
 

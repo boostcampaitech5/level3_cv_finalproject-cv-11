@@ -56,7 +56,7 @@ video {
   .box {
     width: 500px; 
     height: 550px; 
-    background-color: #ccc;
+    background-color: #c9f5ee;
     border-radius: 10px;
     display: flex;
     flex-direction: column;

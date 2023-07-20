@@ -103,19 +103,19 @@ const DetectStart = () => {
       <Card>
         <CardBody className="">
           <div className="mt-3">
-            <h3>생성하기</h3>
-            <div className="box-container2">
-              <div className="box2">
-                <img src={Image} alt="이미지 유의사항" />
+            <div className="box-container">
+              <div className="box">
+                <h2>유의사항</h2>
+                <img className='snow' src={Image} alt="이미지 유의사항" />
                 <div>
                   <Button
-                    className="btns2"
-                    color="primary"
+                    className="btns"
+                    color="secondary"
                     size="lg"
                     onClick={handleClickFolderUploadButton}
                     data-files-input="real-images-input"
                   >
-                    이미지 폴더 업로드
+                    학습 이미지
                   </Button>
                   <input
                     id="real-images-input"
@@ -126,13 +126,13 @@ const DetectStart = () => {
                     style={{ display: "none" }}
                   />
                   <Button
-                    className="btns2"
-                    color="primary"
+                    className="btns"
+                    color="secondary"
                     size="lg"
                     onClick={handleClickFolderUploadButton}
                     data-files-input="target-image-input"
-                  >
-                    target 이미지
+                    >
+                    탐지하려는 이미지
                   </Button>
                   <input
                     id="target-image-input"
@@ -143,8 +143,8 @@ const DetectStart = () => {
                   />
                 </div>
                 <Button
-                  className="btns2"
-                  color="success"
+                  className="btns"
+                  color="info"
                   size="lg"
                   onClick={handleUploadButtonClick}
                 >

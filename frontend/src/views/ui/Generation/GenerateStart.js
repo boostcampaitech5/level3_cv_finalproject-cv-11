@@ -16,7 +16,7 @@ const GenerateStart = () => {
 
   // 메인 페이지로 이동
   const handleBackGenerate = () => {
-    navigate("/generate");
+    navigate("/generate",{state: location.state});
   };
 
   // 소스 or 타겟 이미지를 받아 userState 객체로 변환
@@ -99,19 +99,19 @@ const GenerateStart = () => {
       <Card>
         <CardBody className="">
           <div className="mt-3">
-            <h3>생성하기</h3>
-            <div className="box-container2">
-              <div className="box2">
-                <img src={Image} alt="이미지 유의사항" />
+            <div className="box-container">
+              <div className="box">
+                <h2>유의사항</h2>
+                <img className='snow' src={Image} alt="이미지 유의사항" />
                 <div>
                   <Button
-                    className="btns2"
-                    color="primary"
+                    className="btns"
+                    color="secondary"
                     size="lg"
                     onClick={handleClickUploadButton}
                     data-file-input="source-image-input"
                   >
-                    source 업로드 - 대상이미지
+                    대상이미지
                   </Button>
                   <input
                     id="source-image-input"
@@ -122,13 +122,13 @@ const GenerateStart = () => {
                   />
 
                   <Button
-                    className="btns2"
-                    color="primary"
+                    className="btns"
+                    color="secondary"
                     size="lg"
                     onClick={handleClickUploadButton}
                     data-file-input="target-image-input"
                   >
-                    target 업로드 - 배경이미지
+                    배경이미지
                   </Button>
                   <input
                     id="target-image-input"
@@ -139,8 +139,8 @@ const GenerateStart = () => {
                   />
                 </div>
                 <Button
-                  className="btns2"
-                  color="success"
+                  className="btns"
+                  color="info"
                   size="lg"
                   onClick={handleUploadButtonClick}
                 >
