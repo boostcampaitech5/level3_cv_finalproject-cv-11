@@ -25,12 +25,12 @@ function Footer() {
         <div className='footer-link-wrapper'>
           <div className='footer-link-items'>
             <h2>Aivengers</h2>
-            <Link to='/'>Phone: 1234-5678</Link>
+            <Link to='/'>Phone: 010-4358-0827</Link>
             <Link to='/'>Fax: 070-1234-5678</Link>
-            <Link to='/'>email: 1111@naver.com</Link>
+            <Link to='/'>email: i23@naver.com</Link>
           </div>
           <div className='footer-link-items'>
-            <h2>Social Media</h2>
+            <h2>SNS</h2>
             <Link to='/'>Instagram</Link>
             <Link to='/'>Facebook</Link>
             <Link to='/'>Youtube</Link>
@@ -42,7 +42,7 @@ function Footer() {
         <div className='social-media-wrap'>
           <div className='footer-logo'>
             <Link to='/' className='social-logo'>
-              사이트이름 &nbsp;
+              Fakey &nbsp;
               <i className="fab fa-contao"/>
             </Link>
           </div>
