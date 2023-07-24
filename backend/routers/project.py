@@ -133,7 +133,7 @@ async def upload_detection_file(username : str, project_name : str,  real_file: 
     # source, target 순으로 파일 저장
     target_path = os.path.join(target_dir, 'target.jpeg')
 
-
+    print(real_file)
     # 파일 저장
     for i in real_file:
         real_path = os.path.join(real_dir, f'real_{i.filename}.jpeg')
