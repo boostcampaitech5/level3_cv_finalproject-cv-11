@@ -14,24 +14,29 @@ const Loading = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState({ detail: [] });
+  const user_id = location.state.user_id
   const username = location.state.username
   const password = location.state.password
+  const project_id = location.state.project_id
   const project_name = location.state.project_name
 
   const handleClickGenerate = () => {
-    navigate("/generate",{state: { username: username, password: password, project_name: project_name }}); // generate 페이지로 이동
+    navigate("/generate", { state: { user_id: user_id, username: username, password: password } }); // generate 페이지로 이동
   };
 
   const handleClickGenerateList = () => {
-    navigate("/generate/projects",{state: { username: username, password: password, project_name: project_name }}); // generate 페이지로 이동
+    navigate("/generate/projects", { state: { user_id: user_id, username: username, password: password } }); // generate 페이지로 이동
   };
 
   const handleCheckState = async () => {
     try {
       let params = {
+        user_id: user_id,
         username: username,
-        password: password,
+        project_id: project_id,
         project_name: project_name,
+        password: password,
+
       };
       let response;
 
@@ -51,7 +56,7 @@ const Loading = () => {
 
       // 도착한 응답이 있는 경우 페이지를 이동시키는 로직
       if (response) {
-        navigate(`/generate/${project_name}`, {state: { username: username, password: password, project_name: project_name }});
+        navigate(`/generate/${project_name}`, { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name } });
       }
     } catch (error) {
       // 에러 처리
@@ -79,16 +84,16 @@ const Loading = () => {
         </div>
       </div>
       <Card>
-          <CardBody className="">
-            <div className="video-container">
-              <video autoPlay muted loop>
-                <source src='/videos/loading.mp4' type='video/mp4'/>
-              </video>
-            </div>
-            <h3>모델 학습중입니다! 조금만 기다려주세요</h3>
-          </CardBody>
-          <Footer />
-        </Card>
+        <CardBody className="">
+          <div className="video-container">
+            <video autoPlay muted loop>
+              <source src='/videos/loading.mp4' type='video/mp4' />
+            </video>
+          </div>
+          <h3>모델 학습중입니다! 조금만 기다려주세요</h3>
+        </CardBody>
+        <Footer />
+      </Card>
     </div>
   );
 };

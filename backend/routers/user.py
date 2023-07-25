@@ -159,7 +159,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     response.set_cookie(key="username", value=form_data.username, httponly=True, samesite="none")
     response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="none")         #maybe save access token to user_db
     # return response
-    return {"islogin": True}
+    return {"islogin": True, 'user_id' : user.user_id}
 
 
 @users_router.post("/signin")

@@ -11,12 +11,14 @@ const DetectStart = () => {
   const [selectedTargetImage, setSelectedTargetImage] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const username = location.state.username
-  const password = location.state.password
+  const login = location.state
+  const user_id = login.user_id
+  const username = login.username
+  const password = login.password
 
   // 메인 페이지로 이동
   const handleBackDetect = () => {
-    navigate("/detect");
+    navigate("/detect", { state: login });
   };
 
   // 이미지 파일들을 선택하여 userState 객체로 변환
@@ -32,7 +34,7 @@ const DetectStart = () => {
   };
 
   // 이미지 파일들을 서버로 전송 후 모델 학습 페이지로 이동
-  const handleFolderSubmit = async (username, project_name) => {
+  const handleFolderSubmit = async (project_id, project_name) => {
     const formData = new FormData();
     selectedImages.forEach((image, index) => {
       formData.append('real_file', image, `${index}`); //0 ~14
@@ -46,7 +48,7 @@ const DetectStart = () => {
     // const params = formData;
     await fastapi("formdata", url, formData);
     try {
-      navigate('/detect/loading', { state: { username: username, password: password, project_name: project_name } });
+      navigate('/detect/loading', { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name } });
     } catch (error) {
       console.log(error);
     }
@@ -59,8 +61,8 @@ const DetectStart = () => {
       `/detect/${username}/start`,
       {},
       (response) => {
-        const { project_name } = response;
-        handleFolderSubmit(username, project_name);
+        const { project_id, project_name } = response;
+        handleFolderSubmit(project_id, project_name);
       },
       (error) => {
         console.log(error);
@@ -131,7 +133,7 @@ const DetectStart = () => {
                     size="lg"
                     onClick={handleClickFolderUploadButton}
                     data-files-input="target-image-input"
-                    >
+                  >
                     탐지하려는 이미지
                   </Button>
                   <input

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row,Col,Card, CardBody, Button } from "reactstrap";
+import { Row, Col, Card, CardBody, Button } from "reactstrap";
 import "./GenerateProject.css";
 import Footer from "../../../layouts/Footer";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -10,20 +10,22 @@ const GenerateProject = () => {
   const [imageUrls, setImageUrls] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const user_id = location.state.user_id;
   const username = location.state.username;
+  const project_id = location.state.project_id;
   const project_name = location.state.project_name;
-  const password=location.state.password;
+  const password = location.state.password;
 
 
   // 이전으로
   const handleBackGenerateList = () => {
-    navigate(`/generate/projects`, { state: { username: username, password: password, project_name: project_name } });
+    navigate(`/generate/projects`, { state: { user_id: user_id, username: username, password: password } });
   };
   const handleBackMain = () => {
-    navigate(`/deepfake`, { state: { username: username, password: password, project_name: project_name } });
+    navigate(`/deepfake`, { state: { user_id: user_id, username: username, password: password } });
   };
   const handleSurvey = () => {
-    navigate(`/survey`, {state: { username: username, password: password, project_name: project_name }});
+    navigate(`/survey`, { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name } });
   };
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const GenerateProject = () => {
         (response) => {
           setImageUrls(response);
           if (!response.complete) {
-            navigate('/generate/loading',{state: { username: username, password: password, project_name: project_name }});
+            navigate('/generate/loading', { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name } });
           }
         },
         (error) => {
@@ -92,16 +94,16 @@ const GenerateProject = () => {
         <h3>폴더 이름: {project_name}</h3>
         <Row>
           <Col xs="12" md="6">
-          <div className="image-container">
-            <h3>배경이미지</h3>
+            <div className="image-container">
+              <h3>배경이미지</h3>
               {imageUrls.source && (
                 <div className="image-wrapper">
-                <img
-                  src={imageUrls.source}
-                  alt="Source"
-                  className="image"
-                  onClick={() => handleImageClick(imageUrls.source)}
-                />
+                  <img
+                    src={imageUrls.source}
+                    alt="Source"
+                    className="image"
+                    onClick={() => handleImageClick(imageUrls.source)}
+                  />
                 </div>
               )}
             </div>
@@ -120,24 +122,24 @@ const GenerateProject = () => {
             </div>
           </Col>
           <Col xs="12" md="1" className="image-arrow">
-            <img className='arrow' src={Arrow} alt='arrow'/>
+            <img className='arrow' src={Arrow} alt='arrow' />
           </Col>
           <Col xs="12" md="5">
             <div className="image-container2">
-            <h3>결과 이미지</h3>
-            <div className="image-wrapper">
-              {imageUrls.output && (
-                <div>
-                  <img
-                    src={imageUrls.output}
-                    alt="Output"
-                    className="image"
-                    onClick={() => handleImageClick(imageUrls.output)}
-                  />
-                </div>
-              )}
+              <h3>결과 이미지</h3>
+              <div className="image-wrapper">
+                {imageUrls.output && (
+                  <div>
+                    <img
+                      src={imageUrls.output}
+                      alt="Output"
+                      className="image"
+                      onClick={() => handleImageClick(imageUrls.output)}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
           </Col>
         </Row>
         <Button

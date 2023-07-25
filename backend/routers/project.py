@@ -153,7 +153,7 @@ async def create_user_project(project_type: str, user_identifier: str, db: Sessi
     insert_project_info(project_type, project_id, project_name, current_time, db)
 
     return {'result': True, 'username': user_identifier, 'project_type': project_type,
-            'project_name': project_name, "message": "Project Create Success"}
+            'project_id' : project_id, 'project_name': project_name, "message": "Project Create Success"}
     # except:
     #     return {"message": "Fail - insert project to DB"}
 
@@ -196,7 +196,6 @@ async def upload_detection_file(user_identifier : str, project_name : str,  real
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
 
-    
     # source, target, result 폴더 생성
     project_dir = f'./datas/{username}/detection/{project_name}'
     real_dir = os.path.join(project_dir, 'real')

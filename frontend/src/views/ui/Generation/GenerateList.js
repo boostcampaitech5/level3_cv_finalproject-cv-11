@@ -10,8 +10,9 @@ const GenerateList = () => {
   const [projectList, setProjectList] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const user_id = location.state.user_id;
   const username = location.state.username;
-  const password=location.state.password
+  const password = location.state.password
 
   useEffect(() => {
     fetchProjectList(username);
@@ -19,7 +20,7 @@ const GenerateList = () => {
 
   // 이전으로
   const handleBackGenerate = () => {
-    navigate("/generate", { state: { username: username, password: password} }); // generate 페이지로 이동
+    navigate("/generate", { state: { user_id: user_id, username: username, password: password } }); // generate 페이지로 이동
   };
 
   // 조회된 프로젝트 리스트
@@ -41,7 +42,7 @@ const GenerateList = () => {
 
   const handleNavigateToProject = (projectName) => {
     navigate(`/generate/${projectName}`, {
-      state: { username: username, password: password, project_name: projectName},
+      state: { user_id: user_id, username: username, password: password, project_name: projectName },
     });
   };
 
