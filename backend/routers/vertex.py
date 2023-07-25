@@ -7,12 +7,12 @@ import os
 import httpx
 
 vertex_router = APIRouter()
-predict_custom_trained_model_sample(
-    project="521316103453",
-    endpoint_id="6332478890501472256",
-    location="us-central1",
-    instances={ "instance_key_1": "value", ...}
-)
+# predict_custom_trained_model_sample(
+#     project="521316103453",
+#     endpoint_id="6332478890501472256",
+#     location="us-central1",
+#     instances={ "instance_key_1": "value", ...}
+# )
 
 # Replace with your actual Google Cloud Project ID and Endpoint ID
 PROJECT_ID = "521316103453"
@@ -29,7 +29,7 @@ ENDPOINT_ID = "6332478890501472256"
 ]}
 '''
 # Endpoint to make predictions
-@app.post("/predict/")
+@vertex_router.post("/predict/")
 async def predict(input_data: dict):
     try:
         # Define the API endpoint URL
