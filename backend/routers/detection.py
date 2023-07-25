@@ -3,8 +3,9 @@ import os
 from fastapi import Depends, APIRouter
 from backend.routers import crud
 from backend.routers.database import SessionLocal
-from deepfake import make_synthesis, inference
+from deepfake import make_synthesis, inference, gradcam
 from sqlalchemy.orm import Session
+
 
 detection_router = APIRouter()
 home_path = os.environ['HOME']
@@ -46,6 +47,8 @@ def detection(info: dict, db: Session = Depends(get_db)):
             source = f'{home_path}/level3_cv_finalproject-cv-11/source/{gender}'
             #make_synthesis.make_synthesis(real_path,source,fake_path)
             result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
+            user_model = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/model/inference.pt'
+            gradcam.gradcam(user_model, real_path, fake_path, target_path)
             crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'finished')
             return result
         except:
