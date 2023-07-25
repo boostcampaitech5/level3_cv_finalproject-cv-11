@@ -9,6 +9,9 @@ from utils.align_face import back_matrix, dealign, align_img
 from utils.util import paddle2cv, cv2paddle
 from utils.prepare_data import LandmarkModel
 
+
+home_path = os.environ['HOME']
+
 def get_id_emb(id_net, id_img_path):
     id_img = cv2.imread(id_img_path)
     
@@ -36,7 +39,7 @@ def image_test(args):
     weight = paddle.load('./checkpoints/MobileFaceSwap_224.pdparams')
 
     base_path = args.source_img_path.replace('.png', '').replace('.jpg', '').replace('.jpeg', '')
-    base_path = '/opt/ml/level3_cv_finalproject-cv-11/MobileFaceSwap/temp/'+base_path.split('/')[-1]
+    base_path = f'{home_path}/level3_cv_finalproject-cv-11/MobileFaceSwap/temp/'+base_path.split('/')[-1]
     id_emb, id_feature = get_id_emb(id_net, base_path + '_aligned.png')
 
     faceswap_model.set_model_param(id_emb, id_feature, model_weight=weight)
@@ -50,7 +53,7 @@ def image_test(args):
 
         origin_att_img = cv2.imread(img_path)
         base_path = img_path.replace('.png', '').replace('.jpg', '').replace('.jpeg', '')
-        base_path = '/opt/ml/level3_cv_finalproject-cv-11/MobileFaceSwap/temp/'+base_path.split('/')[-1]
+        base_path = f'{home_path}/level3_cv_finalproject-cv-11/MobileFaceSwap/temp/'+base_path.split('/')[-1]
         att_img = cv2.imread(base_path + '_aligned.png')
         att_img = cv2paddle(att_img)
         import time
@@ -75,7 +78,7 @@ def face_align(landmarkModel, image_path, merge_result=False, image_size=224):
         landmark = landmarkModel.get(img)
         if landmark is not None:
             base_path = path.replace('.png', '').replace('.jpg', '').replace('.jpeg', '')
-            base_path = '/opt/ml/level3_cv_finalproject-cv-11/MobileFaceSwap/temp/'+base_path.split('/')[-1]
+            base_path = f'{home_path}/level3_cv_finalproject-cv-11/MobileFaceSwap/temp/'+base_path.split('/')[-1]
             aligned_img, back_matrix = align_img(img, landmark, image_size)
             # np.save(base_path + '.npy', landmark)
             cv2.imwrite(base_path + '_aligned.png', aligned_img)

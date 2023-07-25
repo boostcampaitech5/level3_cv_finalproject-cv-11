@@ -8,9 +8,11 @@ from torch.utils.data import DataLoader
 import albumentations as A
 from sklearn import metrics
 import numpy as np
-import datas
+from deepfake import datas
 from tqdm.auto import tqdm
 from pytz import timezone
+
+home_path = os.environ['HOME']
 
 def make_dataset(input_size = 224, real_path= '', fake_path= '', target_path= ''):
     # dataset load
@@ -95,7 +97,7 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
             validation(epoch, model, meta_train_loader)
             
 
-    dest = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{user_name}/model'
+    dest = f'{home_path}/level3_cv_finalproject-cv-11/datas/{user_name}/model'
     if not os.path.exists(dest):
         os.makedirs(dest)
                     
@@ -124,10 +126,10 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
 
     
 if __name__ == '__main__':
-    model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/foundation_model.pt'
-    real_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/real'
-    fake_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
-    target_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/target'
+    model_path = '{home_path}/level3_cv_finalproject-cv-11/result/fewshot/foundation_model.pt'
+    real_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/real'
+    fake_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
+    target_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/target'
     user_name = 'username'
-    source = '/opt/ml/level3_cv_finalproject-cv-11/data/source'
+    source = '{home_path}/level3_cv_finalproject-cv-11/data/source'
     result = inference(model_path,real_path,fake_path,target_path,user_name)
