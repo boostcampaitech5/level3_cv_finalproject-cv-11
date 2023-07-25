@@ -31,19 +31,31 @@ class User(UserBase):           #sqlalchemy의 모델
 
 
 ## project 생성
+class ProjectIdCreate(BaseModel):
+    user_id : int = Field(..., description="User id of the user")
+    project_name: str = Field(..., description="Creation time of the project")
+
 class ProjectCreate(BaseModel):
-    user_name: str = Field(..., description="Username of the user")
+    project_id: str = Field(..., description="Created id of the project")
     project_name: str = Field(..., description="Creation time of the project")
     state: str = Field(..., description="Learning-state of the project")
     start_time: datetime = Field(..., description="start time of the project")
 
-class Project(ProjectCreate):           #sqlalchemy의 모델
-    user_name: str
-    project_name : str
-    state : str
-    start_time : datetime
-    end_time : datetime
-    output_url : str
+class GenerationProject(ProjectCreate):
+    project_id: int = Field(..., description="Created id of the project")
+    project_name: str = Field(..., description="Creation time of the project")
+    start_time: datetime = Field(..., description="start time of the project")
+    end_time: datetime = Field(..., description="start time of the project")
+    state: str = Field(..., description="Learning-state of the project")
 
-    class Config:
-        orm_mode = True
+class DetectionProject(ProjectCreate):
+    project_id: int = Field(..., description="Created id of the project")
+    project_name: str = Field(..., description="Creation time of the project")
+    start_time: datetime = Field(..., description="start time of the project")
+    end_time: datetime = Field(..., description="start time of the project")
+    output : str = Field(..., description="output of the project")
+    race: int = Field(..., description="person info of the project")
+    gender: int = Field(..., description="person info of the project")
+    age: int = Field(..., description="person info of the project")
+    state: str = Field(..., description="Learning-state of the project")
+    rating: int = Field(..., description="rating of the project")
