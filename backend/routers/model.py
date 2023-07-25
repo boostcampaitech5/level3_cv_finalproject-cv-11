@@ -7,7 +7,7 @@ from backend.routers.database import Base
 class User(Base):
     __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, index=True)
     hashed_password = Column(String, unique=True, index=True)
     signin_name = Column(String)
@@ -17,14 +17,14 @@ class UsersGeneration(Base):
     __tablename__ = "user_generation"
 
     user_id = Column(Integer, index=True)
-    project_id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, primary_key=True, autoincrement=True)
     project_name = Column(String, index=True)
 
 class UsersDetection(Base):
     __tablename__ = "user_detection"
 
     user_id = Column(Integer, index=True)
-    project_id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, primary_key=True, autoincrement=True)
     project_name = Column(String, index=True)
 
 class GenerationProject(Base):

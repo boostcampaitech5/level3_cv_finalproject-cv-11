@@ -24,6 +24,22 @@ def get_user_by_id(db: Session, user_id: int):
 def get_user_by_username(db: Session, username: str):
     return db.query(model.User).filter(model.User.username == username).first()
 
+# 사용자 이름(username)으로부터 사용자 ID(user_id)를 가져오는 함수
+def get_user_id_by_username(db: Session, username: str):
+    user = db.query(model.User).filter(model.User.username == username).first()
+    if user:
+        return user.user_id
+    else:
+        return None
+    
+# 사용자 ID(user_id) 으로부터 사용자 이름(username)를 가져오는 함수
+def get_username_by_user_id(db: Session, user_id: str):
+    user = db.query(model.User).filter(model.User.user_id == user_id).first()
+    if user:
+        return user.username
+    else:
+        return None
+    
 def get_user_for_login(db: Session, username: str, password):
     user = db.query(model.User).filter(model.User.username == username).first()
     if not user:
@@ -50,12 +66,14 @@ def create_user(db: Session, user: schemas.UserCreate):
 def create_project_id(db: Session, project_type: str, user_project: schemas.ProjectIdCreate):
     if project_type == 'generate':
         user_project_data = model.UsersGeneration(
-            user_id=user_project.user_name,
+            user_id=user_project.user_id,
+            project_id = None,
             project_name=user_project.project_name,
         )
     elif project_type == 'detect':
         user_project_data = model.UsersDetection(
-            user_id      = user_project.user_name,
+            user_id      = user_project.user_id,
+            project_id = None,
             project_name = user_project.project_name,
         )
     else:
@@ -64,7 +82,7 @@ def create_project_id(db: Session, project_type: str, user_project: schemas.Proj
     db.add(user_project_data)
     db.commit()
     db.refresh(user_project_data)
-    return True
+    return user_project_data.project_id
 
 ## project id와 project info를 받아 생성
 def create_project(db: Session, project_type: str, project_id : int, project: schemas.ProjectCreate):
@@ -140,15 +158,15 @@ def get_project_info_by_id(db: Session, project_id: int, project_type: str):
 ## username으로 목록 조회
 def get_all_project_by_username(db: Session, username: str, project_type :str):
     if project_type == 'generate':
-        return db.query(model.GenerationProject).filter(model.GenerationProject.user_name == username).all()
+        return db.query(model.GenerationProject).filter(model.GenerationProject.username == username).all()
     else:
-        return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username).all()
+        return db.query(model.DetectionProject).filter(model.DetectionProject.username == username).all()
 
 def get_project_by_username(db: Session, username: str, project_name : str, project_type :str):
     if project_type == 'generate':
-        return db.query(model.GenerationProject).filter(model.GenerationProject.user_name == username).filter(model.GenerateProject.project_name == project_name).first()
+        return db.query(model.GenerationProject).filter(model.GenerationProject.username == username).filter(model.GenerateProject.project_name == project_name).first()
     else:
-        return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username).filter(model.DetectionProject.project_name == project_name).first()
+        return db.query(model.DetectionProject).filter(model.DetectionProject.username == username).filter(model.DetectionProject.project_name == project_name).first()
 
 
 ## 업데이트 코드
@@ -177,7 +195,7 @@ def update_state_by_project_id(db: Session, user_id: int, project_type: str, pro
 
 def update_state_by_projectname(db: Session, username: str, project_type: str, project_name: str, new_state: str):
     if project_type == 'generate':
-        project = db.query(model.GenerationProject).filter_by(user_name=username, project_name=project_name).first()
+        project = db.query(model.GenerationProject).filter_by(username=username, project_name=project_name).first()
         if project:
             project.state = new_state
             project.end_time = datetime.datetime.now()
@@ -186,7 +204,7 @@ def update_state_by_projectname(db: Session, username: str, project_type: str, p
             return True
         return False
     elif project_type == 'detect':
-        project = db.query(model.DetectionProject).filter_by(user_name=username, project_name=project_name).first()
+        project = db.query(model.DetectionProject).filter_by(username=username, project_name=project_name).first()
         if project:
             project.state = new_state
             project.end_time = datetime.datetime.now()
