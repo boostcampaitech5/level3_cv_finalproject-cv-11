@@ -31,8 +31,6 @@ def make_dataset(input_size = 224, real_path= '', fake_path= '', target_path= ''
 def calculate_metric(y_true, y_pred):
     y_true = [0 if label[0] >= label[1] else 1 for label in y_true]
     y_pred = [0 if label[0] >= label[1] else 1 for label in y_pred]
-    print(y_true)
-    print(y_pred)
     return metrics.f1_score(y_true, y_pred), metrics.accuracy_score(y_true, y_pred)
 
 def validation(epoch, model, data_loader):

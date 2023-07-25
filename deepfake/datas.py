@@ -239,7 +239,6 @@ class Inferset(Dataset):
             label = np.array([0,1])
 
         target_image_path = os.path.join(self.target_path, self.target_png)
-        print(target_image_path)
         
         
         r_infer_image = cv2.imread(r_infer_image_path)
