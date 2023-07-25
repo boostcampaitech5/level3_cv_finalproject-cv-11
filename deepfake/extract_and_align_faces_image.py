@@ -19,8 +19,8 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--device', type=str, default='cuda:0')
-    parser.add_argument('--load_path', type=str, default="/opt/ml/deepfake/data/celeb-df/meta_test/mobilefaseswap" )
-    parser.add_argument('--save_path', type=str, default="/opt/ml/deepfake/data/celeb-df/meta_test/mobilefaseswap_aligned" )
+    parser.add_argument('--load_path', type=str, default="/home/hjhhijk/level3_cv_finalproject-cv-11/datas/id/detection/230724110744/real")
+    parser.add_argument('--save_path', type=str, default="/home/hjhhijk/level3_cv_finalproject-cv-11/datas/id/detection/230724110744/real")
     parser.add_argument('--img_size', type=int, default=160)
     parser.add_argument('--margin', type=int, default=0.1) #얼굴 주변에 마진 추가
     # parser.add_argument('--prob', type=float, default=0.95)
@@ -126,20 +126,16 @@ class ExtractAndAlignFace:
 
     def main(self):
         for video_paths in tqdm(self.path_list):
-            video_path = os.path.join(args.load_path,video_paths)
-            videos = os.listdir(video_path)
-            for video in videos:
-                name = video.split('.')[0]
-                frame = os.path.join(video_path,video)
-
-                frame = cv2.imread(frame)
-                img_cv2 = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+            frame = os.path.join(args.load_path,video_paths)
+            name = frame.split('/')[-1]
+            frame = cv2.imread(frame)
+            img_cv2 = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
         # 얼굴 추출: 정렬은 일단 제외
-                face = self.extract_and_align(img_cv2)
+            face = self.extract_and_align(img_cv2)
             # 결과 저장
-                if not os.path.exists(f'/opt/ml/deepfake/data/celeb-df/meta_test/mobilefaseswap_aligned/{video_paths}'):
-                    os.makedirs(f'/opt/ml/deepfake/data/celeb-df/meta_test/mobilefaseswap_aligned/{video_paths}')
-                save_image(face, f'/opt/ml/deepfake/data/celeb-df/meta_test/mobilefaseswap_aligned/{video_paths}/{name}.png', value_range=(0, 255), normalize=True)
+            if not os.path.exists(f'{args.save_path}'):
+                os.makedirs(f"{args.save_path}")
+            save_image(face, f"{args.save_path}/{name}", value_range=(0, 255), normalize=True)
         # frame = [Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)) for frame in video]
         # extraction_dict = self.extract_and_align(frames, name)
 
@@ -150,6 +146,7 @@ class ExtractAndAlignFace:
 
 if __name__=='__main__':
     args = parse_args()
+    print('start align')
     eaa = ExtractAndAlignFace(args)
     eaa.main()
 
