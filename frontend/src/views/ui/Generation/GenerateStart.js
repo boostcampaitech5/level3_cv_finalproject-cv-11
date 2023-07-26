@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardBody, Button } from "reactstrap";
 import "./GenerateStart.css";
 import Footer from "../../../layouts/Footer";
-import Image from "../../../assets/images/snow2.JPG";
+import Image from "../../../assets/images/pic2.JPG";
 import { useNavigate, useLocation } from "react-router-dom";
 import fastapi from "../../../lib/api";
 
