@@ -17,21 +17,36 @@ const Deepfake = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const login=location.state
+  const login = location.state
   console.log(login)
 
   const handleGenerate = () => {
-    navigate("/generate", {state:login}); // generate 페이지로 이동
+    if (!login) {
+      alert("로그인이 필요합니다");
+      return;
+    }
+    else {
+      navigate("/generate", { state: login }); // generate 페이지로 이동
+    };
   };
+
   const handleDetect = () => {
-    navigate("/detect",{state:login}); // detect 페이지로 이동
+    if (!login) {
+      alert("로그인이 필요합니다");
+      return;
+    }
+    else {
+
+      navigate("/detect", { state: login }); // detect 페이지로 이동
+    };
   };
 
   const onDismiss = () => {
     setVisible(false);
 
   };
-  
+
+
 
 
   return (
