@@ -9,6 +9,9 @@ import fastapi from "../../../lib/api";
 const DetectStart = () => {
   const [selectedImages, setSelectedImages] = useState(null);
   const [selectedTargetImage, setSelectedTargetImage] = useState(null);
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [race, setRace] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const username = location.state.username
@@ -16,7 +19,19 @@ const DetectStart = () => {
 
   // 메인 페이지로 이동
   const handleBackDetect = () => {
-    navigate("/detect");
+    navigate("/detect",{state: { username: username, password: password}});
+  };
+
+  const handleAgeChange = (event) => {
+    setAge(event.target.value);
+  };
+
+  const handleGenderChange = (event) => {
+    setGender(event.target.value);
+  };
+
+  const handleRaceChange = (event) => {
+    setRace(event.target.value);
   };
 
   // 이미지 파일들을 선택하여 userState 객체로 변환
@@ -83,6 +98,13 @@ const DetectStart = () => {
     handleDetectStart(username);
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('나이:', age);
+    console.log('성별:', gender);
+    console.log('인종:', race);
+  };
+
   return (
     <div>
       <div className="generate-start-container">
@@ -107,6 +129,40 @@ const DetectStart = () => {
               <div className="box">
                 <h2>유의사항</h2>
                 <img className='snow' src={Image} alt="이미지 유의사항" />
+                <div>
+                  <form onSubmit={handleSubmit}>
+                    <div>
+                      <label htmlFor="age">나이:</label>
+                      <input
+                        type="text"
+                        id="age"
+                        value={age}
+                        onChange={handleAgeChange}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="gender">성별:
+                      <select value={gender} onChange={handleGenderChange}>
+                        <option value="">선택하세요</option>
+                        <option value="man">남성</option>
+                        <option value="women">여성</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div>
+                      <label htmlFor="race">인종:
+                        <select value={race} onChange={handleRaceChange}>
+                        <option value="">선택하세요</option>
+                        <option value="1">백인</option>
+                        <option value="2">몽골로이드</option>
+                        <option value="3">니그로이드</option>
+                        <option value="4">아메리칸</option>
+                        <option value="5">말레이</option>
+                        </select>
+                      </label>
+                    </div>
+                  </form>
+                </div>
                 <div>
                   <Button
                     className="btns"
