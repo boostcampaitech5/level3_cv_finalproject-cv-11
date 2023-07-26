@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 import os
 
 generation_router = APIRouter()
-
+home_path = os.environ['HOME']
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -41,9 +41,10 @@ def generation(info: dict, db: Session = Depends(get_db)):
             crud.update_state_by_project_id(db, project_type ='generate', project_id = project_id, new_state = 'error(not user)')
             return {"result": False}
         
-        source = f'./datas/{username}/generation/{project_name}/source'
-        target = f'./datas/{username}/generation/{project_name}/target'
-        output = f'./datas/{username}/generation/{project_name}/result'
+        source = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/source'
+        target = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/target'
+        output = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
+        
         try:
             make_synthesis.make_synthesis(target,source,output)
             crud.update_state_by_project_id(db, project_type ='generate', project_id = project_id, new_state = 'finished')

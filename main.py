@@ -1,5 +1,7 @@
+import os
+home_path = os.environ['HOME']
 import sys
-sys.path.append("/opt/ml/level3_cv_finalproject-cv-11/deepfake")
+sys.path.append(f"{home_path}/level3_cv_finalproject-cv-11/deepfake")
 
 from fastapi import FastAPI, Depends
 from starlette.requests import Request
@@ -23,6 +25,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(users_router, tags=["users"])
 app.include_router(project_router, tags=["project"])

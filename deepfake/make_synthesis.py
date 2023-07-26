@@ -1,6 +1,9 @@
 import os
 
-pyfile = '/opt/ml/level3_cv_finalproject-cv-11/MobileFaceSwap/image_test.py'
+home_path = os.environ['HOME']
+
+pyfile = f'{home_path}/level3_cv_finalproject-cv-11/MobileFaceSwap/image_test.py'
+
 
 def make_synthesis(target_img_path, source_img_path, output_dir):
     target_imgs = os.listdir(target_img_path)
@@ -11,14 +14,14 @@ def make_synthesis(target_img_path, source_img_path, output_dir):
         os.system(f'python {pyfile} --target_img_path {source_img} --source_img_path {target_img} --output_dir {output_dir}')
         print(f'complete_{target_img_}')
 
-    dir = '/opt/ml/level3_cv_finalproject-cv-11/MobileFaceSwap/temp'
+    dir = f'{home_path}/level3_cv_finalproject-cv-11/MobileFaceSwap/temp'
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))
 
 if __name__ == '__main__':
     username = 'yoon'
     project_name = '230717175420'
-    source_img_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/source'
-    target_img_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/target'
-    output_dir = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
+    source_img_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/source'
+    target_img_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/target'
+    output_dir = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
     make_synthesis(target_img_path, source_img_path, output_dir)

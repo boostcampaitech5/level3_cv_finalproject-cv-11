@@ -8,9 +8,11 @@ from torch.utils.data import DataLoader
 import albumentations as A
 from sklearn import metrics
 import numpy as np
-import datas
+from deepfake import datas
 from tqdm.auto import tqdm
 from pytz import timezone
+
+home_path = os.environ['HOME']
 
 def make_dataset(input_size = 224, real_path= '', fake_path= '', target_path= ''):
     # dataset load
@@ -29,8 +31,6 @@ def make_dataset(input_size = 224, real_path= '', fake_path= '', target_path= ''
 def calculate_metric(y_true, y_pred):
     y_true = [0 if label[0] >= label[1] else 1 for label in y_true]
     y_pred = [0 if label[0] >= label[1] else 1 for label in y_pred]
-    print(y_true)
-    print(y_pred)
     return metrics.f1_score(y_true, y_pred), metrics.accuracy_score(y_true, y_pred)
 
 def validation(epoch, model, data_loader):
@@ -63,7 +63,7 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
     target_path= target_path
     user_name = user_name
     input_size = 224
-    max_epoch = 50
+    max_epoch = 100
 
     model = torch.load(model_path)
     model = model.cuda()
@@ -78,7 +78,7 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
             r_image, f_image, valid_image, target_image, label = r_image.cuda(), f_image.cuda(), valid_image.cuda(), target_image.cuda(), label.cuda()
             pred = model(r_image, f_image, valid_image)
             m = nn.Sigmoid()
-            criterion = nn.BCELoss()
+            criterion = nn.MSELoss()
             loss = criterion(m(pred),label)
             
             optimizer.zero_grad()
@@ -95,7 +95,7 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
             validation(epoch, model, meta_train_loader)
             
 
-    dest = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{user_name}/model'
+    dest = f'{home_path}/level3_cv_finalproject-cv-11/datas/{user_name}/model'
     if not os.path.exists(dest):
         os.makedirs(dest)
                     
@@ -106,11 +106,13 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
     print('Inference')
     model = torch.load(output_path)
 
+    preds = []
     for step, (r_image, f_image, valid_image, target_image, label) in tqdm(enumerate(meta_train_loader), total=len(meta_train_loader)):
         r_image, f_image, valid_image, target_image, label = r_image.cuda(), f_image.cuda(), valid_image.cuda(), target_image.cuda(), label.cuda()
         pred = model(r_image, f_image, target_image)
-
-    pred = torch.sum(pred, axis=0)
+    
+    m = nn.Sigmoid()
+    pred = torch.sum(m(pred), axis=0)
     if pred[0] >= pred[1]:
         result = 'real'
     else:
@@ -124,10 +126,10 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
 
     
 if __name__ == '__main__':
-    model_path = '/opt/ml/level3_cv_finalproject-cv-11/result/fewshot/foundation_model.pt'
-    real_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/real'
-    fake_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
-    target_path = '/opt/ml/level3_cv_finalproject-cv-11/data/username/detection/1/target'
+    model_path = '{home_path}/level3_cv_finalproject-cv-11/result/fewshot/foundation_model.pt'
+    real_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/real'
+    fake_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
+    target_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/target'
     user_name = 'username'
-    source = '/opt/ml/level3_cv_finalproject-cv-11/data/source'
+    source = '{home_path}/level3_cv_finalproject-cv-11/data/source'
     result = inference(model_path,real_path,fake_path,target_path,user_name)
