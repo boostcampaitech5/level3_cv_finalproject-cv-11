@@ -15,8 +15,8 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
         body = qs.stringify(params);
     }
 
-    let _url = 'http://49.50.161.9:30007' + url
-    if (method === 'get') {
+    let _url = 'http://49.50.161.98:30007' + url
+    if(method === 'get') {
         _url += "?" + new URLSearchParams(params)
     }
 
