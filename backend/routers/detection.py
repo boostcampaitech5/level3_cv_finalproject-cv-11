@@ -54,10 +54,9 @@ def detection(info: dict, db: Session = Depends(get_db)):
             fake_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
             target_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
             os.system(f'python {align_path} --load_path {target_path} --save_path {target_path}')
-            user_name = f'{username}'
             source = f'{home_path}/level3_cv_finalproject-cv-11/source/{gender}'
-            #make_synthesis.make_synthesis(real_path,source,fake_path)
-            result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
+            make_synthesis.make_synthesis(real_path,source,fake_path)
+            result = inference.inference(model_path,real_path,fake_path,target_path,username)
             user_model = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/model/inference.pt'
             gradcam.gradcam(user_model, real_path, fake_path, target_path)
 
