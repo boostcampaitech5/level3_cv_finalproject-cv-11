@@ -3,9 +3,10 @@ from typing import List
 from fastapi import File, UploadFile, APIRouter, Depends
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
-from backend.routers import crud, model, schemas
+from backend.routers import crud, model, schemas, port
 from backend.routers.database import SessionLocal, engine
 from datetime import datetime
+
 # from backend.routers.user import get_db # Dependency
 
 # Dependency
@@ -142,7 +143,6 @@ def insert_project_info(project_type : str, project_id: int, project_name: str, 
 @project_router.post("/{project_type}/{user_identifier}/start")
 async def create_user_project(project_type: str, user_identifier: str, db: Session = Depends(get_db)):
     # try:
-
     # project 정보를 생성
     project_type, project_id, project_name, current_time = insert_project_id(user_identifier, project_type, db)
     
@@ -191,7 +191,7 @@ async def upload_generation_file(user_identifier : str, project_name : str, sour
 
 #detection 이미지 저장
 @project_router.post("/detect/{user_identifier}/{project_name}/upload") # 생성하기-대상이미지업로드버튼
-async def upload_detection_file(user_identifier : str, project_name : str,  real_file: List[UploadFile] = File(...), target_file : UploadFile = File(...), db: Session = Depends(get_db)): 
+async def upload_detection_file(user_identifier: str, project_name: str, project_id: int, target_file: UploadFile = File(...), real_file: List[UploadFile] = File(...), db: Session = Depends(get_db)):
     # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
@@ -222,14 +222,29 @@ async def upload_detection_file(user_identifier : str, project_name : str,  real
     
     return { 'result': True , "message": f"File uploaded successfully."}
 
+@project_router.post("/detect/{user_identifier}/{project_name}/person")
+async def get_detection_person_info(user_identifier : str, project_name: str, project_id: int, 
+                                age: str, gender: str, race: str,db: Session = Depends(get_db)):
+    
+    # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
+    # user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
+    # username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
+
+    try:
+        crud.update_detect_person_by_project_id(db=db, project_id = project_id, age = age, gender = gender, race = race) # 인물 정보 업데이트
+        return True
+    except:
+        return Response(status_code=404)
+
 # 프로젝트 내 이미지 리스트 조회
 @project_router.get("/generate/{user_identifier}/{project_name}")
-async def get_user_project_imgs(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
+async def get_user_generation_project_imgs(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
     # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
 
-    port = 'http://115.85.182.51:30007'
+    back_port  = await port.get_host_info()
+    back_url = f'http://{back_port["host"]}:{back_port["port"]}'
     result_dir = f'./datas/{username}/generation/{project_name}/result'
     jpgs = os.listdir(result_dir)
     result_path = result_dir + '/' +jpgs[0]
@@ -239,9 +254,9 @@ async def get_user_project_imgs(user_identifier : str, project_name: str, db: Se
             "username": username,
             "project": project_name,
             "complete": True,
-            "source": f'{port}/generate/{username}/{project_name}/source',
-            "target": f'{port}/generate/{username}/{project_name}/target',
-            "output": f'{port}/generate/{username}/{project_name}/result',
+            "source": f'{back_url}/generate/{username}/{project_name}/source',
+            "target": f'{back_url}/generate/{username}/{project_name}/target',
+            "output": f'{back_url}/generate/{username}/{project_name}/result',
         }
     else:
         return {
@@ -255,12 +270,13 @@ async def get_user_project_imgs(user_identifier : str, project_name: str, db: Se
 
     
 @project_router.get("/detect/{user_identifier}/{project_name}")
-async def get_user_project_imgs(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
+async def get_user_detection_project_imgs(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
     # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
 
-    port = 'http://115.85.182.51:30007'
+    back_port  = await port.get_host_info()
+    back_url = f'http://{back_port["host"]}:{back_port["port"]}'
     result_dir = f'./datas/{username}/detection/{project_name}/target'
     jpgs = os.listdir(result_dir)
     result_path = result_dir + '/' +jpgs[0]
@@ -270,7 +286,7 @@ async def get_user_project_imgs(user_identifier : str, project_name: str, db: Se
             "username": username,
             "project": project_name,
             "complete": True,
-            "target": f'{port}/detect/{username}/{project_name}/target',
+            "target": f'{back_url}/detect/{username}/{project_name}/target',
         }
     else:
         return {
@@ -303,7 +319,7 @@ async def get_source_image(user_identifier: str, project_name: str, db: Session 
 
 # target 이미지 링크로 보내주기
 @project_router.get("/generate/{user_identifier}/{project_name}/target")
-async def get_target_image(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
+async def get_generation_target_image(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
     # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
@@ -343,7 +359,7 @@ async def get_result_image(user_identifier:str, project_name: str, db: Session =
         return Response(status_code=404)
 
 @project_router.get("/detect/{user_identifier}/{project_name}/target")
-async def get_target_image(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
+async def get_detection_target_image(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
     # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
@@ -359,3 +375,5 @@ async def get_target_image(user_identifier : str, project_name: str, db: Session
         return response
     else:
         return Response(status_code=404)
+    
+

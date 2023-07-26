@@ -206,7 +206,7 @@ def update_state_by_project_id(db: Session, project_type: str, project_id: int, 
     else:
         return False
 
-def update_detect_person_by_project_id(db: Session, project_id: int, race : int, gender : int, age : int):
+def update_detect_person_by_project_id(db: Session, project_id: int, age : str, gender : str, race : str):
     project = db.query(model.DetectionProject).filter_by(project_id=project_id).first()
     if project:
         project.race = race

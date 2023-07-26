@@ -9,9 +9,11 @@ const DetectProject = () => {
   const [imageUrls, setImageUrls] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const user_id = location.state.user_id;
   const username = location.state.username;
+  const project_id = location.state.project_id;
   const project_name = location.state.project_name;
-  const password=location.state.password
+  const password = location.state.password
   const result = location.state.result; // fake, real
 
 
@@ -21,6 +23,9 @@ const DetectProject = () => {
   };
   const handleBackMain = () => {
     navigate(`/deepfake`, { state: { username: username, password: password, project_name: project_name } });
+  };
+  const handleSurvey = () => {
+    navigate(`/survey`, { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name } });
   };
 
   const handleImageClick = (imageUrl) => {
@@ -40,7 +45,7 @@ const DetectProject = () => {
         (response) => {
           setImageUrls(response);
           if (!response.complete) {
-            navigate('/detect/loading', {state: { username: username, password: password, project_name: project_name }});
+            navigate('/detect/loading', { state: { username: username, password: password, project_name: project_name } });
           }
         },
         (error) => {
@@ -51,7 +56,7 @@ const DetectProject = () => {
       console.log(error);
     }
   };
-  
+
   let message;
   if (result === "fake") {
     message = "해당 이미지는 딥페이크 합성 이미지입니다.";
@@ -79,21 +84,28 @@ const DetectProject = () => {
           </div>
         </div>
 
-          <h3>폴더명: {project_name}</h3>
-          <div className="image-container">
-              {imageUrls.target && (
-                <div className="image-wrapper">
-                <img
-                  src={imageUrls.target}
-                  alt="Target"
-                  className="image"
-                  onClick={() => handleImageClick(imageUrls.target)}
-                />
-                </div>
-              )}
-              <h3>{message}</h3>
-          </div>
-          </div>
+        <h3>폴더명: {project_name}</h3>
+        <div className="image-container">
+          {imageUrls.target && (
+            <div className="image-wrapper">
+              <img
+                src={imageUrls.target}
+                alt="Target"
+                className="image"
+                onClick={() => handleImageClick(imageUrls.target)}
+              />
+            </div>
+          )}
+          <h3>{message}</h3>
+        </div>
+      </div>
+      <Button
+        className="btns"
+        color="primary"
+        onClick={handleSurvey}
+      >
+        만족도 조사 하러가기!
+      </Button>
       <Footer />
     </>
   );

@@ -1,10 +1,11 @@
 
 from fastapi import Depends, APIRouter
-from backend.routers import crud
+from backend.routers import crud, port
 from backend.routers.database import SessionLocal
 from deepfake import make_synthesis
 from sqlalchemy.orm import Session
 import os
+
 
 generation_router = APIRouter()
 home_path = os.environ['HOME']
@@ -53,7 +54,8 @@ def generation(info: dict, db: Session = Depends(get_db)):
             crud.update_state_by_project_id(db, project_type ='generate', project_id = project_id, new_state = 'error(model)')
             return {"result": False}
     
-    port = 'http://0.0.0.0:30007'
+    back_port  = port.get_host_info()
+    back_url = f'http://{back_port["host"]}:{back_port["port"]}'
     result_path = output + '/source.jpeg'
 
     if os.path.exists(result_path):
@@ -61,9 +63,9 @@ def generation(info: dict, db: Session = Depends(get_db)):
             "username": username,
             "project": project_name,
             "complete": True,
-            "source": f'{port}/generate/{username}/{project_name}/source',
-            "target": f'{port}/generate/{username}/{project_name}/target',
-            "output": f'{port}/generate/{username}/{project_name}/result',
+            "source": f'{back_url}/generate/{username}/{project_name}/source',
+            "target": f'{back_url}/generate/{username}/{project_name}/target',
+            "output": f'{back_url}/generate/{username}/{project_name}/result',
         }
     else:
         return {
