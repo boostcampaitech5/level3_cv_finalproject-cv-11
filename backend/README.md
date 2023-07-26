@@ -71,7 +71,7 @@ In the project directory, you can run:
 `mysql -u root -p`
 
 ## make table
-3. activate user_db database  
+3. activate deepfake database  
 `use deepfake;`
 
 4. make table  
