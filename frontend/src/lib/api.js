@@ -26,6 +26,7 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
             "Content-Type": content_type,
         },
         body: body,
+        mode: "cors",
     };
     if (operation === "get") {
         options = {
