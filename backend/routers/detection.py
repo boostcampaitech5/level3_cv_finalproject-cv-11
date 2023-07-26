@@ -38,17 +38,19 @@ def detection(info: dict, db: Session = Depends(get_db)):
         try:
             model_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/Meta_train_learning_id_60.pt'
             align_path = f'{home_path}/level3_cv_finalproject-cv-11/deepfake/extract_and_align_faces_image.py'
-            real_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/real'
+            data_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}'
+            real_path = f'{data_path}/real'
             os.system(f'python {align_path} --load_path {real_path} --save_path {real_path}')
-            fake_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
-            target_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
+            fake_path = f'{data_path}/fake'
+            target_path = f'{data_path}/target'
             os.system(f'python {align_path} --load_path {target_path} --save_path {target_path}')
-            user_name = f'{username}'
             source = f'{home_path}/level3_cv_finalproject-cv-11/source/{gender}'
-            #make_synthesis.make_synthesis(real_path,source,fake_path)
-            result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
-            user_model = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/model/inference.pt'
-            gradcam.gradcam(user_model, real_path, fake_path, target_path)
+            make_synthesis.make_synthesis(real_path,source,fake_path)
+            infer_path = f'{home_path}/level3_cv_finalproject-cv-11/deepfake/inference.py'
+
+            os.system(f'python {infer_path} --model_path {model_path} --real_path {real_path} --fake_path {fake_path} --target_path {target_path} --source {source} --username {username} --project_name {project_name} >> {data_path}/result.txt')
+            with open(f"{data_path}/result.txt", "r") as ping:
+                result = ping.readline()[-2]
             crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'finished')
             return result
         except:
