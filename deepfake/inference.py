@@ -8,9 +8,11 @@ from torch.utils.data import DataLoader
 import albumentations as A
 from sklearn import metrics
 import numpy as np
-from deepfake import datas
+#from deepfake import datas
+import datas
 from tqdm.auto import tqdm
 from pytz import timezone
+import gradcam
 
 home_path = os.environ['HOME']
 
@@ -63,7 +65,7 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
     target_path= target_path
     user_name = user_name
     input_size = 224
-    max_epoch = 100
+    max_epoch = 1
 
     model = torch.load(model_path)
     model = model.cuda()
@@ -104,21 +106,23 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
     print('save complete' + output_path)
 
     print('Inference')
-    model = torch.load(output_path)
+    with torch.no_grad():
+        model = torch.load(output_path)
 
-    preds = []
-    for step, (r_image, f_image, valid_image, target_image, label) in tqdm(enumerate(meta_train_loader), total=len(meta_train_loader)):
-        r_image, f_image, valid_image, target_image, label = r_image.cuda(), f_image.cuda(), valid_image.cuda(), target_image.cuda(), label.cuda()
-        pred = model(r_image, f_image, target_image)
-    
-    m = nn.Sigmoid()
-    pred = torch.sum(m(pred), axis=0)
-    if pred[0] >= pred[1]:
-        result = 'real'
-    else:
-        result = 'fake'
-    print(result)
-    return result
+        preds = []
+        for step, (r_image, f_image, valid_image, target_image, label) in tqdm(enumerate(meta_train_loader), total=len(meta_train_loader)):
+            r_image, f_image, valid_image, target_image, label = r_image.cuda(), f_image.cuda(), valid_image.cuda(), target_image.cuda(), label.cuda()
+            pred = model(r_image, f_image, target_image)
+        target_image = target_image[0]
+        gradcam.vis_gradcam(model, target_image, target_image, target_image, target_path)
+        m = nn.Sigmoid()
+        pred = torch.sum(m(pred), axis=0)
+        if pred[0] >= pred[1]:
+            result = 'real'
+        else:
+            result = 'fake'
+        print(result)
+        return result
 
 
 
@@ -126,10 +130,11 @@ def inference(model_path, real_path, fake_path, target_path, user_name):
 
     
 if __name__ == '__main__':
-    model_path = '{home_path}/level3_cv_finalproject-cv-11/result/fewshot/foundation_model.pt'
-    real_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/real'
-    fake_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/fake'
-    target_path = '{home_path}/level3_cv_finalproject-cv-11/data/username/detection/1/target'
-    user_name = 'username'
-    source = '{home_path}/level3_cv_finalproject-cv-11/data/source'
-    result = inference(model_path,real_path,fake_path,target_path,user_name)
+    username = 'id'
+    project_name = '230725033532'
+    model_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/Meta_train_learning_id_60.pt'
+    real_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/real'
+    fake_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
+    target_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
+    source = f'{home_path}/level3_cv_finalproject-cv-11/datas/source/man'
+    result = inference(model_path,real_path,fake_path,target_path,username)
