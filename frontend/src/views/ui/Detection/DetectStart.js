@@ -144,10 +144,11 @@ const DetectStart = () => {
                         id="age"
                         value={age}
                         onChange={handleAgeChange}
+                        style={{ backgroundColor: '#f2f2f2', color: '#333', marginLeft: '5px' }}
                       />
                     </div>
                     <div>
-                      <label htmlFor="gender">성별:
+                      <label htmlFor="gender">성별: 
                         <select value={gender} onChange={handleGenderChange}>
                           <option value="">선택하세요</option>
                           <option value="0">남성</option>
@@ -156,7 +157,7 @@ const DetectStart = () => {
                       </label>
                     </div>
                     <div>
-                      <label htmlFor="race">인종:
+                      <label htmlFor="race" style={{marginRight: '5px'}}>인종:
                         <select value={race} onChange={handleRaceChange}>
                           <option value="">선택하세요</option>
                           <option value="0">동양인</option>
@@ -191,6 +192,7 @@ const DetectStart = () => {
                     size="lg"
                     onClick={handleClickFolderUploadButton}
                     data-files-input="target-image-input"
+                    style={{fontSize:'14px'}}
                   >
                     탐지하려는 이미지
                   </Button>

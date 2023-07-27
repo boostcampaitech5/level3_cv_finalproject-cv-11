@@ -68,6 +68,21 @@ video {
     padding: 20px;
   }
 
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  form div {
+    margin: 5px 0;
+  }
+  
+  label {
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+
 
   @media screen and (max-width: 960px) {
     .generate-start-container > h1 {
