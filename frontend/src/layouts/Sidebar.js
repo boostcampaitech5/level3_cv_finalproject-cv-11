@@ -26,7 +26,7 @@ const navigation = [
   },
   {
     title: "About Us",
-    href: "/buttons",
+    href: "/about",
     icon: "bi bi-hdd-stack",
   },
 

@@ -9,11 +9,11 @@ const Starter = lazy(() => import("../views/Starter.js"));
 const Login = lazy(() => import("../views/Login.js"));
 const Register = lazy(() => import("../views/Register.js"));
 const Badges = lazy(() => import("../views/ui/Badges"));
-const Buttons = lazy(() => import("../views/ui/Buttons"));
+const About = lazy(() => import("../views/ui/Aboutus"));
 const Cards = lazy(() => import("../views/ui/Cards"));
 const Tables = lazy(() => import("../views/ui/Tables"));
 const Forms = lazy(() => import("../views/ui/Forms"));
-const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
+const Breadcrumbs = lazy(() => import("../views/ui/Mypage.js"));
 const Survey = lazy(() => import("../views/ui/Survey.js"));
 
 // main //
@@ -56,7 +56,7 @@ const ThemeRoutes = [
       { path: "/detect/:project", exact: true, element: <DetectProject /> },
       { path: "/detect/loading", exact: true, element: <DetectLoading /> },
       { path: "/badges", exact: true, element: <Badges /> },
-      { path: "/buttons", exact: true, element: <Buttons /> },
+      { path: "/about", exact: true, element: <About /> },
       { path: "/cards", exact: true, element: <Cards /> },
       { path: "/table", exact: true, element: <Tables /> },
       { path: "/forms", exact: true, element: <Forms /> },
