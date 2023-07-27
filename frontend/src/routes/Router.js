@@ -13,7 +13,7 @@ const About = lazy(() => import("../views/ui/Aboutus"));
 const Cards = lazy(() => import("../views/ui/Cards"));
 const Tables = lazy(() => import("../views/ui/Tables"));
 const Forms = lazy(() => import("../views/ui/Forms"));
-const Breadcrumbs = lazy(() => import("../views/ui/Mypage.js"));
+const Mypage = lazy(() => import("../views/ui/Mypage.js"));
 const Survey = lazy(() => import("../views/ui/Survey.js"));
 
 // main //
@@ -60,7 +60,7 @@ const ThemeRoutes = [
       { path: "/cards", exact: true, element: <Cards /> },
       { path: "/table", exact: true, element: <Tables /> },
       { path: "/forms", exact: true, element: <Forms /> },
-      { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
+      { path: "/mypage", exact: true, element: <Mypage /> },
       { path: "/survey", exact: true, element: <Survey /> },
     ],
   },

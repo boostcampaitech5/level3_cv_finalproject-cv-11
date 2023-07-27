@@ -21,7 +21,7 @@ const navigation = [
   // },
   {
     title: "마이페이지",
-    href: "/breadcrumbs",
+    href: "/mypage",
     icon: "bi bi-link",
   },
   {
