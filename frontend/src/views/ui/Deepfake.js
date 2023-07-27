@@ -6,7 +6,7 @@ import {
 } from "reactstrap";
 import './Deepfake.css'
 import Footer from "../../layouts/Footer";
-import Image from '../../assets/images/snow.JPG'
+import Image from '../../assets/images/pic1.png'
 import { useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "../../layouts/Sidebar";
 
@@ -74,7 +74,7 @@ const Deepfake = () => {
                 <p>3. 배경이 복잡하거나 얼굴이 작으면 인식이 어려워요.</p>
                 <p>4. 탐지 결과를 받는 데 시간이 소요될 수 있어요.</p>
                 <p>5. 동일한 사진으로만 제출하면 학습이 어려워요.</p>
-                <img src={Image} alt="snow 이미지" />
+                <img src={Image} alt="snow 이미지" width="250" height="300"/>
               </div>
             </div>
           </div>

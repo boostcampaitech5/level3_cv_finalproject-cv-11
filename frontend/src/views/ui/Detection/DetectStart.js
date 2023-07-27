@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Alert, Card, CardBody, Button } from "reactstrap";
 import "./DetectStart.css";
 import Footer from "../../../layouts/Footer";
-import Image from "../../../assets/images/snow2.JPG";
+import Image from "../../../assets/images/pic2.JPG";
 import { useNavigate, useLocation } from "react-router-dom";
 import fastapi from "../../../lib/api";
 

@@ -14,10 +14,8 @@ const Loading = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState({ detail: [] });
-  const user_id = location.state.user_id
   const username = location.state.username
   const password = location.state.password
-  const project_id = location.state.project_id
   const project_name = location.state.project_name
 
   const handleClickGenerate = () => {
@@ -31,14 +29,9 @@ const Loading = () => {
   const handleCheckState = async () => {
     try {
       let params = {
-        user_id: user_id,
         username: username,
         password: password,
-        project_id: project_id,
         project_name: project_name,
-        // race: race,
-        // gender: gender,
-        // age : age
       };
       let response;
 
@@ -58,7 +51,10 @@ const Loading = () => {
 
       // 도착한 응답이 있는 경우 페이지를 이동시키는 로직
       if (response) {
-        navigate(`/detect/${project_name}`, { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name, result: response } });
+        navigate(`/detect/${project_name}`, { state: { username: username, password: password, project_name: project_name, result: response } });
+      } else if (response["complete"] === false) {
+        alert("이미지 형식이 잘못되었습니다");
+        navigate('/detect/start', { state: { username: username, password: password, project_name: project_name } })
       }
     } catch (error) {
       // 에러 처리

@@ -5,6 +5,7 @@ from backend.routers import crud
 from backend.routers.database import SessionLocal
 from deepfake import make_synthesis, inference, gradcam
 from sqlalchemy.orm import Session
+import nvidia_smi
 
 
 detection_router = APIRouter()
@@ -16,6 +17,16 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def get_gpu_memory():
+    nvidia_smi.nvmlInit()
+    handle = nvidia_smi.nvmlDeviceGetHandleByIndex(0)
+    info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+    mb = 1024*1024
+    gpu_memory = info.free/mb
+    nvidia_smi.nvmlShutdown()
+    return gpu_memory
+
 
 @detection_router.post("/detection")
 def detection(info: dict, db: Session = Depends(get_db)):
@@ -33,11 +44,19 @@ def detection(info: dict, db: Session = Depends(get_db)):
     
     ## 인물 정보 불러오기
     project_info = crud.get_project_info_by_id(db=db, project_id = project_id, project_type = 'detect') # 인물 정보
-    print(project_info)
     race = project_info.race
     age = project_info.age
     gender = project_info.gender
     gender_path = 'man' if gender == 0 else 'woman' # man -0,  woman - 1#
+
+    #gpu mem, db detection status 체크하여 detection user 2명 유지
+    #아래로 이동시킬때 running 1늘려줘야함
+    free_gpu = get_gpu_memory()
+    detection_running = crud.get_detection_status(db)
+    if free_gpu < 5000 or detection_running >=2:
+        print(f"free_gpu: {free_gpu}")
+        print(f"detection_running: {detection_running}")
+        return False
 
     ## running로 state 변경 후 학습 시작
     state_running = crud.update_state_by_project_id(db=db, project_type ='detect', project_id = project_id, new_state = 'running')
@@ -52,21 +71,21 @@ def detection(info: dict, db: Session = Depends(get_db)):
         try:
             model_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/Meta_train_learning_id_60.pt'
             align_path = f'{home_path}/level3_cv_finalproject-cv-11/deepfake/extract_and_align_faces_image.py'
-            real_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/real'
+            data_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}'
+            real_path = f'{data_path}/real'
             os.system(f'python {align_path} --load_path {real_path} --save_path {real_path}')
-            fake_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
-            target_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
+            fake_path = f'{data_path}/fake'
+            target_path = f'{data_path}/target'
             os.system(f'python {align_path} --load_path {target_path} --save_path {target_path}')
             source = f'{home_path}/level3_cv_finalproject-cv-11/source/{gender_path}'
             make_synthesis.make_synthesis(real_path,source,fake_path)
-            result = inference.inference(model_path,real_path,fake_path,target_path,username)
-            user_model = f'{home_path}/level3_cv_finalproject-cv-11/datas/{username}/model/inference.pt'
-            gradcam.gradcam(user_model, real_path, fake_path, target_path)
+            infer_path = f'{home_path}/level3_cv_finalproject-cv-11/deepfake/inference.py'
 
-            # DB 업데이트
+            ##inference
+            os.system(f'python {infer_path} --model_path {model_path} --real_path {real_path} --fake_path {fake_path} --target_path {target_path} --source {source} --username {username} --project_name {project_name} >> {data_path}/result.txt')
+            with open(f"{data_path}/result.txt", "r") as ping:
+                result = ping.readlines()[-2]
             crud.update_state_by_project_id(db=db, project_type ='detect', project_id = project_id, new_state = 'finished')# 상태 업데이트
-            crud.update_detect_output_by_project_id(db=db, project_id =project_id, output = result) # 결과 업데이트 
-
             return result
         except:
             crud.update_state_by_project_id(db=db, project_type ='detect', project_id = project_id, new_state = 'error(model)')

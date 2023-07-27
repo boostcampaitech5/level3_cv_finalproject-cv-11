@@ -183,7 +183,11 @@ def get_project_by_username(db: Session, username: str, project_name : str, proj
     else:
         return db.query(model.DetectionProject).filter(model.DetectionProject.username == username).filter(model.DetectionProject.project_name == project_name).first()
 
-## 업데이트 코드
+
+def get_detection_status(db: Session):
+    return len(db.query(model.DetectionProject).filter(model.DetectionProject.state == "running").all())
+
+
 def update_state_by_project_id(db: Session, project_type: str, project_id: int, new_state: str):
     if project_type == 'generate':
         project = db.query(model.GenerationProject).filter_by(project_id=project_id).first()

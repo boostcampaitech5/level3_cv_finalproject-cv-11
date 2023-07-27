@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from torch.utils.data import Dataset
 import cv2
 from torchvision import transforms
+ 
+
 
 plt.rcParams['figure.figsize'] = (10, 10)        # large images
 plt.rcParams['image.interpolation'] = 'nearest'  # don't interpolate: show square pixels
@@ -22,62 +24,6 @@ def normalize(tensor):
     x = tensor - tensor.min()
     x = x / (x.max() + 1e-9)
     return x
-
-# Dataset
-class MaskDataset(Dataset):
-  def __init__(self, data_roots, input_size=224, transform=None):
-    super(MaskDataset, self).__init__()
-    real_root = data_roots[0]
-    fake_root = data_roots[1]
-    target_root = data_roots[2]
-
-    self.rfilename = os.listdir(real_root)[0]
-    self.rimg_list = os.path.join(real_root, self.rfilename)
-    self.ffilename = os.listdir(fake_root)[0]
-    self.fimg_list = os.path.join(fake_root, self.ffilename)
-    self.tfilename = os.listdir(target_root)[0]
-    self.timg_list = os.path.join(target_root, self.tfilename)
-
-    self.len = len(self.rimg_list)
-    self.input_size = input_size
-    self.transform = transform
-
-  def __getitem__(self, index):
-    rimg_path = self.rimg_list
-  
-    # Image Loading
-    rimg = cv2.imread(rimg_path)
-    rimg = cv2.cvtColor(rimg, cv2.COLOR_BGR2RGB)
-    rimg = rimg/255.
-
-    if self.transform:
-      rimg = self.transform(rimg)
-
-    fimg_path = self.fimg_list
-  
-    # Image Loading
-    fimg = cv2.imread(fimg_path)
-    fimg = cv2.cvtColor(fimg, cv2.COLOR_BGR2RGB)
-    fimg = fimg/255.
-
-    if self.transform:
-      fimg = self.transform(fimg)
-
-    timg_path = self.timg_list
-  
-    # Image Loading
-    timg = cv2.imread(timg_path)
-    timg = cv2.cvtColor(timg, cv2.COLOR_BGR2RGB)
-    timg = timg/255.
-
-    if self.transform:
-      timg = self.transform(timg)
-
-    return rimg, fimg, timg
-
-  def __len__(self):
-    return self.len
-
 
 def image_tensor_to_numpy(tensor_image):
     # If this is already a numpy image, just return it
@@ -123,8 +69,8 @@ def hook_grad(grad):
 
 
 
-def vis_gradcam(model, real, false, target):
-
+def vis_gradcam(model, real, false, target, target_path):
+    print(target_path)
     model.eval()
     # (1) Reister hook for storing layer activation of the target layer (bn5_2 in backbone)
     # model.backbone.bn5_2.register_forward_hook(hook_feat)
@@ -164,38 +110,11 @@ def vis_gradcam(model, real, false, target):
     img_np = normalize(img_np)
 
     grad_CAM = grad_CAM.squeeze().detach().numpy()
-
     
-
     plt.figure(figsize=(8, 8))
     plt.imshow(img_np)
     plt.imshow(grad_CAM, cmap='jet', alpha = 0.5)
     plt.savefig(f'{target_path}/grad.png')
+    print('complete save gradcam')
 
-    return grad_CAM
-
-def gradcam(model_path, real_path, fake_path, target_path):
-    model = torch.load(model_path).double()
-    input_size = 224
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Resize((224,224)),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225])
-    ])
-
-    paths = [real_path,fake_path, target_path]
-
-    data = MaskDataset(paths, input_size=input_size, transform=transform)
-
-    real_img, fake_img, target_img = next(iter(data))
-
-    grad_CAM = vis_gradcam(model, real_img.cuda(), real_img.cuda(), real_img.cuda())
-
-
-if __name__ == '__main__':
-    model_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/id/model/inference.pt'
-    real_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/id/detection/230725033532/real'
-    fake_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/id/detection/230725033532/fake'
-    target_path = f'{home_path}/level3_cv_finalproject-cv-11/datas/id/detection/230725033532/target'
-    gradcam(model_path, real_path, fake_path, target_path)
+    return None
