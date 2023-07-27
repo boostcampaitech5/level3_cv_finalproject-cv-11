@@ -33,9 +33,10 @@ def detection(info: dict, db: Session = Depends(get_db)):
     
     ## 인물 정보 불러오기
     project_info = crud.get_project_info_by_id(db=db, project_id = project_id, project_type = 'detect') # 인물 정보
-    race = project_info['race']
-    age = project_info['age']
-    gender = project_info['gender'] 
+    print(project_info)
+    race = project_info.race
+    age = project_info.age
+    gender = project_info.gender
     gender_path = 'man' if gender == 0 else 'woman' # man -0,  woman - 1#
 
     ## running로 state 변경 후 학습 시작

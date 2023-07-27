@@ -1,6 +1,6 @@
 import os
 from typing import List
-from fastapi import File, UploadFile, APIRouter, Depends
+from fastapi import File, UploadFile, APIRouter, Depends, Form
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from backend.routers import crud, model, schemas, port
@@ -191,10 +191,16 @@ async def upload_generation_file(user_identifier : str, project_name : str, sour
 
 #detection 이미지 저장
 @project_router.post("/detect/{user_identifier}/{project_name}/upload") # 생성하기-대상이미지업로드버튼
-async def upload_detection_file(user_identifier: str, project_name: str, project_id: int, target_file: UploadFile = File(...), real_file: List[UploadFile] = File(...), db: Session = Depends(get_db)):
+async def upload_detection_file(user_identifier: str, project_name: str, project_id: int = Form(...),
+                                target_file: UploadFile = File(...), real_file: List[UploadFile] = File(...),
+                                age : str = Form(...), gender : str = Form(...), race : str = Form(...), db: Session = Depends(get_db)):
+    
     # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
+
+    ## 인물정보 업데이트
+    crud.update_detect_person_by_project_id(db=db, project_id = project_id, age = age, gender = gender, race = race) # 인물 정보 업데이트
 
     # source, target, result 폴더 생성
     project_dir = f'./datas/{username}/detection/{project_name}'
@@ -222,16 +228,14 @@ async def upload_detection_file(user_identifier: str, project_name: str, project
     
     return { 'result': True , "message": f"File uploaded successfully."}
 
-@project_router.post("/detect/{user_identifier}/{project_name}/person")
-async def get_detection_person_info(user_identifier : str, project_name: str, project_id: int, 
-                                age: str, gender: str, race: str,db: Session = Depends(get_db)):
-    
+@project_router.post("/detect/{user_identifier}/{project_name}/rating")
+async def get_detection_rating_info(user_identifier : str, project_name: str, project_id: int = Form(...), rating : int = Form(...) ,db: Session = Depends(get_db)):
     # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
     # user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     # username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
 
     try:
-        crud.update_detect_person_by_project_id(db=db, project_id = project_id, age = age, gender = gender, race = race) # 인물 정보 업데이트
+        crud.update_detect_rating_by_project_id(db=db, project_id = project_id, rating = rating) # 인물 정보 업데이트
         return True
     except:
         return Response(status_code=404)

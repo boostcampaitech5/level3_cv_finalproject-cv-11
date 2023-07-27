@@ -226,6 +226,15 @@ def update_detect_output_by_project_id(db: Session, project_id: int, output: str
         return True
     return False
 
+def update_detect_rating_by_project_id(db: Session, project_id: int, rating: str):
+    project = db.query(model.DetectionProject).filter_by(project_id=project_id).first()
+    if project:
+        project.rating = rating
+        db.commit()
+        db.refresh(project)
+        return True
+    return False
+
 
 # def update_state_by_projectname(db: Session, username: str, project_type: str, project_name: str, new_state: str):
 #     if project_type == 'generate':
