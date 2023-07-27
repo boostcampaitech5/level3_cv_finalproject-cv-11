@@ -61,6 +61,16 @@ def get_generation_project_id_by_project_name(db: Session, project_name: str):
     else:
         return None
     
+# 프로젝트 명칭(project_name)으로부터 프로젝트 id(project_id)를 가져오는 함수
+def get_detection_status_by_project_name(db: Session, project_name: str):
+    project = db.query(model.DetectionProject).filter(model.DetectionProject.project_name == project_name).first()
+    if project:
+        return project.output
+    else:
+        return None
+
+    
+    
 def get_detection_project_id_by_project_name(db: Session, project_name: str):
     project = db.query(model.UsersDetection).filter(model.UsersDetection.project_name == project_name).first()
     if project:

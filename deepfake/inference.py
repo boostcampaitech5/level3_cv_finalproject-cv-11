@@ -13,8 +13,19 @@ import datas
 from tqdm.auto import tqdm
 from pytz import timezone
 import gradcam
-import gc
 import argparse
+import mysql.connector
+
+
+
+db_config = {
+    'host': '34.64.189.15',
+    'user': 'root',
+    'password': '1234',
+    'database': 'user_db',
+}
+
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -83,13 +94,14 @@ def validation(epoch, model, data_loader):
         )
 
 
-def main(model_path, real_path, fake_path, target_path, user_name):
+def main(model_path, real_path, fake_path, target_path, user_name, project_name):
+    print(project_name)
     real_path= real_path
     fake_path= fake_path
     target_path= target_path
     user_name = user_name
     input_size = 224
-    max_epoch = 100
+    max_epoch = 1
 
     model = torch.load(model_path)
     model = model.cuda()
@@ -145,10 +157,41 @@ def main(model_path, real_path, fake_path, target_path, user_name):
         result = 'real'
     else:
         result = 'fake'
+    try:
+        # Connect to the database
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        # Define the values for the new column and the corresponding project_id to update
+        # project_name  # Replace this with the appropriate project_id you want to update
+        new_column_value = result  # Replace this with the data you want to add to the new column
+
+        # Define the UPDATE query to add data to the new column
+        update_query = "UPDATE detection SET output = %s WHERE project_name = %s"
+
+        # Execute the UPDATE query with the new column value and project_id
+        cursor.execute(update_query, (new_column_value, project_name))
+
+        # Commit the changes
+        connection.commit()
+
+        print("Data added to the new column successfully!")
+
+    except mysql.connector.Error as error:
+        print(f"Error: {error}")
+
+    finally:
+        # Close the connection
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+
+
+
     print(result)
     return result
     
     
 if __name__ == '__main__':
     args = parse_args()
-    result = main(args.model_path, args.real_path, args.fake_path, args.target_path, args.username)
+    result = main(args.model_path, args.real_path, args.fake_path, args.target_path, args.username, args.project_name)
