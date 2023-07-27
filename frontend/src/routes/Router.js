@@ -8,7 +8,6 @@ const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 const Starter = lazy(() => import("../views/Starter.js"));
 const Login = lazy(() => import("../views/Login.js"));
 const Register = lazy(() => import("../views/Register.js"));
-const Badges = lazy(() => import("../views/ui/Badges"));
 const About = lazy(() => import("../views/ui/Aboutus"));
 const Cards = lazy(() => import("../views/ui/Cards"));
 const Tables = lazy(() => import("../views/ui/Tables"));
@@ -55,7 +54,6 @@ const ThemeRoutes = [
       { path: "/detect/projects", exact: true, element: <DetectList /> },
       { path: "/detect/:project", exact: true, element: <DetectProject /> },
       { path: "/detect/loading", exact: true, element: <DetectLoading /> },
-      { path: "/badges", exact: true, element: <Badges /> },
       { path: "/about", exact: true, element: <About /> },
       { path: "/cards", exact: true, element: <Cards /> },
       { path: "/table", exact: true, element: <Tables /> },
