@@ -4,6 +4,9 @@
   align-items: center;
   border: 9px solid #60e1cb;
 }
+.red-border {
+  border-color: red;
+}
 .image-wrapper img{
   width: 250px;
   height: 250px;

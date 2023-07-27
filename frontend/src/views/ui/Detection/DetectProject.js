@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardBody, Button } from "reactstrap";
+import { Card, CardBody, Button, Row,Col } from "reactstrap";
 import "./DetectProject.css";
 import Footer from "../../../layouts/Footer";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -7,6 +7,7 @@ import fastapi from '../../../lib/api';
 
 const DetectProject = () => {
   const [imageUrls, setImageUrls] = useState({});
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const user_id = location.state.user_id;
@@ -14,7 +15,6 @@ const DetectProject = () => {
   const project_id = location.state.project_id;
   const project_name = location.state.project_name;
   const password = location.state.password
-  const result = location.state.result; // fake, real
 
 
   // 이전으로
@@ -32,39 +32,47 @@ const DetectProject = () => {
     window.open(imageUrl, "_blank");
   };
 
-  useEffect(() => {
-    fetchImageUrls();
-  }, []);
+
+  let result;
 
   const fetchImageUrls = async () => {
     try {
-      fastapi(
-        "get",
-        `/detect/${username}/${project_name}`,
-        {},
-        (response) => {
-          setImageUrls(response);
-          if (!response.complete) {
-            navigate('/detect/loading', { state: { username: username, password: password, project_name: project_name } });
+      const response = await new Promise((resolve, reject) => {
+        fastapi(
+          "get",
+          `/detect/${username}/${project_name}`,
+          {},
+          (response) => {
+            resolve(response);
+          },
+          (error) => {
+            reject(error);
           }
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+        );
+      });
+      setImageUrls(response);
+      result = response['result'];
+      console.log(result);
+      if (result === "fake") {
+        setMessage("해당 이미지는 딥페이크 합성 이미지입니다.");
+      } else if (result === "real") {
+        setMessage("해당 이미지는 합성되지 않은 이미지입니다.");
+      } else {
+        setMessage("알 수 없는 결과입니다.");
+      }
+      if (!response.complete) {
+        navigate('/detect/loading', { state: { username: username, password: password, project_name: project_name } });
+      }
     } catch (error) {
       console.log(error);
     }
   };
+  useEffect(() => {
+    fetchImageUrls();
+  }, []);
 
-  let message;
-  if (result === "fake") {
-    message = "해당 이미지는 딥페이크 합성 이미지입니다.";
-  } else if (result === "real") {
-    message = "해당 이미지는 합성되지 않은 이미지입니다.";
-  } else {
-    message = "알 수 없는 결과입니다.";
-  }
+  const imageWrapperClass = message.includes("딥페이크") ? "image-wrapper red-border" : "image-wrapper";
+
 
   return (
     <>
@@ -85,9 +93,11 @@ const DetectProject = () => {
         </div>
 
         <h3>폴더명: {project_name}</h3>
+        <Row>
+          <Col xs="12" md="6">
         <div className="image-container">
           {imageUrls.target && (
-            <div className="image-wrapper">
+            <div className={imageWrapperClass}>
               <img
                 src={imageUrls.target}
                 alt="Target"
@@ -98,6 +108,23 @@ const DetectProject = () => {
           )}
           <h3>{message}</h3>
         </div>
+          </Col>
+          <Col xs="12" md="6">
+          <div className="image-container">
+                <div className="image-wrapper">
+                  {imageUrls.gradcam&& (
+                    <img
+                      src={imageUrls.gradcam}
+                      alt="Gradcam"
+                      className="image"
+                      onClick={() => handleImageClick(imageUrls.gradcam)}
+                    />
+                  )}
+                </div>
+                <h3>GradCam 출력 결과</h3>
+          </div>
+          </Col>
+        </Row>
       </div>
       <Button
         className="btns"
