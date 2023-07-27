@@ -14,11 +14,6 @@ const navigation = [
     href: "/deepfake",
     icon: "bi bi-upc-scan",
   },
-  // {
-  //   title: "이미지 탐지하기",
-  //   href: "/badges",
-  //   icon: "bi bi-upc-scan",
-  // },
   {
     title: "마이페이지",
     href: "/mypage",
