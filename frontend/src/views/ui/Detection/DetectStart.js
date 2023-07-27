@@ -9,14 +9,31 @@ import fastapi from "../../../lib/api";
 const DetectStart = () => {
   const [selectedImages, setSelectedImages] = useState(null);
   const [selectedTargetImage, setSelectedTargetImage] = useState(null);
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [race, setRace] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const username = location.state.username
-  const password = location.state.password
+  const login = location.state
+  const user_id = login.user_id
+  const username = login.username
+  const password = login.password
 
   // 메인 페이지로 이동
   const handleBackDetect = () => {
-    navigate("/detect");
+    navigate("/detect", { state: { login } });
+  };
+
+  const handleAgeChange = (event) => {
+    setAge(event.target.value);
+  };
+
+  const handleGenderChange = (event) => {
+    setGender(event.target.value);
+  };
+
+  const handleRaceChange = (event) => {
+    setRace(event.target.value);
   };
 
   // 이미지 파일들을 선택하여 userState 객체로 변환
@@ -32,7 +49,7 @@ const DetectStart = () => {
   };
 
   // 이미지 파일들을 서버로 전송 후 모델 학습 페이지로 이동
-  const handleFolderSubmit = async (username, project_name) => {
+  const handleFolderSubmit = async (project_id, project_name) => {
     const formData = new FormData();
     selectedImages.forEach((image, index) => {
       formData.append('real_file', image, `${index}`); //0 ~14
@@ -40,13 +57,17 @@ const DetectStart = () => {
     selectedTargetImage.forEach((image, index) => {
       formData.append('target_file', image, 'target_file'); //0 ~14
     });
+    formData.append('project_id',project_id);
+    formData.append('age', age);
+    formData.append('gender', gender);
+    formData.append('race', race);
 
     //("/generate/{username}/{project_name}/upload"
-    const url = `/detect/${username}/${project_name}/upload`;
+    const url = `/detect/${username}/${project_name}/upload`; //person
     // const params = formData;
     await fastapi("formdata", url, formData);
     try {
-      navigate('/detect/loading', { state: { username: username, password: password, project_name: project_name } });
+      navigate('/detect/loading', { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name } });
     } catch (error) {
       console.log(error);
     }
@@ -59,8 +80,8 @@ const DetectStart = () => {
       `/detect/${username}/start`,
       {},
       (response) => {
-        const { project_name } = response;
-        handleFolderSubmit(username, project_name);
+        const { project_id, project_name } = response;
+        handleFolderSubmit(project_id, project_name);
       },
       (error) => {
         console.log(error);
@@ -81,6 +102,13 @@ const DetectStart = () => {
   // 전송 버튼 클릭
   const handleUploadButtonClick = () => {
     handleDetectStart(username);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('나이:', age);
+    console.log('성별:', gender);
+    console.log('인종:', race);
   };
 
   return (
@@ -108,6 +136,38 @@ const DetectStart = () => {
                 <h2>유의사항</h2>
                 <img className='snow' src={Image} alt="이미지 유의사항" />
                 <div>
+                  <form onSubmit={handleSubmit}>
+                    <div>
+                      <label htmlFor="age">나이:</label>
+                      <input
+                        type="text"
+                        id="age"
+                        value={age}
+                        onChange={handleAgeChange}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="gender">성별:
+                        <select value={gender} onChange={handleGenderChange}>
+                          <option value="">선택하세요</option>
+                          <option value="0">남성</option>
+                          <option value="1">여성</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div>
+                      <label htmlFor="race">인종:
+                        <select value={race} onChange={handleRaceChange}>
+                          <option value="">선택하세요</option>
+                          <option value="0">동양인</option>
+                          <option value="1">백인인</option>
+                          <option value="2">흑인</option>
+                        </select>
+                      </label>
+                    </div>
+                  </form>
+                </div>
+                <div>
                   <Button
                     className="btns"
                     color="secondary"
@@ -131,7 +191,7 @@ const DetectStart = () => {
                     size="lg"
                     onClick={handleClickFolderUploadButton}
                     data-files-input="target-image-input"
-                    >
+                  >
                     탐지하려는 이미지
                   </Button>
                   <input

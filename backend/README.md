@@ -61,8 +61,74 @@ In the project directory, you can run:
 2. check installed mysql version  
 `mysql --version`
 
+## config mysqy database, table(ver2)
+## setting
+0. start mysql server  
+`service mysql start`
+1. make root user & make user_db database  
+`mysqladmin -u root create deepfake -p`
+2. connect mysql with root user  
+`mysql -u root -p`
 
-## config mysql database, table  
+## make table
+3. activate deepfake database  
+`use deepfake;`
+
+4. make table  
+`CREATE TABLE users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    hashed_password VARCHAR(255) UNIQUE NOT NULL,
+    signin_name VARCHAR(255)
+);`
+
+`CREATE TABLE user_generation (
+    user_id INT,
+    project_id INT PRIMARY KEY AUTO_INCREMENT,
+    project_name VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+`
+
+`CREATE TABLE user_detection (
+    user_id INT,
+    project_id INT PRIMARY KEY AUTO_INCREMENT,
+    project_name VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);`
+
+`CREATE TABLE generation (
+    project_id INT PRIMARY KEY,
+    project_name VARCHAR(255),
+    start_time DATETIME,
+    end_time DATETIME,
+    state VARCHAR(255)
+);
+`
+
+`CREATE TABLE detection (
+    project_id INT PRIMARY KEY,
+    project_name VARCHAR(255),
+    start_time DATETIME,
+    end_time DATETIME,
+    output VARCHAR(255),
+    race INT,
+    gender INT,
+    age INT,
+    state VARCHAR(255),
+    rating INT
+);`
+
+8. change table charset to utf-8
+`ALTER TABLE users CONVERT TO CHARSET UTF8;`
+`ALTER TABLE user_generation CONVERT TO CHARSET UTF8;`
+`ALTER TABLE user_detection CONVERT TO CHARSET UTF8;`
+`ALTER TABLE generation CONVERT TO CHARSET UTF8;`
+`ALTER TABLE detection CONVERT TO CHARSET UTF8;`
+
+
+## config mysql database, table(ver1)
+
 0. start mysql server  
 `service mysql start`
 1. make root user & make user_db database  

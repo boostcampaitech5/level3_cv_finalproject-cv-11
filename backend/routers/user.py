@@ -13,7 +13,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 # from database import SessionLocal, engine
-from backend.routers.database import SessionLocal, engine
+from backend.routers.database import SessionLocal, engine, existing_tables
 from deepfake import make_synthesis, inference
 
 from sqlalchemy.orm import Session
@@ -21,7 +21,11 @@ import os
 
 
 templates = Jinja2Templates(directory='./')             #for debug
-model.Base.metadata.create_all(bind=engine)
+
+# 테이블이 존재하지 않을 경우에만 테이블 생성
+if "users" not in existing_tables:
+    model.Base.metadata.create_all(bind=engine)
+
 
 
 # to get a string like this run:
@@ -64,26 +68,23 @@ class UserInDB(User):
 
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
+# def verify_password(plain_password, hashed_password):
+#     return pwd_context.verify(plain_password, hashed_password)
 
 
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+# def get_password_hash(password):
+#     return pwd_context.hash(password)
+
+# def get_user_by_username(db, username: str):
+#     if username in db:
+#         user_dict = db[username]
+#         return UserInDB(**user_dict)
 
 
 
@@ -119,6 +120,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 #     if user is None:
 #         raise credentials_exception
 #     return user
+
 @users_router.get("/")
 def get_login_form(request: Request):
     print(request)
@@ -157,7 +159,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     response.set_cookie(key="username", value=form_data.username, httponly=True, samesite="none")
     response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="none")         #maybe save access token to user_db
     # return response
-    return {"islogin": True}
+    return {"islogin": True, 'user_id' : user.user_id}
 
 
 @users_router.post("/signin")
@@ -176,83 +178,4 @@ def create_user(signin_name: str = Form(...), username: str = Form(...),password
     # return crud.create_user(db=db, user=user)
     user = crud.create_user(db=db, user=user)
     # print(user)
-    return {"isvalid":True}
-
-
-# ## 별도 py로 분리 필요
-# @users_router.post("/generation")
-# def generation(info: dict, db: Session = Depends(get_db)):
-#     username = info['username']
-#     project_name = info['project_name']
-#     password = info['password']
-    
-#     ## running로 state 변경 후 학습 시작
-#     state_running = crud.update_state_by_projectname(db, username=username, project_type ='generate', project_name = project_name, new_state = 'running')
-#     if not state_running: # DB state -  running 실패
-#         crud.update_state_by_projectname(db, username=username, project_type ='generate', project_name = project_name, new_state = 'error(db)')
-#     else: # DB state -  running 성공
-#         user = crud.get_user_for_login(db, username=username, password=password)
-#         if not user:
-#             crud.update_state_by_projectname(db, username=username, project_type ='generate', project_name = project_name, new_state = 'error(not user)')
-#             return {"result": False}
-        
-#         source = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/source'
-#         target = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/target'
-#         output = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
-#         try:
-#             make_synthesis.make_synthesis(target,source,output)
-#             crud.update_state_by_projectname(db, username=username, project_type ='generate', project_name = project_name, new_state = 'finished')
-#         except: # 학습 오류
-#             crud.update_state_by_projectname(db, username=username, project_type ='generate', project_name = project_name, new_state = 'error(model)')
-    
-#     port = 'http://0.0.0.0:30007'
-#     result_path = output + '/source.jpeg'
-
-#     if os.path.exists(result_path):
-#         return {
-#             "username": username,
-#             "project": project_name,
-#             "complete": True,
-#             "source": f'{port}/generate/{username}/{project_name}/source',
-#             "target": f'{port}/generate/{username}/{project_name}/target',
-#             "output": f'{port}/generate/{username}/{project_name}/result',
-#         }
-#     else:
-#         return {
-#             "username": username,
-#             "project": project_name,
-#             "complete": False,
-#             "source": None,
-#             "target": None,
-#             "output": None
-#         }
-    
-# @users_router.post("/detection")
-# def detection(info: dict, db: Session = Depends(get_db)):
-#     username = info['username']
-#     project_name = info['project_name']
-#     password = info['password']
-    
-#     ## running로 state 변경 후 학습 시작
-#     state_running = crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'running')
-#     if not state_running: # DB state -  running 실패
-#         crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error(db)')
-#     else: # DB state -  running 성공
-#         user = crud.get_user_for_login(db, username=username, password=password)
-#         if not user:
-#             crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error(not user)')
-#             return {"result": False}
-    
-#         try:
-#             model_path = '/opt/ml/level3_cv_finalproject-cv-11/datas/Meta_train_learning_id_60.pt'
-#             real_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/real'
-#             fake_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/fake'
-#             target_path = f'/opt/ml/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
-#             user_name = f'{username}'
-#             source = '/opt/ml/level3_cv_finalproject-cv-11/source'
-#             make_synthesis.make_synthesis(real_path,source,fake_path)
-#             result = inference.inference(model_path,real_path,fake_path,target_path,user_name)
-#             crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'finished')
-#             return result
-#         except:
-#             crud.update_state_by_projectname(db, username=username, project_type ='detect', project_name = project_name, new_state = 'error(model)')
+    return {"isvalid":True, 'user' : user }

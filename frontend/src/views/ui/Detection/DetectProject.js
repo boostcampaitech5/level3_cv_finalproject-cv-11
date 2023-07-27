@@ -9,9 +9,11 @@ const DetectProject = () => {
   const [imageUrls, setImageUrls] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const user_id = location.state.user_id;
   const username = location.state.username;
+  const project_id = location.state.project_id;
   const project_name = location.state.project_name;
-  const password=location.state.password
+  const password = location.state.password
   const result = location.state.result; // fake, real
 
 
@@ -21,6 +23,13 @@ const DetectProject = () => {
   };
   const handleBackMain = () => {
     navigate(`/deepfake`, { state: { username: username, password: password, project_name: project_name } });
+  };
+  const handleSurvey = () => {
+    navigate(`/survey`, { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name } });
+  };
+
+  const handleImageClick = (imageUrl) => {
+    window.open(imageUrl, "_blank");
   };
 
   useEffect(() => {
@@ -36,7 +45,7 @@ const DetectProject = () => {
         (response) => {
           setImageUrls(response);
           if (!response.complete) {
-            navigate('/generate/loading', {state: { username: username, password: password, project_name: project_name }});
+            navigate('/detect/loading', { state: { username: username, password: password, project_name: project_name } });
           }
         },
         (error) => {
@@ -47,6 +56,15 @@ const DetectProject = () => {
       console.log(error);
     }
   };
+
+  let message;
+  if (result === "fake") {
+    message = "해당 이미지는 딥페이크 합성 이미지입니다.";
+  } else if (result === "real") {
+    message = "해당 이미지는 합성되지 않은 이미지입니다.";
+  } else {
+    message = "알 수 없는 결과입니다.";
+  }
 
   return (
     <>
@@ -66,15 +84,28 @@ const DetectProject = () => {
           </div>
         </div>
 
+        <h3>폴더명: {project_name}</h3>
         <div className="image-container">
-          <h2>프로젝트: {project_name}</h2>
-          <div className="image-wrapper">
-            <h3>Source Image</h3>
-            <p> {result} </p>
-
-          </div>
+          {imageUrls.target && (
+            <div className="image-wrapper">
+              <img
+                src={imageUrls.target}
+                alt="Target"
+                className="image"
+                onClick={() => handleImageClick(imageUrls.target)}
+              />
+            </div>
+          )}
+          <h3>{message}</h3>
         </div>
       </div>
+      <Button
+        className="btns"
+        color="primary"
+        onClick={handleSurvey}
+      >
+        만족도 조사 하러가기!
+      </Button>
       <Footer />
     </>
   );

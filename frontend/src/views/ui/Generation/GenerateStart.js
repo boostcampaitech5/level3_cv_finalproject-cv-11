@@ -11,12 +11,13 @@ const GenerateStart = () => {
   const [selectedTargetImage, setSelectedTargetImage] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const user_id = location.state.user_id
   const username = location.state.username
   const password = location.state.password
 
   // 메인 페이지로 이동
   const handleBackGenerate = () => {
-    navigate("/generate",{state: location.state});
+    navigate("/generate", { state: location.state });
   };
 
   // 소스 or 타겟 이미지를 받아 userState 객체로 변환
@@ -32,7 +33,7 @@ const GenerateStart = () => {
   };
 
   // 이미지를 서버로 전송 후 모델 학습 페이지로 이동
-  const handleImageSubmit = async (username, project_name) => {
+  const handleImageSubmit = async (project_id, project_name) => {
     const formData = new FormData();
     formData.append("source_file", selectedSourceImage);
     formData.append("target_file", selectedTargetImage);
@@ -42,7 +43,7 @@ const GenerateStart = () => {
     // const params = formData;
     await fastapi("formdata", url, formData);
     try {
-      navigate('/generate/loading', { state: { username: username, password: password, project_name: project_name } });
+      navigate('/generate/loading', { state: { user_id: user_id, username: username, password: password, project_id: project_id, project_name: project_name } });
     } catch (error) {
       console.log(error);
     }
@@ -55,8 +56,8 @@ const GenerateStart = () => {
       `/generate/${username}/start`,
       {},
       (response) => {
-        const { project_name } = response;
-        handleImageSubmit(username, project_name);
+        const { project_name, project_id } = response;
+        handleImageSubmit(project_id, project_name);
       },
       (error) => {
         console.log(error);

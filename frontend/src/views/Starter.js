@@ -70,7 +70,7 @@ const Starter = () => {
       <>
       <div className='hero-container'>
         <video autoPlay loop muted src={Video} type='video/mp4' />
-        <h1>Deepfake Detection</h1>
+        <h1>Fakey</h1>
         <p>Aivengers</p>
         <div className='hero-btns'>
           <Button className='btns' color="primary" size="lg" onClick={handleGetStarted}>

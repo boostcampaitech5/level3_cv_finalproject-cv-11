@@ -17,8 +17,8 @@ follow this link to make key by puttygen(don't need private key)https://amanokaz
 
 4. install cuda
 ```  
-sudo apt install ubuntu-drivers-common  
-sudo apt install nvidia-driver-515  
+sudo apt install ubuntu-drivers-common -y  
+sudo apt install nvidia-driver-515 -y  
 wget https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux.run
 ```
 if above link expired find appropriate version in this link https://developer.nvidia.com/cuda-toolkit-archive  
@@ -32,7 +32,7 @@ if above link expired find appropriate version in this link https://developer.nv
 5. update .bashrc  
 add this to /home/USERNAME/.bashrc  
 ```
-export PATH=/usr/local/cuda-11.7/bin${PATH:+:${PATH}}`  
+export PATH=/usr/local/cuda-11.7/bin${PATH:+:${PATH}}  
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 
