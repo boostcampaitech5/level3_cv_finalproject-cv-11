@@ -76,6 +76,10 @@ const GenerateStart = () => {
 
   // 전송 버튼 클릭
   const handleUploadButtonClick = () => {
+    if (!selectedSourceImage || !selectedTargetImage) {
+      alert("이미지가 선택되지 않았습니다.");
+      return;
+    }
     handleGenerateStart(username);
   };
 
