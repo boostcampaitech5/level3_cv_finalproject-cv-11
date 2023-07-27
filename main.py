@@ -12,7 +12,7 @@ from backend.routers.project import project_router
 from backend.routers.generation import generation_router
 from backend.routers.detection import detection_router
 from backend.routers.port import port_router
-from backend.routers.vertex import vertex_router
+# from backend.routers.vertex import vertex_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -37,7 +37,7 @@ app.include_router(project_router, tags=["project"])
 app.include_router(generation_router, tags=["generation"])
 app.include_router(detection_router, tags=["detection"])
 app.include_router(port_router, tags=["port"])
-app.include_router(vertex_router, tags=["vertex"])
+# app.include_router(vertex_router, tags=["vertex"])
 
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=30007)

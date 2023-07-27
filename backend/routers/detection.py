@@ -30,12 +30,13 @@ def get_gpu_memory():
 
 @detection_router.post("/detection")
 def detection(info: dict, db: Session = Depends(get_db)):
+    print(info)
     user_id = info['user_id']
     username = info['username']
     project_id = info['project_id']
     project_name = info['project_name']
     password = info['password']
-
+    print(project_name)
     if project_id is None:
         project_id = crud.get_generation_project_id_by_project_name(db = db, project_name = project_name)
 
@@ -83,9 +84,10 @@ def detection(info: dict, db: Session = Depends(get_db)):
 
             ##inference
             os.system(f'python {infer_path} --model_path {model_path} --real_path {real_path} --fake_path {fake_path} --target_path {target_path} --source {source} --username {username} --project_name {project_name} >> {data_path}/result.txt')
-            with open(f"{data_path}/result.txt", "r") as ping:
-                result = ping.readlines()[-2]
+            # with open(f"{data_path}/result.txt", "r") as ping:
+                # result = ping.readlines()[-2]
             crud.update_state_by_project_id(db=db, project_type ='detect', project_id = project_id, new_state = 'finished')# 상태 업데이트
-            return result
+            return {"result": True}
         except:
             crud.update_state_by_project_id(db=db, project_type ='detect', project_id = project_id, new_state = 'error(model)')
+            return {"result": False}

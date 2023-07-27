@@ -13,4 +13,4 @@ async def get_host_info():
     # # 서버 포트 번호 가져오기
     # server_info = app.server.base_url
     # port = server_info.port
-    return {"host": '49.50.161.9', "port": '30007'}
+    return {"host": '34.64.152.76', "port": '30007'}

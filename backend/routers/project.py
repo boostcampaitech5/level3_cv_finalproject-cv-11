@@ -249,7 +249,7 @@ async def get_user_generation_project_imgs(user_identifier : str, project_name: 
 
     back_port  = await port.get_host_info()
     back_url = f'http://{back_port["host"]}:{back_port["port"]}'
-    result_dir = f'./datas/{username}/generation/{project_name}/result'
+    result_dir = f'/home/fakey/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
     jpgs = os.listdir(result_dir)
     result_path = result_dir + '/' +jpgs[0]
 
@@ -281,16 +281,18 @@ async def get_user_detection_project_imgs(user_identifier : str, project_name: s
 
     back_port  = await port.get_host_info()
     back_url = f'http://{back_port["host"]}:{back_port["port"]}'
-    result_dir = f'./datas/{username}/detection/{project_name}/target'
+    result_dir = f'/home/fakey/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
     jpgs = os.listdir(result_dir)
     result_path = result_dir + '/' +jpgs[0]
-
+    result = crud.get_detection_status_by_project_name(db, project_name=project_name)
     if os.path.exists(result_path):
         return {
             "username": username,
             "project": project_name,
             "complete": True,
             "target": f'{back_url}/detect/{username}/{project_name}/target',
+            "gradcam": f'{back_url}/detect/{username}/{project_name}/gradcam',
+            "result":result
         }
     else:
         return {
@@ -298,6 +300,8 @@ async def get_user_detection_project_imgs(user_identifier : str, project_name: s
             "project": project_name,
             "complete": False,
             "target": None,
+            "gradcam": None,
+            "result":None
         }
 
 
@@ -348,7 +352,7 @@ async def get_result_image(user_identifier:str, project_name: str, db: Session =
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
 
-    result_dir = f'./datas/{username}/generation/{project_name}/result'
+    result_dir = f'/home/fakey/level3_cv_finalproject-cv-11/datas/{username}/generation/{project_name}/result'
     jpgs = os.listdir(result_dir)
     result_path = result_dir + '/' +jpgs[0]
     # result_path = os.path.join(result_dir, 'result.jpeg')
@@ -368,13 +372,31 @@ async def get_detection_target_image(user_identifier : str, project_name: str, d
     user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
     username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
 
-    target_dir = f'./datas/{username}/detection/{project_name}/target'
+    target_dir = f'/home/fakey/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
     target_path = os.path.join(target_dir, 'target.jpeg')
 
     if os.path.exists(target_path):
         with open(target_path, "rb") as file:
             contents = file.read()
         response = Response(content=contents, media_type="image/jpeg")
+        response.headers["Content-Disposition"] = "inline"
+        return response
+    else:
+        return Response(status_code=404)
+
+@project_router.get("/detect/{user_identifier}/{project_name}/gradcam")
+async def get_detection_target_image(user_identifier : str, project_name: str, db: Session = Depends(get_db)):
+    # user_identifier가 int이면 user_id로 쓰고 str이면 user_id를 불러옴
+    user_id = int(user_identifier) if user_identifier.isdigit() else crud.get_user_id_by_username(db, user_identifier)
+    username = crud.get_username_by_user_id(db, user_identifier) if user_identifier.isdigit() else user_identifier
+
+    gradcam_dir = f'/home/fakey/level3_cv_finalproject-cv-11/datas/{username}/detection/{project_name}/target'
+    gradcam_path = os.path.join(gradcam_dir, 'grad.png')
+
+    if os.path.exists(gradcam_path):
+        with open(gradcam_path, "rb") as file:
+            contents = file.read()
+        response = Response(content=contents, media_type="image/png")
         response.headers["Content-Disposition"] = "inline"
         return response
     else:
