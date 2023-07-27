@@ -90,6 +90,11 @@ def get_project_by_username(db: Session, username: str, project_name : str, proj
     else:
         return db.query(model.DetectionProject).filter(model.DetectionProject.user_name == username).filter(model.DetectionProject.project_name == project_name).first()
 
+
+def get_detection_status(db: Session):
+    return len(db.query(model.DetectionProject).filter(model.DetectionProject.state == "running").all())
+
+
 def update_state_by_projectname(db: Session, username: str, project_type: str, project_name: str, new_state: str):
     if project_type == 'generate':
         project = db.query(model.GenerationProject).filter_by(user_name=username, project_name=project_name).first()
