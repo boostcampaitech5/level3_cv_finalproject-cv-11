@@ -57,9 +57,13 @@ const DetectStart = () => {
     selectedTargetImage.forEach((image, index) => {
       formData.append('target_file', image, 'target_file'); //0 ~14
     });
+    formData.append('project_id',project_id);
+    formData.append('age', age);
+    formData.append('gender', gender);
+    formData.append('race', race);
 
     //("/generate/{username}/{project_name}/upload"
-    const url = `/detect/${username}/${project_name}/upload`;
+    const url = `/detect/${username}/${project_name}/upload`; //person
     // const params = formData;
     await fastapi("formdata", url, formData);
     try {
@@ -146,8 +150,8 @@ const DetectStart = () => {
                       <label htmlFor="gender">성별:
                         <select value={gender} onChange={handleGenderChange}>
                           <option value="">선택하세요</option>
-                          <option value="man">남성</option>
-                          <option value="women">여성</option>
+                          <option value="0">남성</option>
+                          <option value="1">여성</option>
                         </select>
                       </label>
                     </div>
@@ -155,11 +159,9 @@ const DetectStart = () => {
                       <label htmlFor="race">인종:
                         <select value={race} onChange={handleRaceChange}>
                           <option value="">선택하세요</option>
-                          <option value="1">백인</option>
-                          <option value="2">몽골로이드</option>
-                          <option value="3">니그로이드</option>
-                          <option value="4">아메리칸</option>
-                          <option value="5">말레이</option>
+                          <option value="0">동양인</option>
+                          <option value="1">백인인</option>
+                          <option value="2">흑인</option>
                         </select>
                       </label>
                     </div>
