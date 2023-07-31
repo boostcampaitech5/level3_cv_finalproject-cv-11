@@ -1,0 +1,16 @@
+## Checkpoints 폴더 다운로드
+!wget https://github.com/takhyun12/MobileFaceSwap/releases/download/checkpoints/checkpoints.zip
+
+!mkdir /content/MobileFaceSwap/checkpoints
+!unzip /content/MobileFaceSwap/checkpoints.zip -d /content/MobileFaceSwap/checkpoints
+
+## 가상환경 구축 및 pip install
+conda create -n mobilefaceswap python=3.9.7
+pip install paddlepaddle==2.1.2
+pip install insightface==0.2.1
+pip install opencv-python
+pip install onnxruntime
+pip install protobuf==3.20.2
+pip install numpy==1.23.5
+python image_test.py --target_img_path asset/yonghee.jpg --source_img_path asset/ssg.jpg --output_dir results
+conda install pytorch torchvision torchaudio cudatoolkit=11.0 -c pytorch

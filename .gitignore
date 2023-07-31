@@ -1,0 +1,13 @@
+*.pyc
+/datas
+/checkpoints
+/deepfake/checkpoints
+*.log
+*.out
+*.pt
+*.yaml
+*.json
+/deepfake/wandb
+data/*
+datas/*
+MobileFaceSwap/temp/*
