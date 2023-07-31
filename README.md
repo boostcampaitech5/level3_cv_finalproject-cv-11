@@ -1,3 +1,113 @@
+# Personalized deepfake detection service
+Traditional Deepfake detection focuses on Deepfake detection for an unspecified number of people. <br/>
+These are ways to improve the performance of benchmark dataset in Deepfake detection competitions. <br/>
+Therefore, these methods do not take into account the actual service situation. <br/>
+Accordingly, we propose a model structure that improves the performance of the detection model by few shot learning a small amount of victim pictures. <br/>
+Finally, we would like to provide the model-based deepfake detection service 'Fakey' to prevent the abuse of deepfake. <br/>
+
+
+
+# Team Members
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/hykhhijk">
+            <img src="https://avatars.githubusercontent.com/u/58303938?v=4" alt="김용희 프로필" width=120 height=120 />
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/HipJaengYiCat">
+          <img src="https://avatars.githubusercontent.com/u/78784633?v=4" alt="박승희 프로필" width=120 height=120 />
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/imsmile2000">
+          <img src="https://avatars.githubusercontent.com/u/69185594?v=4" alt="이윤표 프로필" width=120 height=120 />
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/junha-lee">
+          <img src="https://avatars.githubusercontent.com/u/44857783?v=4" alt="이준하 프로필" width=120 height=120 />
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/JaiyoungJoo">
+          <img src="https://avatars.githubusercontent.com/u/103994779?v=4" alt="주재영 프로필" width=120 height=120 />
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/hykhhijk">
+          김용희
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/HipJaengYiCat">
+          박승희
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/imsmile2000">
+          이윤표
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/junha-lee">
+          이준하
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/JaiyoungJoo">
+          주재영
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br/>
+<div id="5"></div>
+
+
+# Environment  
+## Google compute engine  
+- region: asia-northeast3-b  
+- GPU: Nvidia-T4, num:1  (GPU mem:GDDR6 16GB)  
+- CPU: n1-standard-4(vCPU 4개, 15GB 메모리)  
+- Boot-disk: Ubuntu20.04LTS 50GB
+  
+<br>
+
+## Cloud SQL
+- database engine: MySQL 8.0.31  
+- vCPU:2, 8GB 메모리  
+- Disk: SSD 50GB
+
+<br>
+
+# Folder Structure
+```bash
+├─backend
+├─checkpoints
+├─datas
+├─deepfake
+├─docs
+├─frontend
+├─MobileFaceSwap
+└─source
+```
+<br></br>
+
+# Model architecture
+![image](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhxaFFSIeXFIl_4XXkPYa8gsbkBxa67EfkhMdMsPsqP2ZFOZcld5yhSVYQSSPhd2Nf9lPL0zqhpeU4m1CENi4_OtV92xaMBWijyGk6tOSgDEGU13_yoniKBNdqsimljMoWHWpZn7QGS_iCDoszS-LKxyg_ZvLu0vt-17PEkjCdswRn3diurt4MzbjijoUr8/s1610/model_architecture.png)
+
+
+
+<br>
+
 # Getting Started with Google Cloud Platform
 
 ## Make GCP instance 
