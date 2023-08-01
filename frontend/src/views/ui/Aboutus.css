@@ -24,6 +24,13 @@
       'Lucida Sans', Arial, sans-serif;
   }
 
+  h4 {
+    font-weight: bold;
+  }
+  .button-group2{
+    margin-left: 30px;
+    margin-top: 10px;
+  }
   @media screen and (max-width: 768px) {
     .about-container > h1 {
       font-size: 40px;
@@ -34,7 +41,7 @@
     }
   
     }
-    img{
-        width: 200;
-        height: 200;
+    .button-group img{
+      max-width: 300px;
+      height: auto;
     }
