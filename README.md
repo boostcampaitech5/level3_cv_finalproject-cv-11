@@ -191,23 +191,23 @@ after this move to develop branch and pull
 `sudo service mysql start`
 1. make root user & make user_db database  
 `sudo mysqladmin -u root create user_db -p`
-2. connect mysql with root user  
+2. import default tables
+```
+for localhost
+sudo mysql -u root -p user_db < {home_path}/level3_cv_finalproject-cv-11/deepfake.sql
+
+for Cloud SQL
+sudo mysql -u root -p user_db -h {your cloud sql ip} < {home_path}/level3_cv_finalproject-cv-11/deepfake.sql
+```
+3. connect mysql with root user  
 `sudo mysql -u root -p`
-3. activate user_db database  
-`use user_db;`
-4. make table  
+4. change mysql security setting for connection  
+`ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';`  
+`FLUSH PRIVILEGES;`  
+
+5. finally set backend/routers/database.py for your database setting
 ```
-create table users (
-        username varchar(255) primary key,
-        hashed_password varchar(255) not null,
-        signin_name varchar(255) not null
-        );
+in 5~6 line in backend/routers/database.py
+SQLALCHEMY_DATABASE_URL = "mysql://root:1234@localhost:3306/user_db?charset=utf8"        #change user user, password for localhost mysql setting
+SQLALCHEMY_DATABASE_URL = "mysql://root:1234@34.64.189.15:3306/user_db?charset=utf8"        #For my cloud SQL server
 ```
-5. insert test user info  
-`insert into users values ("temp_username", "temp_hashed_password", "temp_email@temp.com");`
-7. check user info  
-`select * from users;`
-8. change table charset to utf-8  
-`ALTER TABLE users CONVERT TO CHARSET UTF8;`  
-9. change mysql security setting for connection  
-`ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';`
