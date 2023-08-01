@@ -9,33 +9,29 @@ function Footer() {
       <div className='footer-links'>
         <div className='footer-link-wrapper'>
           <div className='footer-link-items'>
-            <h2>About Us</h2>
-            <Link to='/sign-up'>How it works</Link>
-            <Link to='/'>Careers</Link>
-            <Link to='/'>Investors</Link>
-            <Link to='/'>Terms of Service</Link>
+            <h2>About Fakey</h2>
+            <a href='https://github.com/boostcampaitech5/level3_cv_finalproject-cv-11'>Github</a>
+            <a href='https://www.notion.so/boostcampait/CV-11-Personalized-deepfake-5bb96df20d2b4fb0b5bcaaefb9246344'>Notion</a>
           </div>
           <div className='footer-link-items'>
             <h2>Contact Us</h2>
-            <Link to='/'>Contact</Link>
-            <Link to='/'>문의</Link>
-            <Link to='/'>오시는길</Link>
+            <Link to='/about'>Contact</Link>
           </div>
         </div>
         <div className='footer-link-wrapper'>
           <div className='footer-link-items'>
             <h2>Aivengers</h2>
-            <Link to='/'>Phone: 010-4358-0827</Link>
-            <Link to='/'>Fax: 070-1234-5678</Link>
-            <Link to='/'>email: i23@naver.com</Link>
+            <a href='https://www.notion.so/AIvengers-93c2f674ed434dcfb31a2179767b331f?pvs=4'>Team Notion</a>
+            <a href='https://github.com/boostcampaitech5/level2_objectdetection-cv-11'>Detection</a>
+            <a href='https://github.com/boostcampaitech5/level2_cv_datacentric-cv-11'>Data-centric</a>
+            <a href='https://github.com/boostcampaitech5/level2_cv_semanticsegmentation-cv-11'>Segmentation</a>
           </div>
-          <div className='footer-link-items'>
+          {/* <div className='footer-link-items'>
             <h2>SNS</h2>
             <Link to='/'>Instagram</Link>
             <Link to='/'>Facebook</Link>
             <Link to='/'>Youtube</Link>
-            <Link to='/'>Twitter</Link>
-          </div>
+          </div> */}
         </div>
       </div>
       <section className='social-media'>
