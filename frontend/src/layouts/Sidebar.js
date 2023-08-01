@@ -34,8 +34,13 @@ const Sidebar = () => {
   let location = useLocation();
   const login=location.state
   const navigate = useNavigate();
-  const navigateToGenerate = () => {
-    navigate("/deepfake", { state: login});
+  const navigateToGenerate = (title) => {
+    if (title === "이미지 생성/탐지하기") {
+      navigate("/deepfake", { state: login });
+    } else if (title === "마이페이지") {
+      navigate("/mypage", { state: login });
+    } else {
+    }
   };
 
   return (
@@ -55,14 +60,14 @@ const Sidebar = () => {
         <Nav vertical className="sidebarNav">
           {navigation.map((navi, index) => (
             <NavItem key={index} className="sidenav-bg">
-              {navi.title === "이미지 생성/탐지하기" ? (
+              {navi.title === "이미지 생성/탐지하기" || navi.title === "마이페이지" ? (
                 <button
                   className={
                     location.pathname === navi.href
                       ? "text-primary nav-link py-3"
                       : "nav-link text-secondary py-3"
                   }
-                  onClick={navigateToGenerate}
+                  onClick={() => navigateToGenerate(navi.title)}
                 >
                   <i className={navi.icon}></i>
                   <span className="ms-3 d-inline-block">{navi.title}</span>

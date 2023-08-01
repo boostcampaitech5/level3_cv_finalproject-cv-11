@@ -62,7 +62,7 @@ const Starter = () => {
     navigate("/deepfake", {state:login}); // deepfake 페이지로 이동
   };
   const handleAbout = () => {
-    navigate("/buttons"); // 메인 페이지로 이동
+    navigate("/about"); // 메인 페이지로 이동
   };
 
 
@@ -74,14 +74,14 @@ const Starter = () => {
         <p>Aivengers</p>
         <div className='hero-btns'>
           <Button className='btns' color="primary" size="lg" onClick={handleGetStarted}>
-            Get Started!
+            시작하기
           </Button>
           <Button className='btns' color="secondary" size="lg" onClick={handleAbout}>
             About Us
           </Button>
         </div>
       </div>
-      <div className="cards">
+      {/* <div className="cards">
         <h1>Our Services</h1>
         <Row>
           {BlogData.map((blg, index) => (
@@ -96,7 +96,7 @@ const Starter = () => {
             </Col>
           ))}
         </Row>
-      </div>
+      </div> */}
       <Footer />
     </>
   );
