@@ -10,4 +10,4 @@
 /deepfake/wandb
 data/*
 datas/*
-MobileFaceSwap/temp/*
+# MobileFaceSwap/temp/*
