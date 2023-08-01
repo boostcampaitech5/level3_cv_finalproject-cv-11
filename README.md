@@ -182,8 +182,8 @@ check "yes" at here
 6. clone our github and cd move to it  
 `git clone https://github.com/boostcampaitech5/level3_cv_finalproject-cv-11.git`  
 after this move to develop branch and pull  
-8. install requirements  
-`pip install -r requirements.txt`  
+8. install requirements without dependencies  
+`pip install -r requirements.txt --no-deps`  
 
 
 ## Setting mysql database  
