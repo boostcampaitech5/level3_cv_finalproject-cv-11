@@ -211,3 +211,11 @@ in 5~6 line in backend/routers/database.py
 SQLALCHEMY_DATABASE_URL = "mysql://root:1234@localhost:3306/user_db?charset=utf8"        #change user user, password for localhost mysql setting
 SQLALCHEMY_DATABASE_URL = "mysql://root:1234@34.64.189.15:3306/user_db?charset=utf8"        #For my cloud SQL server
 ```
+
+
+## Download model weights
+1. download all model weights by below link  
+`https://schackr-my.sharepoint.com/:f:/g/personal/hykhhijk_sch_ac_kr/EjauXOPs4RBKh3S2RsNiK2sBQaIiG8quXpdAjJbTo10ncA?e=hDgffg`  
+2. move checkpoints folder to right below outr folder and Meta_train_learning_id_60.pt in to datas  
+![image](https://github.com/boostcampaitech5/level3_cv_finalproject-cv-11/assets/58303938/bd27ec79-65eb-468d-a7a0-e8085e18c21d)  
+structure have to looks like this
